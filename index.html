@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#060913">
+    <title>Vendedores Black das Black's</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+    <style>
+        :root {
+            --bg: #060913; --bg2: #0b1224;
+            --card: rgba(17,26,48,.78); --card2: #16213d;
+            --line: rgba(130,160,220,.16); --line2: rgba(130,160,220,.28);
+            --txt: #eef2ff; --mut: #8d99ba; --mut2: #aab5d3;
+            --gold: #ffd24a; --gold2: #f5a524;
+            --cyan: #22d3ee; --blue: #3b82f6; --indigo: #1e2f7a;
+            --green: #34f5a0; --red: #ff5470; --orange: #ff9f1c; --violet: #a78bfa;
+            --silver: #cfd6e4; --bronze: #d98a4a;
+            --font: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-t: 'Sora', 'Inter', 'Segoe UI', sans-serif;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg);
+            color: var(--txt); font-family: var(--font);
+            margin: 0; padding: 14px 20px; overflow-x: hidden; -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== FUNDO ANIMADO ===== */
+        .bg-efeito-dourado { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+        .particula-bokeh { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,215,0,.55) 0%, rgba(255,215,0,0) 70%); animation: flutuar infinite linear, piscar infinite alternate ease-in-out; box-shadow: 0 0 15px rgba(255,215,0,.35); }
+        .confete-bg { position: absolute; animation: cair infinite linear; opacity: .7; box-shadow: 0 0 8px rgba(255,215,0,.5); }
+        @keyframes flutuar { 0% { transform: translateY(100vh) scale(.8); } 100% { transform: translateY(-20vh) scale(1.2); } }
+        @keyframes piscar { 0% { opacity: .2; } 100% { opacity: .9; } }
+        @keyframes cair { 0% { transform: translateY(-10vh) rotate(0); opacity: 0; } 10% { opacity: .8; } 90% { opacity: .8; } 100% { transform: translateY(100vh) rotate(360deg); opacity: 0; } }
+        @media (prefers-reduced-motion: reduce) { .particula-bokeh, .confete-bg { animation: none; opacity: .25; } }
+
+        /* ===== TOPO ===== */
+        #topo-geral { position: relative; z-index: 100; }
+        .hero { text-align: center; margin: 0 auto 12px; }
+        .hero h1 {
+            font-family: var(--font-t); margin: 0; font-size: 1.7em; font-weight: 900; letter-spacing: 1px;
+            text-transform: uppercase; line-height: 1.1; white-space: nowrap;
+            background: linear-gradient(100deg, #fff3b0 0%, #ffd24a 35%, #f5a524 60%, #fff3b0 100%);
+            background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            animation: brilho 6s linear infinite; filter: drop-shadow(0 4px 18px rgba(255,210,74,.35));
+        }
+        @keyframes brilho { to { background-position: 200% center; } }
+        .hero p { color: var(--mut2); font-size: .95em; font-style: italic; margin: 6px 0 0; }
+
+        /* ===== NAVEGAÇÃO ===== */
+        .tab-container { display: flex; justify-content: center; gap: 6px; margin: 0 auto 14px; flex-wrap: wrap; padding: 6px; background: rgba(12,18,34,.75); border: 1px solid var(--line); border-radius: 60px; width: fit-content; max-width: 100%; }
+        .tab-btn { background: transparent; border: 1px solid transparent; color: var(--mut2); padding: 9px 16px; border-radius: 40px; cursor: pointer; font-weight: 700; font-size: .9em; font-family: inherit; transition: all .25s ease; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+        .tab-btn svg { width: 18px; height: 18px; }
+        .tab-btn:hover { color: #fff; background: rgba(255,255,255,.06); }
+        .tab-btn.active { background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 55%, var(--indigo) 100%); color: #fff; box-shadow: 0 6px 22px rgba(34,211,238,.35); }
+        .tab-btn .cadeado { font-size: .75em; opacity: .7; }
+        .tab-btn.tab-logout { color: var(--red); }
+        .tab-btn.tab-logout:hover { background: rgba(255,84,112,.12); }
+        .tab-content { display: none; animation: fadeIn .45s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+        /* ===== PÓDIO ===== */
+        .painel-principal { display: flex; justify-content: space-around; max-width: 1300px; margin: 0 auto; gap: 24px; align-items: flex-start; }
+        .secao-podio { display: flex; justify-content: center; align-items: flex-end; gap: 20px; padding-top: 135px; padding-bottom: 8px; position: relative; }
+        .secao-podio::after { content: ''; position: absolute; bottom: 0; left: 3%; width: 94%; height: 4px; background: radial-gradient(ellipse at center, rgba(34,211,238,.6) 0%, transparent 70%); border-radius: 50%; }
+        .podio { background: linear-gradient(180deg, #19284f, #0a1020); border-radius: 22px 22px 0 0; width: 200px; text-align: center; padding: 20px 10px 15px; transition: transform .3s, box-shadow .3s; cursor: pointer; position: relative; display: flex; flex-direction: column; align-items: center; z-index: 1; }
+        .podio::before { content: ''; position: absolute; bottom: -12px; left: 10%; width: 80%; height: 12px; background: rgba(0,0,0,.8); border-radius: 50%; filter: blur(5px); z-index: -1; }
+        .podio:hover { transform: translateY(-10px); }
+        .avatar-circle { border-radius: 50%; position: absolute; left: 0; right: 0; margin: 0 auto; background: radial-gradient(circle at 30% 25%, #26365f, #0b0f19 75%); z-index: 10; display: flex; justify-content: center; align-items: center; font-family: var(--font-t); font-weight: 800; color: #fff; letter-spacing: 1px; }
+        .avatar-1 { width: 150px; height: 150px; top: -75px; border: 3px solid var(--gold); box-shadow: 0 0 40px rgba(255,215,0,.85); font-size: 3em; color: var(--gold); }
+        .avatar-2 { width: 120px; height: 120px; top: -60px; border: 3px solid var(--silver); box-shadow: 0 0 32px rgba(192,192,192,.75); font-size: 2.4em; color: var(--silver); }
+        .avatar-3 { width: 110px; height: 110px; top: -55px; border: 3px solid var(--bronze); box-shadow: 0 0 32px rgba(205,127,50,.75); font-size: 2.2em; color: var(--bronze); }
+        .trofeu-lado { position: absolute; left: 100%; top: -50px; margin-left: -50px; width: 100px; z-index: 11; filter: drop-shadow(0 6px 14px rgba(255,210,74,.55)); animation: flutuaTrofeu 3.2s ease-in-out infinite; pointer-events: none; }
+        .trofeu-lado svg { display: block; width: 100%; height: auto; }
+        @keyframes flutuaTrofeu { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+        .pos-num { margin: 0; font-family: var(--font-t); font-weight: 800; }
+        .nome-podio { min-height: 22px; font-size: 1.12em; font-weight: 800; color: #fff; margin: 12px 0 2px; text-shadow: 0 2px 4px rgba(0,0,0,.8); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+        .nome-desk { display: inline; } .nome-mob { display: none; }
+        .cargo-podio { font-size: .68em; font-weight: 800; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; min-height: 12px; }
+        .badge-capsula { background: #0a0f1c; border-radius: 20px; padding: 8px 4px; margin-top: auto; width: 95%; }
+        .badge-1 { border: 2px solid var(--gold); box-shadow: 0 0 15px rgba(255,215,0,.4); }
+        .badge-2 { border: 2px solid var(--silver); box-shadow: 0 0 15px rgba(192,192,192,.4); }
+        .badge-3 { border: 2px solid var(--bronze); box-shadow: 0 0 15px rgba(205,127,50,.4); }
+        .info-podio { font-size: .68em; font-weight: 700; color: #cbd5e1; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; display: block; }
+        .badge-pontos { font-size: 1.1em; font-weight: 800; display: block; margin-top: 3px; }
+        .badge-1 .badge-pontos { color: var(--gold); } .badge-2 .badge-pontos { color: var(--silver); } .badge-3 .badge-pontos { color: var(--bronze); }
+        .podio-1 { height: 350px; border: 2px solid var(--gold); padding-top: 90px; background: linear-gradient(180deg, #2a2a3a 0%, #141a30 35%, #0a1020 100%); box-shadow: 0 4px 10px rgba(0,0,0,.5), 0 0 60px rgba(255,210,74,.12); }
+        .podio-2 { height: 265px; border: 2px solid var(--silver); padding-top: 72px; }
+        .podio-3 { height: 225px; border: 2px solid var(--bronze); padding-top: 62px; }
+        .podio-1:hover { box-shadow: 0 0 38px rgba(255,215,0,.6), inset 0 0 25px rgba(255,215,0,.3); }
+        .podio-2:hover { box-shadow: 0 0 38px rgba(192,192,192,.6), inset 0 0 25px rgba(192,192,192,.3); }
+        .podio-3:hover { box-shadow: 0 0 38px rgba(205,127,50,.6), inset 0 0 25px rgba(205,127,50,.3); }
+        .floating-msg { position: fixed; font-family: var(--font-t); font-size: 1.7em; font-weight: 800; text-transform: uppercase; text-shadow: 0 4px 12px rgba(0,0,0,.85); pointer-events: none; z-index: 9999; white-space: nowrap; transform: translateX(-50%); animation: floatUpFade 2.5s ease-out forwards; }
+        @keyframes floatUpFade { 0% { opacity: 0; transform: translate(-50%, 20px) scale(.8); } 15% { opacity: 1; transform: translate(-50%, 0) scale(1.1); } 80% { opacity: 1; transform: translate(-50%, -60px) scale(1); } 100% { opacity: 0; transform: translate(-50%, -100px) scale(.9); } }
+
+        /* ===== LISTA / FILTROS ===== */
+        .secao-lista-wrapper { width: 100%; max-width: 520px; margin: 0 auto; }
+        .chips-metrica { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .chip-metrica { background: rgba(17,26,48,.9); border: 1px solid var(--line2); color: var(--mut2); padding: 7px 12px; border-radius: 20px; cursor: pointer; font-weight: 700; font-size: .78em; font-family: inherit; transition: all .2s; }
+        .chip-metrica:hover { color: #fff; border-color: var(--cyan); }
+        .chip-metrica.ativo { background: linear-gradient(135deg, var(--cyan), var(--blue)); color: #fff; border-color: transparent; }
+        .busca-ranking { width: 100%; padding: 13px 18px; border-radius: 14px; border: 1px solid var(--line2); background: rgba(17,26,48,.9); color: #fff; margin-bottom: 10px; outline: none; font-size: .98em; font-weight: 600; font-family: inherit; transition: all .2s; }
+        .busca-ranking::placeholder { color: var(--mut); }
+        .busca-ranking:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,211,238,.18); }
+        .secao-lista { background: rgba(14,22,42,.72); border-radius: 16px; padding: 14px; height: calc(100vh - 380px); min-height: 300px; max-height: 470px; overflow-y: auto; border: 1px solid var(--line); }
+        .secao-lista::-webkit-scrollbar { width: 8px; }
+        .secao-lista::-webkit-scrollbar-thumb { background: linear-gradient(var(--cyan), var(--blue)); border-radius: 4px; }
+        .item-lista { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--card2); margin-bottom: 9px; padding: 11px 14px; border-radius: 12px; border-left: 4px solid var(--cyan); transition: all .2s; cursor: pointer; }
+        .item-lista.lider { border-left-color: var(--gold); }
+        .item-lista:hover { background: #1d2b4e; transform: translateX(4px); }
+        .posicao-lista { color: var(--mut); font-weight: 800; width: 34px; font-size: .9em; flex-shrink: 0; }
+        .nome-wrap { flex: 1; min-width: 0; }
+        .nome-filial { display: block; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .93em; color: #fff; }
+        .sub-lista { display: block; font-size: .72em; color: var(--mut); font-weight: 700; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .barra { height: 4px; background: rgba(255,255,255,.07); border-radius: 4px; margin-top: 6px; overflow: hidden; }
+        .barra i { display: block; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); border-radius: 4px; }
+        .pontos-filial { color: var(--cyan); font-weight: 800; white-space: nowrap; font-size: .93em; text-align: right; }
+        .tag-lider { display: inline-block; font-size: .62em; background: rgba(255,210,74,.15); color: var(--gold); border: 1px solid rgba(255,210,74,.4); padding: 1px 6px; border-radius: 8px; margin-left: 6px; vertical-align: middle; letter-spacing: .5px; }
+        .skeleton { height: 52px; border-radius: 12px; margin-bottom: 10px; background: linear-gradient(90deg, #16213d 25%, #1e2c52 50%, #16213d 75%); background-size: 200% 100%; animation: shimmer 1.3s infinite; }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+        #texto-carregando { text-align: center; color: var(--mut); font-size: .88em; margin-top: 12px; font-weight: 600; }
+        #aviso-erro { color: var(--red); text-align: center; font-size: .92em; margin-top: 14px; display: none; padding: 14px; background: rgba(255,84,112,.1); border-radius: 10px; border: 1px solid var(--red); font-weight: 700; line-height: 1.5; }
+        .sync-container { text-align: center; margin-top: 10px; font-size: .8em; color: var(--mut); font-weight: 700; }
+
+        /* ===== TELAS LOGADAS ===== */
+        .container-metas { max-width: 1100px; margin: 0 auto; width: 100%; }
+        .topbar-detalhe { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 12px; flex-wrap: wrap; }
+        .btn-voltar { background: transparent; border: 1px solid var(--mut); color: var(--mut2); padding: 9px 18px; border-radius: 30px; cursor: pointer; font-weight: 700; font-size: .9em; display: flex; align-items: center; gap: 8px; font-family: inherit; transition: all .2s; }
+        .btn-voltar:hover { background: var(--mut2); color: #0b0f19; }
+        .btn-top10 { background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 55%, var(--indigo) 100%); color: #fff; border: none; padding: 11px 22px; border-radius: 30px; cursor: pointer; font-weight: 800; font-size: .95em; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 20px rgba(34,211,238,.35); transition: transform .2s, box-shadow .2s; }
+        .btn-top10:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 26px rgba(34,211,238,.45); }
+        .modo-toggle { display: inline-flex; background: rgba(12,18,34,.9); border: 1px solid var(--line2); border-radius: 30px; padding: 4px; }
+        .modo-toggle button { background: transparent; border: none; color: var(--mut2); padding: 8px 14px; border-radius: 26px; cursor: pointer; font-weight: 800; font-size: .8em; font-family: inherit; transition: all .2s; }
+        .selo-real { display: inline-flex; align-items: center; background: rgba(52,245,160,.1); border: 1px solid rgba(52,245,160,.4); color: var(--green); border-radius: 30px; padding: 8px 14px; font-weight: 800; font-size: .8em; }
+        .modo-toggle button.ativo { background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #1a1205; }
+        .card-maximized { background: var(--card); border: 1px solid var(--line2); border-radius: 24px; padding: 34px; margin: 0 auto; box-shadow: 0 20px 50px rgba(0,0,0,.55), inset 0 0 0 1px rgba(34,211,238,.06); position: relative; }
+        .card-maximized::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; border-radius: 24px 24px 0 0; background: linear-gradient(90deg, transparent, var(--cyan), var(--gold), transparent); }
+        .detalhe-header { text-align: center; border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 24px; }
+        .detalhe-nome { font-family: var(--font-t); font-size: 2.1em; font-weight: 800; color: #fff; margin: 0; text-transform: uppercase; }
+        .detalhe-cidade { font-size: 1em; color: var(--mut2); margin-top: 8px; font-weight: 700; letter-spacing: 2px; }
+        .selo-cargo { display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 20px; font-size: .72em; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; background: rgba(34,211,238,.12); color: var(--cyan); border: 1px solid rgba(34,211,238,.4); }
+        .selo-cargo.lider { background: rgba(255,210,74,.12); color: var(--gold); border-color: rgba(255,210,74,.45); }
+        .placeholder-compacto { background: rgba(255,210,74,.07); border: 1px dashed rgba(255,210,74,.4); color: var(--mut2); padding: 14px 20px; border-radius: 14px; max-width: 600px; margin: 0 auto 14px; line-height: 1.5; font-size: .95em; text-align: center; }
+        .placeholder-compacto strong { color: var(--gold); letter-spacing: 1.5px; }
+
+        .grid-blocos { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+        .grid-blocos > * { min-width: 0; }
+        .tabela-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tabela-wrap .tabela-simples { min-width: 520px; }
+        .bloco-full { grid-column: 1 / -1; }
+        .bloco { background: rgba(8,13,26,.62); border: 1px solid var(--line); border-radius: 16px; padding: 20px 22px; position: relative; }
+        .titulo-bloco { font-family: var(--font-t); font-size: 1.1em; font-weight: 800; margin: 0 0 4px; text-align: center; letter-spacing: 1px; line-height: 1.3; }
+        .sub-bloco { text-align: center; font-size: .78em; color: var(--mut); font-weight: 700; margin-bottom: 14px; letter-spacing: .5px; }
+        .ind-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px; }
+        .ind-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+        .ind-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+        .item-ind { background: var(--card2); padding: 14px 10px; border-radius: 12px; text-align: center; border: 1px solid rgba(255,255,255,.05); transition: transform .2s, border-color .2s; }
+        .item-ind:hover { transform: translateY(-3px); border-color: rgba(34,211,238,.5); }
+        .label-ind { font-size: .7em; color: var(--mut); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
+        .val-ind { font-size: 1.5em; font-weight: 900; margin-top: 5px; color: #fff; }
+        .val-ind small { font-size: .55em; color: var(--mut); font-weight: 700; }
+        .premio-gigante { font-size: 2.6em; color: var(--green); text-shadow: 0 0 18px rgba(52,245,160,.5); font-family: var(--font-t); font-weight: 800; text-align: center; margin: 6px 0; }
+
+        .chips-status { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 4px 0 12px; }
+        .chip-status { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 16px; font-size: .74em; font-weight: 800; border: 1px solid; }
+        .chip-status.ok { color: var(--green); border-color: rgba(52,245,160,.45); background: rgba(52,245,160,.08); }
+        .chip-status.nao { color: var(--red); border-color: rgba(255,84,112,.45); background: rgba(255,84,112,.08); }
+        .chip-status.pend { color: var(--gold); border-color: rgba(255,210,74,.45); background: rgba(255,210,74,.08); }
+
+        .progress-bg { width: 100%; background: rgba(255,255,255,.06); border-radius: 12px; height: 24px; margin-top: 8px; position: relative; border: 1px solid var(--line); overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 12px; transition: width 1.5s cubic-bezier(.22,1,.36,1); position: absolute; left: 0; top: 0; width: 0; }
+        .progress-text { position: absolute; width: 100%; text-align: center; left: 0; top: 0; line-height: 24px; font-size: .82em; font-weight: 900; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,.9); z-index: 2; }
+        .pulsar-laranja { animation: pulseOrange 1s infinite alternate; }
+        @keyframes pulseOrange { from { box-shadow: 0 0 5px var(--orange); } to { box-shadow: 0 0 20px var(--orange); } }
+        .meta-linha { margin-bottom: 16px; }
+        .meta-linha:last-child { margin-bottom: 0; }
+        .meta-topo { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: .85em; }
+        .meta-topo b { color: #fff; font-weight: 800; }
+        .meta-topo span { color: var(--mut2); font-weight: 600; text-align: right; }
+        .dica { margin-top: 8px; font-size: .8em; color: var(--mut2); line-height: 1.45; }
+        .dica b { color: var(--gold); }
+
+        .tabela-faixa { width: 100%; border-collapse: separate; border-spacing: 0 4px; font-size: .85em; }
+        .tabela-faixa th { color: var(--mut); font-size: .78em; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; padding: 4px 8px; text-align: left; }
+        .tabela-faixa td { background: var(--card2); padding: 8px; font-weight: 700; color: var(--mut2); }
+        .tabela-faixa td:first-child { border-radius: 8px 0 0 8px; }
+        .tabela-faixa td:last-child { border-radius: 0 8px 8px 0; text-align: right; }
+        .tabela-faixa tr.atual td { background: rgba(52,245,160,.18); color: #fff; }
+        .tabela-faixa tr.proxima td { background: rgba(255,210,74,.1); color: var(--gold); }
+        .tabela-faixa tr.atingida td { color: #dfe7ff; }
+
+        .aguardando { border: 1px dashed rgba(255,210,74,.45) !important; background: repeating-linear-gradient(135deg, rgba(255,210,74,.04) 0 12px, transparent 12px 24px), rgba(8,13,26,.62) !important; }
+        .aguardando-msg { text-align: center; padding: 10px 6px 4px; }
+        .aguardando-msg .ico { font-size: 2em; }
+        .aguardando-msg .tit { display: block; color: var(--gold); font-family: var(--font-t); margin: 6px 0; letter-spacing: 1px; }
+        .aguardando-msg p { color: var(--mut2); font-size: .85em; margin: 0; line-height: 1.5; }
+        .aguardando-msg p b { color: var(--gold); }
+
+        .nsl-hero { display: flex; align-items: center; gap: 26px; justify-content: center; flex-wrap: wrap; }
+        .ring-wrap { position: relative; width: 140px; height: 140px; flex: 0 0 auto; }
+        .ring-wrap svg { transform: rotate(-90deg); }
+        .ring-bg { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 10; }
+        .ring-fg { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1); }
+        .ring-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .ring-centro b { font-family: var(--font-t); font-size: 1.45em; line-height: 1; }
+        .ring-centro span { font-size: .62em; color: var(--mut); font-weight: 800; letter-spacing: 1px; margin-top: 4px; }
+        .nsl-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; min-width: 260px; }
+        .comp-lista { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .comp-linha { display: grid; grid-template-columns: 170px 1fr 130px; gap: 12px; align-items: center; font-size: .85em; }
+        .comp-linha .cn { font-weight: 700; color: var(--mut2); }
+        .comp-linha .cn small { display: block; color: var(--mut); font-weight: 600; font-size: .85em; }
+        .comp-linha .cb { height: 9px; background: rgba(255,255,255,.07); border-radius: 6px; overflow: hidden; }
+        .comp-linha .cb i { display: block; height: 100%; border-radius: 6px; transition: width 1.4s cubic-bezier(.22,1,.36,1); width: 0; }
+        .comp-linha .cv { text-align: right; font-weight: 800; color: #fff; white-space: nowrap; }
+        .comp-linha .cv.pend { color: var(--gold); font-size: .85em; }
+        .aviso-parcial { margin-top: 16px; padding: 12px 14px; border-radius: 12px; background: rgba(255,210,74,.07); border: 1px solid rgba(255,210,74,.3); color: var(--mut2); font-size: .82em; line-height: 1.5; }
+        .aviso-parcial b { color: var(--gold); }
+
+        .tabela-simples { width: 100%; border-collapse: collapse; font-size: .86em; }
+        .tabela-simples th { text-align: left; color: var(--mut); font-size: .76em; letter-spacing: 1px; text-transform: uppercase; padding: 8px; border-bottom: 1px solid var(--line); font-weight: 800; }
+        .tabela-simples td { padding: 9px 8px; border-bottom: 1px solid rgba(130,160,220,.08); color: #dfe7ff; font-weight: 600; }
+        .tabela-simples td.n, .tabela-simples th.n { text-align: right; white-space: nowrap; }
+        .tabela-simples tr.total td { border-bottom: none; color: var(--green); font-weight: 900; font-size: 1.05em; }
+
+        /* ===== LOGIN ===== */
+        #login-overlay { position: fixed; inset: 0; background: rgba(3,5,12,.88); z-index: 99999; display: none; opacity: 0; flex-direction: column; justify-content: center; align-items: center; transition: opacity .3s; backdrop-filter: blur(10px); padding: 16px; }
+        #login-overlay .card-maximized { padding: 30px; max-width: 420px; width: 100%; text-align: center; }
+        .btn-fechar-login { position: absolute; top: 14px; right: 16px; background: transparent; border: none; color: var(--mut2); font-size: 1.6em; cursor: pointer; line-height: 1; }
+        .lock-ico { width: 56px; height: 56px; font-size: 1.6em; margin: 0 auto 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle, rgba(34,211,238,.25), rgba(34,211,238,.04)); border: 1px solid rgba(34,211,238,.4); box-shadow: 0 0 30px rgba(34,211,238,.25); }
+        .login-titulo { color: var(--cyan); font-family: var(--font-t); margin: 0 0 8px; font-size: 1.4em; letter-spacing: 1px; }
+        .login-sub { color: var(--mut2); font-size: .92em; margin: 0 0 18px; line-height: 1.4; }
+        .input-login { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--line2); background: #0b1224; color: #fff; text-align: center; font-size: 1em; margin-bottom: 12px; outline: none; font-family: inherit; }
+        .input-login:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(34,211,238,.18); }
+        #login-erro { color: var(--red); margin-top: 14px; font-size: .88em; font-weight: 700; display: none; }
+
+        /* ===== COMPARTILHAR / TOAST ===== */
+        .share-container { position: fixed; bottom: 24px; right: 24px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; }
+        .share-menu { background: rgba(12,18,34,.96); border: 1px solid var(--line2); border-radius: 14px; padding: 10px; margin-bottom: 12px; display: none; flex-direction: column; gap: 8px; box-shadow: 0 12px 30px rgba(0,0,0,.6); }
+        .share-menu.show { display: flex; animation: fadeIn .2s ease; }
+        .share-option { background: var(--card2); color: #fff; border: 1px solid var(--line); padding: 10px 16px; border-radius: 9px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 10px; font-size: .88em; white-space: nowrap; font-family: inherit; }
+        .share-option:hover { background: var(--cyan); color: #0b0f19; }
+        .share-btn { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; border: none; width: 58px; height: 58px; border-radius: 50%; cursor: pointer; box-shadow: 0 6px 20px rgba(220,39,67,.55); transition: transform .2s; display: flex; align-items: center; justify-content: center; padding: 0; }
+        .share-btn:hover { transform: scale(1.1) rotate(-6deg); }
+        #share-banner { display: none; text-align: center; margin: 0 auto 20px; padding-top: 6px; }
+        #share-banner .sb-t { font-family: var(--font-t); font-size: 2.4em; font-weight: 800; color: var(--gold); }
+        #share-banner .sb-s { font-weight: 800; letter-spacing: 3px; color: #fff; margin-top: 4px; }
+        #toast-box { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 100000; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; width: calc(100% - 30px); max-width: 460px; }
+        .toast { background: rgba(14,22,42,.97); border: 1px solid var(--line2); border-left: 4px solid var(--cyan); color: #fff; padding: 13px 18px; border-radius: 12px; font-weight: 600; font-size: .92em; box-shadow: 0 14px 34px rgba(0,0,0,.6); animation: fadeIn .3s ease; line-height: 1.45; }
+        .toast.erro { border-left-color: var(--red); }
+
+        /* ===== DESKTOP ===== */
+        @media (min-width:851px) and (min-height:640px) {
+            html, body { height: 100%; }
+            body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+            #topo-geral { flex: 0 0 auto; }
+            .tab-content.active { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; overflow-x: hidden; overflow-y: auto; padding-bottom: 20px; }
+            #aba-ranking .painel-principal { flex: 1; min-height: 0; width: 100%; align-items: stretch; }
+            #aba-ranking .secao-podio { flex: 1; align-items: flex-end; padding-top: 170px; gap: 24px; margin-bottom: 10px; }
+            #aba-ranking .secao-lista-wrapper { display: flex; flex-direction: column; min-height: 0; }
+            #aba-ranking .secao-lista { flex: 1; height: auto; max-height: none; min-height: 0; }
+            #aba-ranking .podio { width: clamp(190px, 16vw, 250px); }
+            #aba-ranking .podio-1 { height: 360px; padding-top: 112px; }
+            #aba-ranking .podio-2 { height: 300px; padding-top: 88px; }
+            #aba-ranking .podio-3 { height: 262px; padding-top: 80px; }
+            #aba-ranking .avatar-1 { width: 170px; height: 170px; top: -95px; }
+            #aba-ranking .avatar-2 { width: 145px; height: 145px; top: -72px; }
+            #aba-ranking .avatar-3 { width: 135px; height: 135px; top: -66px; }
+            #aba-ranking .nome-podio { font-size: 1.32em; }
+            #aba-ranking .trofeu-lado { width: 115px; top: -60px; margin-left: -55px; }
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width:850px) {
+            body { padding: 12px 6px 95px; }
+            .hero h1 { font-size: 1.1em; white-space: normal; }
+            .hero p { font-size: .85em; padding: 0 10px; }
+            .tab-container { position: fixed; bottom: 15px; left: 3%; width: 94%; margin: 0; padding: 9px 2px; background: rgba(12,18,34,.95); backdrop-filter: blur(15px); border: 1px solid var(--line2); border-radius: 40px; display: flex !important; flex-wrap: nowrap; justify-content: space-around; z-index: 9999; box-shadow: 0 8px 25px rgba(0,0,0,.6); gap: 0; }
+            .tab-btn { flex-direction: column; flex: 1; min-width: 0; padding: 4px 1px; background: transparent !important; border: none !important; box-shadow: none !important; color: var(--mut); font-size: .56em; gap: 4px; border-radius: 0; }
+            .tab-btn span { overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+            .tab-btn .cadeado { display: none; }
+            .tab-btn svg { width: 21px; height: 21px; transition: all .3s; }
+            .tab-btn.active { color: var(--cyan) !important; }
+            .tab-btn.active svg { transform: scale(1.15); filter: drop-shadow(0 0 6px rgba(34,211,238,.5)); }
+            .share-container { bottom: 110px; right: 15px; }
+            .painel-principal { flex-direction: column; align-items: center; gap: 20px; }
+            .secao-podio { width: 100%; gap: 6px; padding-top: 120px; margin-bottom: 15px; }
+            .podio { width: 32%; padding: 12px 4px; }
+            .avatar-1 { width: 110px; height: 110px; top: -55px; font-size: 2.2em; border-width: 2px; }
+            .avatar-2 { width: 82px; height: 82px; top: -41px; font-size: 1.7em; border-width: 2px; }
+            .avatar-3 { width: 78px; height: 78px; top: -39px; font-size: 1.6em; border-width: 2px; }
+            .trofeu-lado { width: 50px; top: -35px; margin-left: -25px; }
+            .podio-1 { padding-top: 62px; height: 270px; } .podio-2 { padding-top: 46px; height: 215px; } .podio-3 { padding-top: 44px; height: 195px; }
+            .nome-podio { font-size: .92em; margin-top: 8px; }
+            .nome-desk { display: none; } .nome-mob { display: inline; }
+            .secao-lista-wrapper { padding: 0 8px; }
+            .secao-lista { height: auto; max-height: 460px; padding: 10px; }
+            .card-maximized { padding: 20px 14px; border-radius: 16px; }
+            .detalhe-nome { font-size: 1.45em; }
+            .grid-blocos { grid-template-columns: 1fr; gap: 14px; }
+            .bloco { padding: 16px 14px; }
+            .ind-grid-2 { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .ind-grid-3 { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .ind-grid-3 .item-ind { padding: 10px 4px; }
+            .ind-grid-3 .val-ind { font-size: .92em !important; }
+            .ind-grid-3 .label-ind { font-size: .6em; letter-spacing: .5px; }
+            .titulo-bloco { font-size: 1em; }
+            .ind-grid-4 { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .val-ind { font-size: 1.2em; }
+            .premio-gigante { font-size: 2em; }
+            .nsl-hero { flex-direction: column; }
+            .nsl-kpis { grid-template-columns: 1fr; width: 100%; }
+            .comp-linha { grid-template-columns: 105px 1fr 92px; gap: 8px; font-size: .78em; }
+            .tabela-simples { font-size: .78em; }
+            .topbar-detalhe { justify-content: center; }
+        }
+        /* ===== FUNDO ANIMADO NUVENS BLACK FRIDAY (SUA IMAGEM) ===== */
+        #bg-clouds {
+            position: fixed;
+            top: -5%;
+            left: -5%;
+            width: 110vw;
+            height: 110vh;
+            background-color: #03050a; /* Fundo muito escuro para mesclar perfeitamente com a sua imagem */
+            background-image: url('fundo-cores.png'); 
+            background-size: 100% auto; /* Trava a largura e impede o zoom distorcido na altura */
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+            transition: transform 0.1s ease-out; /* Parallax suave */
+            pointer-events: none;
+        }
+
+        /* Camada de Partículas Flutuantes por cima das nuvens */
+        .bg-efeito-cores { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        @keyframes flutuarParticula { 0% { transform: translateY(0) rotate(0deg) scale(0.8); opacity: 0.1; } 50% { opacity: 0.8; } 100% { transform: translateY(-40vh) rotate(360deg) scale(1.3); opacity: 0; } }
+        
+        @media (prefers-reduced-motion: reduce) { 
+            .bg-efeito-cores div { animation: none !important; opacity: 0.3 !important; } 
+            #bg-clouds { transition: none; transform: none !important; }
+        }
+        /* =========================================================
+           LEGIBILIDADE SOBRE O FUNDO COLORIDO (fundo-cores.png)
+           Painéis quase opacos + sombra nos textos soltos
+           ========================================================= */
+        :root { --mut: #a9b4d0; --mut2: #c9d2ea; --painel: rgba(6,9,19,.90); }
+
+        /* Textos que ficam direto sobre a imagem */
+        /* (sem faixa escura: o fundo fica 100% visível; legibilidade via sombra no texto) */
+        .hero h1 { filter: drop-shadow(0 0 1px #000) drop-shadow(0 2px 2px rgba(0,0,0,.95)) drop-shadow(0 0 8px rgba(0,0,0,.85)); }
+        .hero p { color: #fff; text-shadow: 0 0 2px #000, 0 1px 3px #000, 0 0 8px rgba(0,0,0,.95), 0 0 16px rgba(0,0,0,.8); }
+        #texto-carregando, .regra-dica { color: #fff; text-shadow: 0 1px 2px #000, 0 0 10px rgba(0,0,0,.9); }
+
+        /* Painéis e caixas */
+        .tab-container { background: rgba(6,9,19,.88); border-color: var(--line2); backdrop-filter: blur(14px); }
+        .tab-btn { color: #dfe5f7; }
+        .secao-lista, .tabela-container-scroll { background: var(--painel); backdrop-filter: blur(14px); border-color: var(--line2); }
+        .card-maximized { background: rgba(10,15,30,.94); backdrop-filter: blur(16px); }
+        .busca-ranking { background: rgba(10,15,30,.94); border-color: var(--line2); }
+        .busca-ranking::placeholder { color: #b7c1dc; opacity: 1; }
+        .btn-voltar { background: rgba(6,9,19,.9); color: #fff; border-color: var(--line2); }
+        .btn-voltar.btn-logout { background: rgba(40,8,16,.92); color: #ff7a90; }
+        .placeholder-compacto { background: rgba(10,6,22,.92); border: 1px solid rgba(255,0,85,.6); color: #e6ebfa; backdrop-filter: blur(14px); box-shadow: 0 8px 28px rgba(0,0,0,.45); }
+        .placeholder-compacto strong { color: #ff4d86; }
+        .placeholder-compacto b { color: #fff; }
+        .bloco-indicador { background-color: rgba(8,13,26,.92); }
+        .comp-resumo { background: linear-gradient(135deg, rgba(255,0,85,.18), rgba(8,11,20,.95)); }
+        .tabela-metas thead th { background: #0b1224; }
+        .tabela-metas tbody tr { background: rgba(8,12,24,.55); }
+        .tabela-metas tbody tr:nth-child(even) { background: rgba(20,28,52,.55); }
+        .share-menu { background: rgba(10,15,30,.96); }
+        .input-login { background: rgba(10,15,30,.95); color: #fff; }
+        .input-login::placeholder { color: #9aa6c6; }
+        #aviso-erro { background: rgba(40,8,16,.92); }
+        .podio { box-shadow: 0 10px 30px rgba(0,0,0,.55); }
+        .podio * { text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+
+        /* =========================================================
+           EFEITOS BLACK: troféu, fumaça, cortina, intro
+           ========================================================= */
+        .trofeu-lado { filter: drop-shadow(0 8px 14px rgba(0,0,0,.85)) drop-shadow(0 0 10px rgba(255,210,74,.45)); }
+        .tb-estrela { transform-origin: 50px 35px; animation: tbEstrela 2.6s ease-in-out infinite; }
+        .tb-aura { animation: tbAura 2.6s ease-in-out infinite; }
+        @keyframes tbEstrela { 0%,100% { filter: drop-shadow(0 0 1px #ffd24a); } 50% { filter: drop-shadow(0 0 4px #ffe58a) drop-shadow(0 0 8px #ffd24a); } }
+        @keyframes tbAura { 0%,100% { opacity: .45; } 50% { opacity: 1; } }
+
+        .podio-brilho { position: absolute; inset: 0; border-radius: 20px 20px 0 0; overflow: hidden; pointer-events: none; z-index: -1; }
+        .podio-brilho::before { content: ''; position: absolute; top: -20%; left: -60%; width: 45%; height: 140%; transform: skewX(-20deg); background: linear-gradient(90deg, transparent, rgba(255,230,140,.18), rgba(255,255,255,.28), rgba(255,230,140,.18), transparent); animation: brilhoPassa 4.5s ease-in-out infinite; }
+        @keyframes brilhoPassa { 0% { left: -60%; } 55%, 100% { left: 130%; } }
+
+        .fumaca { position: fixed; left: -10vw; right: -10vw; bottom: -12vh; height: 60vh; z-index: -1; pointer-events: none; overflow: hidden; }
+        .fumaca span { position: absolute; bottom: 0; width: 70vw; height: 45vh; border-radius: 50%; background: radial-gradient(ellipse at center, rgba(0,0,0,.92) 0%, rgba(4,4,10,.6) 40%, rgba(0,0,0,0) 70%); filter: blur(28px); will-change: transform, opacity; }
+        .fumaca span:nth-child(1) { left: -10%; animation: fumacaA 28s ease-in-out infinite alternate; }
+        .fumaca span:nth-child(2) { left: 25%; height: 38vh; animation: fumacaB 34s ease-in-out infinite alternate; }
+        .fumaca span:nth-child(3) { left: 55%; animation: fumacaA 31s ease-in-out infinite alternate-reverse; }
+        .fumaca span:nth-child(4) { left: 10%; height: 30vh; bottom: 6vh; opacity: .55; background: radial-gradient(ellipse at center, rgba(155,0,232,.22), rgba(0,0,0,0) 65%); animation: fumacaB 40s ease-in-out infinite alternate-reverse; }
+        .fumaca span:nth-child(5) { left: 60%; height: 30vh; bottom: 4vh; opacity: .5; background: radial-gradient(ellipse at center, rgba(255,0,85,.18), rgba(0,0,0,0) 65%); animation: fumacaA 37s ease-in-out infinite alternate; }
+        @keyframes fumacaA { 0% { transform: translate(0,0) scale(1); opacity: .8; } 50% { transform: translate(8vw,-4vh) scale(1.15); opacity: 1; } 100% { transform: translate(-6vw,-1vh) scale(.95); opacity: .7; } }
+        @keyframes fumacaB { 0% { transform: translate(0,0) scale(1.05); opacity: .7; } 50% { transform: translate(-9vw,-6vh) scale(1.2); opacity: .95; } 100% { transform: translate(5vw,-2vh) scale(1); opacity: .75; } }
+
+        #fumaca-palco { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 4500; pointer-events: none; display: none; }
+        .tab-content.active.entrada-black { animation: entradaBlack 1.5s ease both; }
+        @keyframes entradaBlack { 0%, 30% { opacity: 0; transform: scale(.97); filter: blur(10px); } 100% { opacity: 1; transform: none; filter: none; } }
+
+        #intro-black { position: fixed; inset: 0; z-index: 8000; background: #000; display: none; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; }
+        #intro-black.show { display: flex; }
+        #intro-black.saindo { animation: introSai 1.3s cubic-bezier(.7,0,.3,1) forwards; }
+        @keyframes introSai { to { clip-path: inset(50% 0 50% 0); opacity: .3; } }
+        .ib-fumaca span { position: absolute; width: 80vw; height: 60vh; border-radius: 50%; filter: blur(40px); opacity: .5; }
+        .ib-fumaca span:nth-child(1) { left: -30vw; bottom: -20vh; background: radial-gradient(ellipse, rgba(155,0,232,.55), transparent 65%); animation: fumacaA 6s ease-in-out infinite alternate; }
+        .ib-fumaca span:nth-child(2) { right: -30vw; top: -20vh; background: radial-gradient(ellipse, rgba(255,0,85,.45), transparent 65%); animation: fumacaB 7s ease-in-out infinite alternate; }
+        .ib-fumaca span:nth-child(3) { left: 20vw; bottom: -35vh; background: radial-gradient(ellipse, rgba(0,210,255,.35), transparent 65%); animation: fumacaA 8s ease-in-out infinite alternate-reverse; }
+        .ib-conteudo { position: relative; text-align: center; }
+        #intro-black:not(.rodando) .ib-conteudo { visibility: hidden; }
+        #intro-black:not(.rodando) .ib-conteudo * { animation: none !important; }
+        .ib-start { position: absolute; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; color: #fff; font-family: var(--font-t); }
+        #intro-black.rodando .ib-start, #intro-black:not(.pedir-clique) .ib-start { display: none; }
+        .ib-start-anel { width: 96px; height: 96px; border-radius: 50%; border: 2px solid #ffd24a; box-shadow: 0 0 30px rgba(255,210,74,.45), inset 0 0 20px rgba(255,210,74,.25); animation: ibPulso 1.6s ease-in-out infinite; background: radial-gradient(circle, rgba(255,210,74,.18), transparent 70%); }
+        .ib-start-txt { font-size: 1.15em; font-weight: 800; letter-spacing: 4px; color: #ffd24a; text-shadow: 0 0 14px rgba(255,210,74,.5); }
+        .ib-start small { color: #aab5d3; font-weight: 700; letter-spacing: 2px; font-family: var(--font); }
+        @keyframes ibPulso { 0%,100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.12); opacity: 1; } }
+        #btn-som { position: fixed; left: 20px; bottom: 24px; z-index: 1000; width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(6,9,19,.9); color: #fff; font-size: 1.15em; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,.5); transition: transform .2s; }
+        #btn-som:hover { transform: scale(1.1); }
+        #btn-som.mudo { opacity: .6; }
+        @media (max-width:850px) { #btn-som { left: 15px; bottom: 110px; width: 40px; height: 40px; } }
+        .ib-eyebrow { color: #c9d2ea; font-weight: 800; letter-spacing: 6px; font-size: .8em; opacity: 0; animation: ibSobe 1s .4s ease forwards; }
+        .ib-titulo { font-family: var(--font-t); font-weight: 800; line-height: .95; margin: 14px 0; display: flex; flex-direction: column; align-items: center; }
+        .ib-titulo span { font-size: clamp(3.2em, 11vw, 7em); letter-spacing: .02em; background: linear-gradient(180deg, #ffffff 0%, #c9c9d2 45%, #4a4a55 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 18px rgba(255,255,255,.18)); opacity: 0; animation: ibEntra 1.3s .9s cubic-bezier(.2,.9,.3,1.1) forwards; }
+        .ib-titulo span:last-child { animation-delay: 1.7s; }
+        .ib-titulo small { font-size: clamp(1.2em, 3vw, 1.8em); letter-spacing: 10px; color: #ffd24a; opacity: 0; animation: ibSobe .9s 1.4s ease forwards; }
+        .ib-linha { height: 3px; width: 0; margin: 6px auto 12px; background: linear-gradient(90deg, #00d2ff, #9b00e8, #ff0055, #ff8c00, #ffd24a); box-shadow: 0 0 16px rgba(255,0,85,.6); animation: ibLinha 1.4s 2.6s ease forwards; }
+        .ib-sub { color: #ffd24a; font-weight: 900; letter-spacing: 8px; font-size: 1em; opacity: 0; animation: ibSobe 1s 3.3s ease forwards; }
+        @keyframes ibEntra { from { opacity: 0; transform: scale(1.6); filter: blur(14px); } to { opacity: 1; transform: none; filter: drop-shadow(0 0 18px rgba(255,255,255,.18)); } }
+        @keyframes ibSobe { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes ibLinha { to { width: min(420px, 70vw); } }
+
+        @media (max-width:850px) { .fumaca span { filter: blur(20px); } }
+        @media (prefers-reduced-motion: reduce) {
+            .fumaca span, .ib-fumaca span, .podio-brilho::before, .tb-estrela, .tb-aura { animation: none !important; }
+        }
+
+        .placeholder-compacto strong { color: #ff4d86; }
+        .item-potencial, .item-ind-max { backdrop-filter: blur(6px); }
+        .container-premios .img-premio { box-shadow: 0 14px 40px rgba(0,0,0,.6), 0 0 40px rgba(155,0,232,.18); }
+        #login-overlay .card-maximized::before { background: linear-gradient(90deg, transparent, #9b00e8, #ff0055, transparent); }
+        .card-maximized::before { background: linear-gradient(90deg, transparent, #9b00e8, #ff0055, transparent); }
+
+        /* =========================================================
+           AJUSTES BLACK — DASH VENDEDORES
+           ========================================================= */
+        .hero h1 { background: linear-gradient(90deg, #00d2ff, #9b00e8, #ff0055, #ff8c00, #ffe100, #34f5a0, #00d2ff); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: brilhoCores 6s linear infinite; }
+        @keyframes brilhoCores { to { background-position: -200% center; } }
+        .tab-btn.active { background: linear-gradient(135deg, #ff0055 0%, #9b00e8 55%, #00d2ff 100%); box-shadow: 0 6px 22px rgba(155,0,232,.35); }
+        .chip-metrica { background: rgba(6,9,19,.9); }
+        .chip-metrica:hover { border-color: #ff0055; }
+        .chip-metrica.ativo { background: linear-gradient(135deg, #ff0055 0%, #9b00e8 55%, #00d2ff 100%); box-shadow: 0 4px 16px rgba(155,0,232,.35); }
+        .busca-ranking:focus { border-color: #9b00e8; box-shadow: 0 0 0 3px rgba(155,0,232,.18); }
+        .secao-lista::-webkit-scrollbar-thumb { background: linear-gradient(var(--cyan), #9b00e8); }
+        .item-lista:hover { border-left-color: #ff0055; }
+        .barra i { background: linear-gradient(90deg, #00d2ff, #9b00e8, #ff0055); }
+        .btn-top10 { background: linear-gradient(135deg, #ff0055 0%, #9b00e8 55%, #00d2ff 100%); box-shadow: 0 6px 20px rgba(155,0,232,.35); }
+        .bloco { background: rgba(8,13,26,.92); }
+        .share-btn { background: linear-gradient(45deg, #ff8c00 0%, #ff0055 50%, #9b00e8 100%); }
+        .share-option:hover { background: #9b00e8; color: #fff; }
+        .modo-toggle { background: rgba(6,9,19,.92); }
+        .avatar-circle { background: radial-gradient(circle at 30% 25%, #3a0a3f, #0b0f19 75%); }
+        #share-banner .sb-t { color: #ff0055; }
+        @media (max-width:850px) {
+            .tab-btn.active { color: #ff0055 !important; }
+            .tab-btn.active svg { filter: drop-shadow(0 0 6px rgba(255,0,85,.5)); }
+        }
+
+        /* ===== RÉGUAS: onde o vendedor está ===== */
+        .regua-resumo { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; margin-bottom: 18px; }
+        .rr-card { background: rgba(8,13,26,.92); border: 1px solid var(--line2); border-radius: 14px; padding: 12px 10px; text-align: center; position: relative; overflow: hidden; }
+        .rr-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--c, #ff0055); }
+        .rr-card .rr-t { font-size: .66em; font-weight: 800; letter-spacing: 1px; color: var(--mut); text-transform: uppercase; }
+        .rr-card .rr-v { font-family: var(--font-t); font-size: 1.35em; font-weight: 800; color: #fff; margin-top: 4px; }
+        .rr-card .rr-s { font-size: .74em; font-weight: 700; color: var(--mut2); margin-top: 4px; line-height: 1.35; }
+        .rr-card .rr-s b { color: var(--gold); }
+        .tabela-faixa tr.atual td { background: linear-gradient(90deg, rgba(52,245,160,.28), rgba(52,245,160,.12)); color: #fff; box-shadow: inset 0 0 0 1px rgba(52,245,160,.5); }
+        .tabela-faixa tr.semgatilho td { background: rgba(255,84,112,.14); color: #fff; }
+        .tabela-faixa tr.proxima td { background: rgba(255,0,85,.12); color: #ff7aa8; }
+        .tag-aqui { display: inline-block; margin-left: 6px; font-size: .74em; font-weight: 900; padding: 1px 7px; border-radius: 8px; background: var(--green); color: #06120c; letter-spacing: .5px; }
+        .tag-prox { display: inline-block; margin-left: 6px; font-size: .74em; font-weight: 900; padding: 1px 7px; border-radius: 8px; background: #ff0055; color: #fff; letter-spacing: .5px; }
+        .tag-sg { display: inline-block; margin-left: 6px; font-size: .74em; font-weight: 900; padding: 1px 7px; border-radius: 8px; background: var(--red); color: #fff; letter-spacing: .5px; }
+        .select-vend { width: 100%; max-width: 520px; display: block; margin: 0 auto 14px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line2); background: rgba(10,15,30,.94); color: #fff; font: 700 .95em var(--font); }
+        .entrar-regua { display: flex; justify-content: center; margin: 0 auto 16px; }
+        /* ===== PRÊMIOS EXTRA ===== */
+        .container-premios { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 0 10px; width: 100%; height: calc(100vh - 85px); max-width: 1400px; }
+        .linha-imagens-premios { display: flex; flex-direction: row; gap: 20px; width: 100%; justify-content: center; align-items: center; flex: 1; min-height: 0; }
+        .img-premio { max-width: calc(50% - 10px); width: auto; max-height: 100%; height: auto; object-fit: contain; border-radius: 16px; border: 2px solid var(--line2); box-shadow: 0 14px 40px rgba(0,0,0,.55), 0 0 40px rgba(34,211,238,.1); cursor: zoom-in; transition: transform .2s; }
+        .img-premio:hover { transform: scale(1.01); }
+        .bloco-potencial-ganho { width: 100%; background: linear-gradient(135deg, rgba(52,245,160,.1) 0%, rgba(8,13,26,.92) 100%); border: 2px solid var(--green); border-radius: 18px; padding: 15px 20px; text-align: center; box-shadow: 0 14px 36px rgba(0,0,0,.45); flex-shrink: 0; position: relative; }
+        .bloco-potencial-ganho h3 { color: var(--green); font-family: var(--font-t); font-size: 1.25em; margin: 0 0 12px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 12px rgba(52,245,160,.4); }
+        .grid-potencial { display: flex; align-items: stretch; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .item-potencial { background: var(--card2); border: 1px solid var(--line2); border-radius: 12px; padding: 10px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1; min-width: 140px; }
+        .item-potencial.destaque { background: rgba(52,245,160,.12); border-color: var(--green); transform: scale(1.05); }
+        .item-potencial .label { font-size: .7em; color: var(--mut); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .item-potencial.destaque .label { color: var(--green); font-size: .8em; margin-bottom: 8px; }
+        .item-potencial .sub-label { font-size: .65em; color: var(--cyan); font-weight: 800; margin-bottom: 8px; }
+        .item-potencial .valor { font-size: 1.4em; font-weight: 900; color: #fff; }
+        .item-potencial.destaque .valor { font-size: 1.8em; color: var(--green); text-shadow: 0 0 15px rgba(52,245,160,.4); font-family: var(--font-t); }
+        .plus, .equals { font-size: 1.8em; font-weight: 900; color: var(--cyan); display: flex; align-items: center; justify-content: center; }
+        /* ===== PRÊMIOS EXTRAS (HTML) ===== */
+        .pz-titulo { font-family: var(--font-t); font-weight: 800; letter-spacing: 1.5px; font-size: clamp(.95em, 1.5vw, 1.25em); color: #fff; text-align: center; text-shadow: 0 2px 6px rgba(0,0,0,.9); }
+        .pz-titulo span { color: #ffd24a; }
+        .pz-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; width: 100%; flex: 1 1 auto; min-height: 0; }
+        .pz-card { position: relative; display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 20px; background: rgba(8,11,24,.93); border: 2px solid var(--c); box-shadow: 0 0 26px color-mix(in srgb, var(--c) 35%, transparent), 0 16px 40px rgba(0,0,0,.6); backdrop-filter: blur(12px); overflow: hidden; }
+        .pz-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 4px; background: var(--c); }
+        .pz-rosa { --c: #ff2d8a; } .pz-azul { --c: #22d3ee; } .pz-verde { --c: #4dff7a; }
+        .pz-head { display: flex; align-items: center; gap: 12px; }
+        .pz-ico { font-size: 1.8em; width: 52px; height: 52px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); }
+        .pz-head h4 { margin: 0; font-family: var(--font-t); font-weight: 800; font-size: clamp(.95em, 1.25vw, 1.15em); color: #fff; letter-spacing: .5px; }
+        .pz-head small { color: var(--mut2); font-weight: 600; font-size: .8em; }
+        .pz-tag { font-family: var(--font); font-size: .55em; font-weight: 900; letter-spacing: 1px; color: #060913; background: #34f5a0; padding: 2px 7px; border-radius: 8px; vertical-align: middle; }
+        .pz-itens { display: flex; flex-direction: column; gap: 8px; }
+        .pz-itens div { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+        .pz-itens b { color: #fff; font-size: .82em; letter-spacing: .5px; }
+        .pz-itens span { color: var(--mut2); font-size: .78em; font-weight: 700; text-align: right; }
+        .pz-itens em { color: var(--mut); font-style: normal; font-weight: 600; }
+        .pz-valor { margin-top: auto; display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 14px; background: linear-gradient(135deg, color-mix(in srgb, var(--c) 30%, transparent), rgba(8,11,24,.9)); border: 1px solid var(--c); }
+        .pz-valor small { font-weight: 800; letter-spacing: 1px; color: #fff; font-size: .78em; }
+        .pz-valor b { font-family: var(--font-t); font-size: clamp(1.8em, 2.8vw, 2.6em); color: #ffd24a; text-shadow: 0 0 14px rgba(255,210,74,.45); }
+        .pz-pg { text-align: center; font-size: .8em; font-weight: 700; color: var(--mut2); }
+        .pz-pg b { color: #fff; }
+        .pz-escada { margin-top: auto; flex: 1; min-height: 150px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: end; }
+        .pz-escada div { height: var(--h); min-height: 92px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 1px; padding: 8px 4px; border-radius: 12px 12px 6px 6px; background: linear-gradient(180deg, rgba(77,255,122,.22), rgba(8,11,24,.6)); border: 1px solid rgba(77,255,122,.6); }
+        .pz-escada small { font-size: .62em; font-weight: 800; color: var(--mut2); }
+        .pz-escada b { font-family: var(--font-t); font-size: 1.7em; line-height: 1; color: #ffe100; }
+        .pz-escada span { font-size: .62em; font-weight: 700; color: var(--mut2); }
+        .pz-escada i { font-style: normal; margin-top: 6px; padding: 3px 6px; border-radius: 8px; background: #4dff7a; color: #0a0f1c; font-weight: 900; font-size: .78em; white-space: nowrap; }
+        .grid-potencial .item-potencial { min-width: 0; padding: 10px 8px; }
+        .grid-potencial { gap: 8px; }
+        .grid-potencial .plus, .grid-potencial .equals { font-size: 1.4em; }
+        .grid-potencial .item-potencial .valor { font-size: clamp(1em, 1.35vw, 1.4em); white-space: nowrap; }
+        .pz-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+        .pz-card { padding: 16px 14px; }
+        .pz-ouro { --c: #ffd24a; }
+        /* escada do cartão sempre dentro do card */
+        .pz-escada { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .pz-escada div { min-width: 0; padding: 8px 2px; }
+        .pz-escada b { font-size: clamp(1.2em, 1.9vw, 1.7em); }
+        .pz-escada small, .pz-escada span { font-size: clamp(.52em, .75vw, .62em); }
+        .pz-escada i { font-size: clamp(.6em, .82vw, .78em); padding: 3px 4px; max-width: 100%; overflow: hidden; text-overflow: clip; }
+        .grid-potencial .item-potencial.destaque { flex: 1.4; transform: none; padding: 10px 10px; }
+        .grid-potencial .item-potencial.destaque .valor { font-size: clamp(1.15em, 1.55vw, 1.7em); }
+        .pz-valor { gap: 8px; padding: 10px 12px; }
+        .pz-valor small { line-height: 1.2; }
+        .pz-valor b { font-size: clamp(1.6em, 2.2vw, 2.6em); white-space: nowrap; }
+        @media (max-width:850px) { .grid-potencial .item-potencial.destaque .valor { font-size: 1.8em; } .grid-potencial .item-potencial .valor { font-size: 1.4em; } }
+        .pz-medalhas { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
+        .pz-medalhas div { display: grid; grid-template-columns: 34px 1fr auto; grid-template-rows: auto auto; column-gap: 8px; align-items: center; padding: 8px 12px; border-radius: 12px; background: rgba(255,210,74,.08); border: 1px solid rgba(255,210,74,.45); }
+        .pz-medalhas .pz-med { grid-row: 1 / span 2; font-size: 1.5em; }
+        .pz-medalhas b { font-family: var(--font-t); font-size: 1.25em; color: #fff; line-height: 1; }
+        .pz-medalhas small { grid-column: 2; font-size: .62em; font-weight: 800; color: var(--mut2); letter-spacing: 1px; }
+        .pz-medalhas i { grid-column: 3; grid-row: 1 / span 2; font-style: normal; font-family: var(--font-t); font-weight: 800; font-size: 1.35em; color: #ffd24a; text-shadow: 0 0 12px rgba(255,210,74,.4); }
+        .item-potencial.destaque .valor { white-space: nowrap; font-size: clamp(1.3em, 1.9vw, 1.8em); }
+        .pz-itens div { flex-wrap: wrap; } .pz-itens span { margin-left: auto; }
+        .pz-itens .pz-col { flex: 0 0 70px; margin-left: 0; text-align: center; }
+        .pz-itens div > .pz-col:first-of-type { margin-left: auto; }
+        .pz-itens .pz-cab { background: transparent; border: none; padding: 0 12px; }
+        .pz-itens .pz-cab b, .pz-itens .pz-cab span { font-size: .66em; letter-spacing: 1px; color: var(--mut); }
+        .pz-itens .pz-n { font-family: var(--font-t); font-size: 1.15em; color: #fff; }
+        .pz-itens .pz-v { color: #ffd24a; }
+        .pz-itens div:not(.pz-cab) { flex-wrap: nowrap; }
+        @media (max-width:850px) {
+            .pz-grid { grid-template-columns: 1fr; gap: 14px; flex: none; }
+            .pz-card { padding: 14px; }
+            .pz-escada { min-height: 140px; }
+        }
+        .tab-btn.tab-black:not(.active) { color: #ffb347; }
+        .tab-btn.tab-black:not(.active) svg { stroke: #ffb347; }
+        .tab-btn.tab-black.active { background: linear-gradient(135deg, #ff8c00 0%, #ff0055 55%, #9b00e8 100%); color: #fff; box-shadow: 0 6px 22px rgba(255,90,0,.4); }
+        .tab-black .lbl-curto { display: none; }
+        @media (max-width:850px) {
+            .tab-black .lbl-longo { display: none; }
+            .tab-black .lbl-curto { display: inline; }
+            .tab-btn.tab-black.active { background: transparent !important; box-shadow: none !important; color: #ff8c00 !important; }
+            .tab-btn.tab-black.active svg { stroke: #ff8c00; }
+        }
+        .item-potencial, .item-ind-max { backdrop-filter: blur(6px); }
+        .bloco-potencial-ganho .pot-nota { margin-top: 10px; font-size: .78em; font-weight: 700; color: var(--mut2); }
+        .bloco-potencial-ganho .pot-nota b { color: var(--gold); }
+        .pz-itens .pz-sub { background: transparent; border: none; padding: 2px 12px 0; }
+        .pz-itens .pz-sub b { font-size: .7em; color: var(--cyan); letter-spacing: 1px; }
+        @media (min-width:851px) and (min-height:640px) {
+            #aba-premios .container-premios { flex: 1; height: auto; min-height: 0; margin: 0 auto; }
+        }
+        @media (max-width:850px) {
+            .container-premios { height: auto; min-height: calc(100vh - 85px); justify-content: flex-start; }
+            .grid-potencial { flex-direction: column; gap: 8px; }
+            .plus, .equals { display: none; }
+            .item-potencial { width: 100%; }
+            .item-potencial.destaque { transform: none; margin-top: 10px; }
+        }
+
+        .pz-roxo { --c: #b46bff; }
+        .pz-escada.pz-escada-3 { grid-template-columns: repeat(3, minmax(0,1fr)); min-height: 130px; }
+        .pz-aviso { text-align: center; font-size: .82em; font-weight: 700; color: #e6ebfa; background: rgba(10,6,22,.85); border: 1px solid rgba(255,210,74,.45); border-radius: 30px; padding: 7px 16px; backdrop-filter: blur(10px); }
+        .pz-aviso b { color: var(--gold); }
+        @media (min-width:851px) { .pz-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; } .pz-card { padding: 14px 12px; } .pz-head h4 { font-size: clamp(.85em, 1.05vw, 1.05em); } .pz-ico { width: 44px; height: 44px; font-size: 1.5em; }
+            .grid-potencial { gap: 6px; } .grid-potencial .plus, .grid-potencial .equals { font-size: 1.1em; } .grid-potencial .item-potencial { padding: 8px 6px; } .grid-potencial .item-potencial .label { font-size: .62em; } .grid-potencial .item-potencial .sub-label { font-size: .58em; } .grid-potencial .item-potencial .valor { font-size: clamp(.9em, 1.1vw, 1.25em); } }
+        @media (max-width:850px) { .pz-aviso { border-radius: 14px; font-size: .76em; } }
+        #aba-premios .container-premios { height: auto !important; min-height: 0; justify-content: flex-start; padding-bottom: 20px; }
+        #aba-premios .pz-grid { flex: none; align-items: stretch; }
+        #aba-premios .pz-card { overflow: visible; min-height: 0; }
+        #aba-premios .pz-card::before { border-radius: 18px 18px 0 0; }
+        #aba-premios .pz-escada { flex: none; min-height: 0; height: 190px; margin-top: auto; }
+        #aba-premios .pz-escada div { height: var(--h); min-height: 100px; justify-content: flex-end; overflow: hidden; }
+        #aba-premios .pz-head small { font-size: .74em; line-height: 1.3; display: block; }
+        #aba-premios .pz-itens div { flex-wrap: wrap; }
+        #aba-premios .pz-itens span { white-space: normal; }
+        #aba-premios .pz-valor b, #aba-premios .pz-medalhas i, #aba-premios .pz-medalhas b, #aba-premios .pz-itens .pz-n { white-space: nowrap; }
+        #aba-premios .pz-medalhas div { grid-template-columns: 30px 1fr auto; padding: 8px 10px; column-gap: 6px; }
+        #aba-premios .pz-medalhas b { font-size: clamp(1em, 1.2vw, 1.25em); }
+        #aba-premios .pz-medalhas i { font-size: clamp(1.05em, 1.35vw, 1.35em); }
+        #aba-premios .pz-valor b { font-size: clamp(1.4em, 1.9vw, 2.3em); }
+        #aba-premios .grid-potencial .item-potencial .label { line-height: 1.25; }
+        @media (min-width:851px) and (max-width:1199px) { #aba-premios .pz-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } #aba-premios .grid-potencial { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); } #aba-premios .grid-potencial .plus, #aba-premios .grid-potencial .equals { display: none; } #aba-premios .grid-potencial .item-potencial.destaque { grid-column: 1 / -1; } #aba-premios .grid-potencial .item-potencial .valor { font-size: 1.2em; } }
+        /* ===== RANKING: indicador + tipo ===== */
+        .chips-metrica { display: block; margin-bottom: 10px; }
+        .rk-grupos { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 6px; padding: 5px; border-radius: 16px; background: rgba(6,9,19,.9); border: 1px solid var(--line2); }
+        .rk-grupo { display: flex; align-items: center; justify-content: center; gap: 6px; border: 0; cursor: pointer; padding: 10px 6px; border-radius: 12px; background: transparent; color: var(--mut2); font: 800 .82em var(--font); letter-spacing: .5px; transition: all .2s; white-space: nowrap; }
+        .rk-grupo:hover { color: #fff; background: rgba(255,255,255,.05); }
+        .rk-grupo.ativo { background: linear-gradient(135deg, #ff0055 0%, #9b00e8 55%, #00d2ff 100%); color: #fff; box-shadow: 0 4px 16px rgba(155,0,232,.35); }
+        .rk-tipo { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+        .rk-tipo button { border: 1px solid var(--line2); cursor: pointer; padding: 9px 8px; border-radius: 12px; background: rgba(6,9,19,.9); color: var(--mut2); font: 800 .78em var(--font); letter-spacing: .6px; transition: all .2s; }
+        .rk-tipo button:hover { color: #fff; border-color: #ff0055; }
+        .rk-tipo button.ativo { color: #1a1205; background: linear-gradient(135deg, var(--gold), var(--gold2)); border-color: transparent; box-shadow: 0 4px 14px rgba(255,210,74,.3); }
+        @media (max-width:850px) { .rk-grupo { font-size: .72em; padding: 9px 2px; gap: 3px; } .rk-tipo button { font-size: .7em; } }
+        @media (max-width:850px) { .regua-resumo { grid-template-columns: 1fr 1fr; gap: 8px; } .rr-card .rr-v { font-size: 1.1em; } }
+
+    </style>
+</head>
+<body>
+<div id="toast-box"></div>
+
+<div id="bg-clouds"></div>
+
+<!-- FUMAÇA BLACK -->
+<div class="fumaca" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+
+<!-- BOTÃO DE SOM -->
+<button id="btn-som" type="button" onclick="alternarSom()" title="Ligar/desligar efeitos sonoros" aria-label="Ligar ou desligar efeitos sonoros" data-html2canvas-ignore="true">🔊</button>
+
+<!-- FUMAÇA DE PALCO (TRANSIÇÃO ENTRE ABAS) -->
+<canvas id="fumaca-palco" aria-hidden="true"></canvas>
+
+<!-- INTRO BLACK (1x por sessão) -->
+<div id="intro-black" onclick="cliqueIntro()">
+    <div class="ib-fumaca"><span></span><span></span><span></span></div>
+    <button class="ib-start" type="button" aria-label="Entrar no dashboard">
+        <span class="ib-start-anel"></span>
+        <span class="ib-start-txt">▶ ENTRAR NA BLACK</span>
+        <small>🔊</small>
+    </button>
+    <div class="ib-conteudo">
+        <div class="ib-eyebrow">REGIONAL CAMPO BOM APRESENTA</div>
+        <div class="ib-titulo"><span>BLACK</span><small>DAS</small><span>BLACK'S</span></div>
+        <div class="ib-linha"></div>
+        <div class="ib-sub">VENDEDORES EDIÇÃO ESPECIAL</div>
+    </div>
+</div>
+
+
+<!-- LOGIN -->
+<div id="login-overlay">
+    <div class="card-maximized">
+        <button class="btn-fechar-login" onclick="fecharLogin()" aria-label="Fechar">&times;</button>
+        <div class="lock-ico">🔒</div>
+        <h2 class="login-titulo">ACESSO RESTRITO</h2>
+        <p class="login-sub">Entre com o seu usuário do portal e o seu ID para ver as suas metas, NSL e réguas.</p>
+        <input type="text" id="input-usuario" class="input-login" placeholder="LOGIN: ( USUÁRIO DO PORTAL )" style="text-transform: uppercase;" autocomplete="username">
+        <input type="password" id="input-senha" class="input-login" placeholder="SENHA: ( SEU ID / CDI )" autocomplete="current-password">
+        <button onclick="validarAcesso()" class="btn-top10" style="width:100%;">Entrar</button>
+        <div id="login-erro"></div>
+    </div>
+</div>
+
+<!-- TOPO -->
+<div id="topo-geral">
+    <div class="hero" data-html2canvas-ignore="true">
+        <h1 id="titulo-dashboard">🏆 VENDEDORES EDIÇÃO BLACK DAS BLACK'S 🏆</h1>
+        <p>" O talento vence jogos, mas somente o trabalho em equipe vence campeonatos! "</p>
+    </div>
+    <nav class="tab-container" id="tabContainer" data-html2canvas-ignore="true">
+        <button class="tab-btn active" data-aba="ranking" onclick="trocarAba('ranking')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            <span>Ranking</span>
+        </button>
+        <button class="tab-btn" data-aba="metas" onclick="trocarAba('metas')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            <span>Metas</span><em class="cadeado">🔒</em>
+        </button>
+        <button class="tab-btn" data-aba="nsl" onclick="trocarAba('nsl')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <span>NSL</span><em class="cadeado">🔒</em>
+        </button>
+        <button class="tab-btn" data-aba="reguas" onclick="trocarAba('reguas')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+            <span>Réguas</span>
+        </button>
+        <button class="tab-btn tab-black" data-aba="premios" onclick="trocarAba('premios')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            <span class="lbl-longo">PREMIAÇÕES BLACK</span><span class="lbl-curto">PRÊMIOS BLACK</span>
+        </button>
+        <button class="tab-btn tab-logout" id="btn-logout" onclick="fazerLogout()" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Sair</span>
+        </button>
+    </nav>
+</div>
+
+<div id="share-banner">
+    <div class="sb-t">🏆 VENDEDORES BLACK DAS BLACK'S</div>
+    <div class="sb-s" id="sb-sub">REGIONAL CAMPO BOM</div>
+</div>
+
+<!-- ABA RANKING -->
+<div id="aba-ranking" class="tab-content active">
+    <div class="painel-principal">
+        <div class="secao-podio">
+            <div class="podio podio-2" id="segundo-lugar">
+                <div class="avatar-circle avatar-2" id="avatar-2">–</div>
+                <h2 class="pos-num" style="color:var(--silver);font-size:2em;text-shadow:0 0 15px rgba(192,192,192,.8);">2º</h2>
+                <div class="nome-podio" id="nome-2">Aguardando...</div>
+                <div class="cargo-podio" id="cargo-2"></div>
+                <div class="badge-capsula badge-2"><span class="info-podio" id="filial-2">--</span><span class="badge-pontos" id="pontos-2">--</span></div>
+            </div>
+            <div class="podio podio-1" id="primeiro-lugar">
+                <span class="podio-brilho" aria-hidden="true"></span>
+                <div class="trofeu-lado" aria-hidden="true">
+                    <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="tbCopa" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a4a52"/><stop offset="35%" stop-color="#1a1a1f"/><stop offset="100%" stop-color="#050506"/></linearGradient>
+                            <linearGradient id="tbAlca" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3a3a42"/><stop offset="100%" stop-color="#08080a"/></linearGradient>
+                            <linearGradient id="tbOuro" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#fff6c2"/><stop offset="45%" stop-color="#ffd24a"/><stop offset="100%" stop-color="#b8740a"/></linearGradient>
+                            <radialGradient id="tbBrilho" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffd24a" stop-opacity=".55"/><stop offset="100%" stop-color="#ffd24a" stop-opacity="0"/></radialGradient>
+                        </defs>
+                        <path d="M24 20 H9 C9 42 17 52 29 54" fill="none" stroke="#ffd24a" stroke-width="7.5" stroke-linecap="round" opacity=".9"/>
+                        <path d="M76 20 H91 C91 42 83 52 71 54" fill="none" stroke="#ffd24a" stroke-width="7.5" stroke-linecap="round" opacity=".9"/>
+                        <path d="M24 20 H9 C9 42 17 52 29 54" fill="none" stroke="url(#tbAlca)" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M76 20 H91 C91 42 83 52 71 54" fill="none" stroke="url(#tbAlca)" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M24 8 H76 V40 C76 62 63 74 50 74 C37 74 24 62 24 40 Z" fill="url(#tbCopa)" stroke="url(#tbOuro)" stroke-width="2"/>
+                        <rect x="23" y="6" width="54" height="5" rx="2" fill="url(#tbOuro)"/>
+                        <path d="M30 13 H38 V40 C38 54 42 62 48 67 C38 62 30 54 30 40 Z" fill="#ffffff" opacity=".13"/>
+                        <circle cx="50" cy="35" r="17" fill="url(#tbBrilho)" class="tb-aura"/>
+                        <polygon class="tb-estrela" points="50,21 54,31 64.5,31.8 56.5,38.6 59,48.8 50,43.3 41,48.8 43.5,38.6 35.5,31.8 46,31" fill="url(#tbOuro)" stroke="#fff3b0" stroke-width=".6"/>
+                        <rect x="44" y="74" width="12" height="15" fill="url(#tbCopa)" stroke="url(#tbOuro)" stroke-width="1.2"/>
+                        <rect x="31" y="88" width="38" height="8" rx="2.5" fill="url(#tbCopa)" stroke="url(#tbOuro)" stroke-width="1.2"/>
+                        <rect x="23" y="96" width="54" height="14" rx="3" fill="#050506" stroke="url(#tbOuro)" stroke-width="1.8"/>
+                        <rect x="38" y="100" width="24" height="6" rx="1.5" fill="url(#tbOuro)"/>
+                    </svg>
+                </div>
+                <div class="avatar-circle avatar-1" id="avatar-1">–</div>
+                <h2 class="pos-num" style="color:var(--gold);font-size:2.3em;text-shadow:0 0 15px rgba(255,215,0,.8);">1º</h2>
+                <div class="nome-podio" id="nome-1">Carregando...</div>
+                <div class="cargo-podio" id="cargo-1"></div>
+                <div class="badge-capsula badge-1"><span class="info-podio" id="filial-1">--</span><span class="badge-pontos" id="pontos-1">--</span></div>
+            </div>
+            <div class="podio podio-3" id="terceiro-lugar">
+                <div class="avatar-circle avatar-3" id="avatar-3">–</div>
+                <h2 class="pos-num" style="color:var(--bronze);font-size:1.8em;text-shadow:0 0 15px rgba(205,127,50,.8);">3º</h2>
+                <div class="nome-podio" id="nome-3">Aguardando...</div>
+                <div class="cargo-podio" id="cargo-3"></div>
+                <div class="badge-capsula badge-3"><span class="info-podio" id="filial-3">--</span><span class="badge-pontos" id="pontos-3">--</span></div>
+            </div>
+        </div>
+
+        <div class="secao-lista-wrapper">
+            <div class="chips-metrica" id="chips-metrica" data-html2canvas-ignore="true"></div>
+            <input type="text" id="busca-ranking" class="busca-ranking" placeholder="🔍 Pesquisar vendedor, filial ou cidade..." oninput="renderizarRanking()" data-html2canvas-ignore="true">
+            <div class="secao-lista" id="lista-ranking">
+                <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+            </div>
+            <div id="texto-carregando">Conectando à planilha e sincronizando... 🚀</div>
+            <div id="aviso-erro"></div>
+            <div class="sync-container" id="rodape-sync" data-html2canvas-ignore="true">🟢 Aguardando sincronização...</div>
+        </div>
+    </div>
+</div>
+
+<!-- ABAS LOGADAS (o conteúdo é montado pelo JavaScript) -->
+<div id="aba-metas" class="tab-content"><div class="container-metas" id="conteudo-metas"></div></div>
+<div id="aba-nsl" class="tab-content"><div class="container-metas" id="conteudo-nsl"></div></div>
+<div id="aba-reguas" class="tab-content"><div class="container-metas" id="conteudo-reguas"></div></div>
+
+<!-- ABA PREMIAÇÕES BLACK (TELA CHEIA) -->
+<div id="aba-premios" class="tab-content">
+    <div class="topbar-detalhe" style="max-width:1400px;width:100%;margin:0 auto 8px;padding:0 10px;" data-html2canvas-ignore="true">
+        <button class="btn-voltar" onclick="trocarAba('ranking')">⟵ Voltar para o Menu</button>
+    </div>
+    <div class="container-premios" style="margin:0 auto;">
+        <div class="pz-titulo">🎁 PREMIAÇÕES BLACK · <span id="pz-mes">NOVEMBRO / 2026</span> · VENDEDORES</div>
+        <div class="pz-aviso">💡 Valores de <b>premiações</b> · não incluem o comissionamento de <b>vendas</b>, <b>serviços</b> e <b>consórcio</b>, que é pago à parte.</div>
+        <div class="pz-grid">
+            <!-- CARTÃO LUIZA VIRTUAL -->
+            <div class="pz-card pz-verde">
+                <div class="pz-head"><span class="pz-ico">💳</span><div><h4>CARTÃO LUIZA VIRTUAL <span class="pz-tag">NOVO</span></h4><small>Cartões ativos no mês · Vendas / Crédito / Estoque</small></div></div>
+                <div class="pz-escada">
+                    <div style="--h:40%"><small>FEZ</small><b>8</b><span>cartões</span><i>R$ 150</i></div>
+                    <div style="--h:60%"><small>FEZ</small><b>12</b><span>cartões</span><i>R$ 250</i></div>
+                    <div style="--h:80%"><small>FEZ</small><b>16</b><span>cartões</span><i>R$ 300</i></div>
+                    <div style="--h:100%"><small>FEZ</small><b>20</b><span>cartões</span><i>R$ 350</i></div>
+                </div>
+                <div class="pz-pg">🎫 Pagamento no <b>Ticket</b></div>
+            </div>
+            <!-- PULA PRA 15 CDC -->
+            <div class="pz-card pz-azul">
+                <div class="pz-head"><span class="pz-ico">🚀</span><div><h4>PULA PRA 15 CDC <span class="pz-tag">NOVO</span></h4><small>Vendedor e Vendedor Especial</small></div></div>
+                <div class="pz-itens">
+                    <div><b>META DESAFIO VENDA CDC</b><span>100% de atingimento</span></div>
+                    <div><b>GATILHO FPP</b><span>FPP individual 100%</span></div>
+                </div>
+                <div class="pz-valor"><small>100% DA META</small><b>R$ 250</b></div>
+                <div class="pz-pg">💸 Pagamento via <b>MPAY</b></div>
+            </div>
+            <!-- TICKETS DIGITAIS -->
+            <div class="pz-card pz-rosa">
+                <div class="pz-head"><span class="pz-ico">📱</span><div><h4>TICKETS DIGITAIS</h4><small>Plano Controle e Magalu Conecta</small></div></div>
+                <div class="pz-itens">
+                    <div class="pz-sub"><b>PLANO CONTROLE</b></div>
+                    <div><b>10 PLANOS</b><span class="pz-col pz-n pz-v">R$ 150</span></div>
+                    <div class="pz-sub"><b>MAGALU CONECTA</b></div>
+                    <div><b>R$ 1.500</b><span class="pz-col pz-n pz-v">R$ 160</span></div>
+                    <div><b>R$ 2.000</b><span class="pz-col pz-n pz-v">R$ 200</span></div>
+                    <div><b>R$ 3.000 OU MAIS</b><span class="pz-col pz-n pz-v">R$ 300</span></div>
+                </div>
+                <div class="pz-pg">🎫 Pagamento no <b>Ticket</b></div>
+            </div>
+            <!-- PULA PRA 10 · CARTÃO DE TERCEIROS -->
+            <div class="pz-card pz-roxo">
+                <div class="pz-head"><span class="pz-ico">🏃</span><div><h4>PULA PRA 10 · CARTÃO DE TERCEIROS</h4><small>Desafio Vendedor e Vendedor Especial</small></div></div>
+                <div class="pz-itens">
+                    <div><b>GATILHO</b><span>R$ 14 mil em serviços</span></div>
+                </div>
+                <div class="pz-escada pz-escada-3">
+                    <div style="--h:60%"><small>FEZ</small><b>8%</b><span>part. CT 3º</span><i>R$ 150</i></div>
+                    <div style="--h:80%"><small>FEZ</small><b>10%</b><span>part. CT 3º</span><i>R$ 250</i></div>
+                    <div style="--h:100%"><small>FEZ</small><b>12%</b><span>part. CT 3º</span><i>R$ 350</i></div>
+                </div>
+                <div class="pz-pg">💸 Pagamento via <b>MPAY</b></div>
+            </div>
+            <!-- NSL -->
+            <div class="pz-card pz-ouro">
+                <div class="pz-head"><span class="pz-ico">⭐</span><div><h4>PRÊMIO NSL</h4><small>Gatilho: 100% da cota 1P + nota ≥ 90%</small></div></div>
+                <div class="pz-medalhas">
+                    <div><span class="pz-med">🥉</span><b>90%</b><small>NOTA NSL</small><i>R$ 250</i></div>
+                    <div><span class="pz-med">🥈</span><b>100%</b><small>NOTA NSL</small><i>R$ 300</i></div>
+                    <div><span class="pz-med">🥇</span><b>120%</b><small>NOTA NSL</small><i>R$ 400</i></div>
+                </div>
+                <div class="pz-pg">⭐ Liderança: <b>dobra</b> com a loja em 100% da cota</div>
+            </div>
+        </div>
+
+        <div class="bloco-potencial-ganho">
+            <h3>🚀 Potencial de Premiações Black</h3>
+            <div class="grid-potencial">
+                <div class="item-potencial"><span class="label">FAIXA DE VENDAS</span><span class="sub-label">( R$ 100 MIL )</span><span class="valor">R$ 180,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">FAIXA PULA 10</span><span class="sub-label">( R$ 14 MIL )</span><span class="valor">R$ 100,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">CARTÃO LUIZA</span><span class="sub-label">( 20 CARTÕES )</span><span class="valor">R$ 350,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">PULA PRA 15 CDC</span><span class="sub-label">( 100% + FPP )</span><span class="valor">R$ 250,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">PLANO CONTROLE</span><span class="sub-label">( 10 PLANOS )</span><span class="valor">R$ 150,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">MAGALU CONECTA</span><span class="sub-label">( R$ 3 MIL )</span><span class="valor">R$ 300,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">CARTÃO 3º</span><span class="sub-label">( PART. 12% )</span><span class="valor">R$ 350,00</span></div>
+                <span class="plus">+</span>
+                <div class="item-potencial"><span class="label">NSL</span><span class="sub-label">( NOTA 120% )</span><span class="valor">R$ 400,00</span></div>
+                <span class="equals">=</span>
+                <div class="item-potencial destaque"><span class="label">TOTAL ESTIMADO</span><span class="valor">R$ 2.080,00</span></div>
+            </div>
+            <div class="pot-nota">Premiações apenas, fora as comissões · Liderança com a loja em 100% da cota: NSL dobra para <b>R$ 800</b> → total <b>R$ 2.480,00</b></div>
+        </div>
+    </div>
+</div>
+
+<!-- COMPARTILHAR -->
+<div class="share-container" id="share-container" data-html2canvas-ignore="true">
+    <div class="share-menu" id="shareMenu">
+        <button class="share-option" onclick="gerarImagem('feed')"><span>⬛</span> Post para Feed (1:1)</button>
+        <button class="share-option" onclick="gerarImagem('stories')"><span>📱</span> Post para Stories (9:16)</button>
+    </div>
+    <button class="share-btn" onclick="document.getElementById('shareMenu').classList.toggle('show')" title="Compartilhar no Instagram" aria-label="Compartilhar no Instagram">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+    </button>
+</div>
+
+<audio id="som-vitoria" src="senna.mp3" preload="auto"></audio>
+<audio id="som-prata" src="prata.mp3" preload="auto"></audio>
+<audio id="som-bronze" src="bronze.mp3" preload="auto"></audio>
+
+<script>
+// ==========================================
+// COLE AQUI A URL DO APPS SCRIPT DA PLANILHA "dash vendedor" (termina em /exec)
+// ==========================================
+const URL_WEB_APP = 'https://script.google.com/macros/s/AKfycbxasvW96yOzghTgnmfvRTmpF5IL6_467ePWcFM9l5FpFw24YfWV3Xyu8HngBGHTrvNq/exec';
+
+// Acesso de administrador (vê todos os vendedores)
+const ADMIN_LOGIN = 'ALR_SOARES';
+const ADMIN_SENHA = '251148';
+
+// ==========================================
+// REGRAS DA POLÍTICA SALARIAL — VENDEDORES (outubro/2026)
+// ==========================================
+const REGRAS = {
+    gatilhoVenda: { vendedor: 100000, lider: 80000 },
+    faixaVendas: {
+        vendedor: [[100000,180],[140000,200],[180000,250],[210000,300],[250000,350],[300000,500],[335000,825],[500000,1250],[670000,1600]],
+        lider:    [[80000,180],[112000,200],[144000,250],[168000,300],[200000,350],[240000,500],[268000,825],[400000,1250],[536000,1600]]
+    },
+    faixaPula10: {
+        vendedor: [[10000,50],[14000,100],[18000,150],[21000,200],[25000,250],[30000,300],[33500,500],[50000,550],[67000,600]],
+        lider:    [[8000,50],[11200,100],[14400,150],[16800,200],[20000,250],[24000,300],[26800,500],[40000,550],[53600,600]]
+    },
+    nslPremio: [[120,400],[100,300],[90,250]],      // nota NSL em % -> prêmio
+    nslNotaMinima: 90,
+    nslIndicadores: [
+        { nome: 'NPS (loja)', pts: 20, regua: [75, 80, 90] },
+        { nome: 'Caixa Móvel (loja)', pts: 10, regua: [40, 60, 80] },
+        { nome: 'Cobrança CDC (individual)', pts: 30, regua: [90, 100, 120], chave: 'cobranca' },
+        { nome: 'IPP (individual)', pts: 25, regua: [80, 100, 120] },
+        { nome: 'Casa Protegida (individual)', pts: 15, regua: [80, 100, 120] }
+    ],
+    comissaoServicos: { garantia: 6.5, rouboFurto: 4, compraSegura: 8.34, casaAte9: 5, casaAcima9: 7.5, saudeAte9: 5, saudeAcima9: 7.5 },
+    comissaoPlano: 10,                     // R$ por plano controle / Maga+
+    comissaoConecta: { ate: 999, baixa: 5, alta: 7.5 },
+    ticketPlano: { qtd: 10, valor: 150 },
+    ticketConecta: [[3000,300],[2000,200],[1500,160]],
+    ticketCartao: { normal: 6, dobrado: 12 },
+    comissaoProdutosLinhas: [
+        ['Confecção / Roupas (1045, 1046, 1047, 1179)', '3,0%'],
+        ['Móveis, Portáteis, Cama Mesa Banho, Utilidades, Bebê, Brinquedos, Decoração, Ferramentas, Casa e Jardim, Cuidados Pessoais, Marketplace', '2,0%'],
+        ['Telefonia, Eletro, Imagem, Informática, Áudio, Games, Ar-condicionado e demais linhas', '1,0%'],
+        ['Bebidas', '0,5%'],
+        ['Preço Site', '50% da comissão'],
+    ],
+    piso: 2000,
+    // Comissão de produtos por linha (sigla antes do " - " na coluna LINHA). Linhas fora da lista = 1% ("outras").
+    taxaLinha: {
+        // 3%
+        RPS: 3, CF: 3, CFM: 3, CFF: 3, CFI: 3,
+        // 2%
+        AV: 2, EP: 2, MO1: 2, MO2: 2, MO3: 2, CP: 2, CM: 2, UD: 2, DEC: 2, FS: 2, CJ: 2, BB: 2, BR: 2, MKT: 2,
+        // 0,5%
+        BD: 0.5,
+    },
+    taxaOutras: 1,
+    taxaMarketplace: 2,          // venda 3P = VENDA - VENDA 1P (aba venda)
+    precoSiteFator: 0.5,         // Preço Site paga 50% da comissão (pág. 15)
+    // Pág. 30: a política só estorna quando o cancelamento é por erro do vendedor, mas a
+    // planilha não diz o motivo. Decisão da regional: estornar TODAS as devoluções/cancelamentos
+    // (estimativa conservadora: melhor o holerite vir maior do que o dash mostrou).
+    estornarDevolucoes: true,
+    // DSR = dias de descanso (domingos + feriados) ÷ dias úteis do mês. null = calcula sozinho.
+    dsrManual: null,
+    feriados: ['01-01', '04-21', '05-01', '09-07', '10-12', '11-02', '11-15', '11-20', '12-25', '2026-04-03', '2027-03-26'],
+};
+
+// DSR do mês da competência
+function calcularDsr(ano, mes) {
+    if (REGRAS.dsrManual !== null) return REGRAS.dsrManual;
+    const dias = new Date(ano, mes + 1, 0).getDate();
+    let descanso = 0;
+    for (let d = 1; d <= dias; d++) {
+        const dt = new Date(ano, mes, d), mmdd = String(mes + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+        if (dt.getDay() === 0 || REGRAS.feriados.includes(mmdd) || REGRAS.feriados.includes(ano + '-' + mmdd)) descanso++;
+    }
+    return descanso / (dias - descanso);
+}
+let DSR = 0.2, TEM_VENDA_LINHA = false;
+function taxaDaLinha(linha) {
+    const sigla = String(linha || '').split(' - ')[0].trim().toUpperCase();
+    return REGRAS.taxaLinha[sigla] !== undefined ? REGRAS.taxaLinha[sigla] : REGRAS.taxaOutras;
+}
+
+// ==========================================
+// ESTADO
+// ==========================================
+let VENDEDORES = [];          // lista completa já calculada
+let LOJAS = {};               // dados de loja por filial
+let grupoRk = lerLS('vend_rk_grupo', 'venda'), tipoRk = lerLS('vend_rk_tipo', 'pct');
+let metricaRanking = grupoRk + '_' + tipoRk;
+let modoCalculo = lerLS('vend_modo', 'proj');  // 'proj' = projeção do mês | 'real' = realizado até hoje
+let sessao = lerLS('vend_sessao', null);       // { tipo: 'admin' } | { tipo: 'vendedor', cdi }
+let cdiAtivo = sessao && sessao.tipo === 'vendedor' ? sessao.cdi : null;
+let abaAtual = 'ranking', abaPendente = null;
+let dadosOk = false;
+
+function lerLS(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }
+function gravarLS(k, v) { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+// ==========================================
+// UTILITÁRIOS
+// ==========================================
+function num(v) {
+    if (v === null || v === undefined) return 0;
+    if (typeof v === 'number') return isFinite(v) ? v : 0;
+    let s = String(v).trim();
+    if (!s || s === '-' || s.toLowerCase() === 'null' || s === '#N/A' || s.startsWith('#')) return 0;
+    const pct = s.includes('%');
+    s = s.replace(/R\$|%|\s/g, '');
+    if (s.includes(',')) s = s.replace(/\./g, '').replace(',', '.');
+    else if ((s.match(/\./g) || []).length > 1) s = s.replace(/\./g, '');
+    const n = parseFloat(s);
+    if (!isFinite(n)) return 0;
+    return pct ? n / 100 : n;
+}
+const brl = v => 'R$ ' + (Number(v) || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const brl0 = v => 'R$ ' + Math.round(Number(v) || 0).toLocaleString('pt-BR');
+const kmil = v => { v = Number(v) || 0; return v >= 1000 ? (v / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mil' : brl0(v); };
+const pct = (v, casas = 1) => ((Number(v) || 0) * 100).toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas }) + '%';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = s => String(s || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\s+/g, ' ').trim();
+const chaveCdi = v => String(v || '').replace(/\D/g, '');
+const bateu = p => p >= 0.9995;   // tolera o resíduo decimal das metas (ex.: 6,000018)
+
+function nomeCurto(nome) {
+    const p = String(nome || '').trim().split(/\s+/).filter(Boolean);
+    const cap = w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+    if (!p.length) return 'Vendedor';
+    if (p.length === 1) return cap(p[0]);
+    const conect = ['DA', 'DE', 'DO', 'DOS', 'DAS', 'E'];
+    // nomes vêm cortados em 30 caracteres: ignora pedaço final curto e conectivos
+    let i = p.length - 1;
+    while (i > 1 && (p[i].length <= 3 || conect.includes(p[i].toUpperCase()))) i--;
+    let ult = p[i];
+    return cap(p[0]) + ' ' + cap(ult);
+}
+const iniciais = nome => { const p = nomeCurto(nome).split(' '); return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase(); };
+
+function showToast(msg, tipo = 'info', ms = 4200) {
+    const box = document.getElementById('toast-box');
+    const t = document.createElement('div');
+    t.className = 'toast ' + (tipo === 'erro' ? 'erro' : '');
+    t.innerText = msg;
+    box.appendChild(t);
+    setTimeout(() => { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 450); }, ms);
+}
+
+// Lê uma aba como lista de objetos usando o nome do cabeçalho
+function tabela(linhas) {
+    if (!Array.isArray(linhas) || linhas.length < 2) return [];
+    const cab = linhas[0].map(norm);
+    return linhas.slice(1).filter(l => l && l.some(c => String(c).trim() !== '')).map(l => {
+        const o = {};
+        cab.forEach((h, i) => { if (h && o[h] === undefined) o[h] = l[i]; });
+        o.__linha = l;
+        return o;
+    });
+}
+const col = (o, ...nomes) => { for (const n of nomes) { const k = norm(n); if (o[k] !== undefined) return o[k]; } return undefined; };
+
+// ==========================================
+// MONTAGEM DOS DADOS
+// ==========================================
+function montarDados(json) {
+    const cad = tabela(json.dados_vendedores);
+    const venda = tabela(json.venda), serv = tabela(json.servico), dig = tabela(json.digitais);
+    const cart = tabela(json.cartao), fpp = tabela(json.fpp);
+    const lojaT = tabela(json.loja), nslT = tabela(json.nsl), vlT = tabela(json.venda_linha);
+    TEM_VENDA_LINHA = vlT.length > 0;
+
+    const porCdi = (lista, campo = 'CDI') => {
+        const m = {};
+        lista.forEach(o => { const k = chaveCdi(col(o, campo, 'ID')); if (k) (m[k] = m[k] || []).push(o); });
+        return m;
+    };
+    const mVenda = porCdi(venda), mServ = porCdi(serv), mDig = porCdi(dig), mCart = porCdi(cart), mFpp = porCdi(fpp);
+    const mNsl = porCdi(nslT), mLinha = porCdi(vlT);
+    const mCdc = porCdi(tabela(json.cdc || json.venda_cdc || json.vendacdc || []));
+
+    // escolhe a linha certa quando o mesmo CDI aparece mais de uma vez (confere pelo nome)
+    const escolher = (lista, nome) => {
+        if (!lista || !lista.length) return null;
+        const n = norm(nome), pri = n.split(' ')[0];
+        return lista.find(o => norm(col(o, 'NOME')) === n)
+            || lista.find(o => norm(col(o, 'NOME')).split(' ')[0] === pri)
+            || (lista.length === 1 && !col(lista[0], 'NOME') ? lista[0] : null);
+    };
+
+    // Lojas: cota oficial (aba loja, quando existir) + cartão da loja (soma da aba cartao)
+    LOJAS = {};
+    lojaT.forEach(o => {
+        const f = chaveCdi(col(o, 'FILIAL'));
+        if (!f) return;
+        const cota = num(col(o, 'COTA LOJA', 'COTA', 'COTA 1P')), vend = num(col(o, 'VENDA LOJA', 'VENDA', 'VENDA 1P'));
+        let ating = num(col(o, '% ATING', 'ATING', '% ATING LOJA', 'PROJ. ATING'));
+        if (!ating && cota) ating = vend / cota;
+        LOJAS[f] = { cota, venda: vend, ating, temCota: cota > 0 || ating > 0 };
+    });
+    cart.forEach(o => {
+        const f = chaveCdi(col(o, 'FILIAL'));
+        if (!f) return;
+        const L = LOJAS[f] = LOJAS[f] || { temCota: false };
+        L.cartAtivos = (L.cartAtivos || 0) + num(col(o, 'CARTÃO ATIVO', 'CARTAO ATIVO'));
+        L.cartMeta = (L.cartMeta || 0) + num(col(o, 'META'));
+        L.cartMetaAcum = (L.cartMetaAcum || 0) + num(col(o, 'META ACUMULADA'));
+    });
+
+    const lista = [];
+    cad.forEach(o => {
+        const cargoTxt = norm(col(o, 'CARGO'));
+        if (!cargoTxt.startsWith('VENDEDOR')) return;
+        const cdi = chaveCdi(col(o, 'ID', 'CDI'));
+        if (!cdi) return;
+        const nome = String(col(o, 'NOME') || '').trim();
+        const lider = cargoTxt.includes('ESPECIAL');
+        const vv = (mVenda[cdi] || [])[0] || {};
+        const ss = (mServ[cdi] || [])[0] || {};
+        const dd = (mDig[cdi] || [])[0] || {};
+        const cc = escolher(mCart[cdi], nome) || (mCart[cdi] || [])[0] || {};
+        const ff = escolher(mFpp[cdi], nome);
+        const nn = (mNsl[cdi] || [])[0];
+        const cdcRow = (mCdc[cdi] || [])[0];
+        const cdc = cdcRow
+            ? { venda: num(col(cdcRow, 'VENDA CDC', 'REAL CDC', 'REALIZADO', 'VENDA')), meta: num(col(cdcRow, 'META CDC', 'META DESAFIO', 'META DESAFIO CDC', 'META')) }
+            : { venda: num(col(vv, 'VENDA CDC', 'REAL CDC')), meta: num(col(vv, 'META CDC', 'META DESAFIO CDC')) };
+
+        const v = {
+            cota1p: num(col(vv, 'COTA 1P')), pmt1p: num(col(vv, 'PMT 1P')), venda1p: num(col(vv, 'VENDA 1P')), ating1p: num(col(vv, '% ATING 1P')),
+            cotaVenda: num(col(vv, 'COTA VENDA')), pmtVenda: num(col(vv, 'PMT VENDA')), venda: num(col(vv, 'VENDA')), atingVenda: num(col(vv, '% ATING VENDA')),
+            pmtServ: num(col(vv, 'PMT SERVIÇOS', 'PMT SERVICOS')), serv: num(col(vv, 'SERVIÇOS', 'SERVICOS')), atingServ: num(col(vv, '% ATING SERVIÇOS', '% ATING SERVICOS')),
+            metaPN: num(col(vv, 'META PN/PP')), vendaPN: num(col(vv, 'VENDA PN/PP')), partPN: num(col(vv, '% PART PN/PP')), atingPN: num(col(vv, '% ATING PN/PP')),
+            vendaRemota: num(col(vv, 'VENDA REMOTA')), temVenda: !!col(vv, 'VENDA'),
+            partCaps: num(col(vv, '% PART CA/PS')), partPs: num(col(vv, '% PART PS'))
+        };
+        // A coluna CA/PS junta Carrinho Abandonado + Preço Site. Só o Preço Site paga 50%:
+        // a parte de Preço Site vem da proporção % PART PS ÷ % PART CA/PS da aba venda.
+        v.fatorPs = v.partCaps > 0 ? Math.max(0, Math.min(1, v.partPs / v.partCaps)) : 1;
+        // Fator de projeção = cota do mês / meta proporcional até hoje (PMT)
+        v.fator = v.pmtVenda > 0 ? v.cotaVenda / v.pmtVenda : (v.pmt1p > 0 ? v.cota1p / v.pmt1p : 1);
+        if (!isFinite(v.fator) || v.fator < 1) v.fator = 1;
+
+        const s = {
+            garantia: num(col(ss, 'GARANTIA')), saude: num(col(ss, 'PROTECAOSAUDE')), casa: num(col(ss, 'CASAPROTEGIDA')),
+            rouboFurto: num(col(ss, 'ROUBOEFURTO')), compraSegura: num(col(ss, 'COMPRASEGURA')),
+            qtdCasa: num(col(ss, 'QTDACASATOTAL')), qtdSaude: num(col(ss, 'QTD PS TOTAL')), total: num(col(ss, 'SERVICOS'))
+        };
+        const d = {
+            conecta: num(col(dd, 'REAL LU CONECTA')), conectaQtd: num(col(dd, 'REAL LU CONECTA QTDA')), metaConecta: num(col(dd, 'META LU CONECTA')) || 1500,
+            plano: num(col(dd, 'REAL PLANO CONTROLE')), metaPlano: num(col(dd, 'META PLANO CONTROLE')) || 10
+        };
+        const c = {
+            ativos: num(col(cc, 'CARTÃO ATIVO', 'CARTAO ATIVO')), meta: num(col(cc, 'META')), metaAcum: num(col(cc, 'META ACUMULADA')),
+            projAting: num(col(cc, 'PROJ. ATING')), preAprov: num(col(cc, 'PRÉ APROVADOS', 'PRE APROVADOS')), conversao: num(col(cc, 'CONVERSÃO', 'CONVERSAO'))
+        };
+        const f = ff ? {
+            carteira: num(col(ff, 'CARTEIRA (R$)')), metaReceb: num(col(ff, 'META RECEBIMENTO (R$)')), recebido: num(col(ff, 'VALOR RECEBIDO (R$)')),
+            faltaMeta: num(col(ff, 'FALTA RECEBER META (R$)')), metaFpp: num(col(ff, 'META FPP (%)')), realFpp: num(col(ff, 'REAL FPP (%)')), ating: num(col(ff, 'ATING (%)'))
+        } : null;
+
+        let nota = null;
+        if (nn) { const raw = col(nn, 'NOTA NSL', 'NOTA', 'NSL'); if (raw !== undefined && String(raw).trim() !== '') { nota = num(raw); if (nota > 0 && nota <= 2) nota *= 100; } }
+        const linhas = (mLinha[cdi] || []).map(o => ({ linha: String(col(o, 'LINHA') || '').trim(), venda: num(col(o, 'VENDA')), devolucao: num(col(o, 'DEVOLUCAO')), precoSite: num(col(o, 'CA/PS')), qtd: num(col(o, 'QTD ITENS')) }));
+
+        lista.push({
+            cdi, nome, curto: nomeCurto(nome), login: norm(col(o, 'LOGIN')), lider, cargo: lider ? 'Liderança' : 'Vendedor',
+            filial: chaveCdi(col(o, 'FILIAL')), cidade: String(col(o, 'CIDADE') || '').trim(), tempoCasa: String(col(o, 'TEMPO DE CASA') || '').trim(),
+            admissao: String(col(o, 'DATA ADMISSAO', 'DATA ADMISSÃO') || '').trim(),
+            v, s, d, c, f, nota, linhas, cdc
+        });
+    });
+    VENDEDORES = lista;
+}
+
+// ==========================================
+// CÁLCULO DOS GANHOS
+// ==========================================
+function faixa(tab, valor) {
+    let atual = null, prox = null;
+    tab.forEach(([min, premio]) => { if (valor >= min) atual = { min, premio }; else if (!prox) prox = { min, premio }; });
+    return { atual, prox, premio: atual ? atual.premio : 0 };
+}
+
+function calcular(x, modo = modoCalculo) {
+    const P = modo === 'proj' ? x.v.fator : 1;
+    const t = x.lider ? 'lider' : 'vendedor';
+    const r = { modo, P };
+
+    // Vendas e gatilho
+    r.venda = x.v.venda * P;
+    r.gatilhoVenda = REGRAS.gatilhoVenda[t];
+    r.bateuGatilho = r.venda >= r.gatilhoVenda;
+    r.ating1p = modo === 'proj' ? x.v.ating1p : (x.v.cota1p > 0 ? x.v.venda1p / x.v.cota1p : 0);
+    r.bateu1p = x.v.cota1p > 0 && bateu(r.ating1p);
+
+    // Faixa de Vendas e Pula 10
+    r.fVendas = faixa(REGRAS.faixaVendas[t], r.venda);
+    r.premioVendas = r.bateuGatilho ? r.fVendas.premio : 0;
+    r.pula10 = x.v.serv * P;
+    r.fPula = faixa(REGRAS.faixaPula10[t], r.pula10);
+    r.premioPula = r.bateuGatilho ? r.fPula.premio : 0;
+
+    // PNPP
+    r.vendaPN = x.v.vendaPN * P;
+    r.atingPN = modo === 'proj' ? x.v.atingPN : (x.v.metaPN > 0 ? x.v.vendaPN / x.v.metaPN : 0);
+    r.bateuPN = x.v.metaPN > 0 && bateu(r.atingPN);
+    r.pnppElegivel = r.bateu1p && r.bateuPN;
+
+    // NSL
+    r.notaNsl = x.nota;
+    r.temNota = x.nota !== null;
+    r.premioNslBase = 0;
+    if (r.temNota && r.bateu1p && x.nota >= REGRAS.nslNotaMinima) { for (const [n, v] of REGRAS.nslPremio) { if (x.nota >= n) { r.premioNslBase = v; break; } } }
+    const L = LOJAS[x.filial] || {};
+    r.lojaTemCota = !!L.temCota;
+    r.atingLoja = L.temCota ? (L.ating || 0) : null;
+    r.dobraNsl = x.lider && r.lojaTemCota && bateu(r.atingLoja);
+    r.premioNsl = r.premioNslBase * (r.dobraNsl ? 2 : 1);
+
+    // COMISSÕES: sempre o valor REAL, só o que já foi vendido (não usa a projeção)
+    // Comissão de serviços (já com DSR)
+    const s = x.s, C = REGRAS.comissaoServicos;
+    const qCasa = s.qtdCasa, qSaude = s.qtdSaude;
+    r.servicos = [
+        { nome: 'Garantia Estendida', base: s.garantia, taxa: C.garantia },
+        { nome: 'Roubo e Furto', base: s.rouboFurto, taxa: C.rouboFurto },
+        { nome: 'Compra Segura', base: s.compraSegura, taxa: C.compraSegura },
+        { nome: 'Casa Protegida', base: s.casa, taxa: qCasa > 9 ? C.casaAcima9 : C.casaAte9, obs: Math.round(qCasa) + ' contratos' },
+        { nome: 'Proteção Saúde', base: s.saude, taxa: qSaude > 9 ? C.saudeAcima9 : C.saudeAte9, obs: Math.round(qSaude) + ' contratos' },
+    ].map(i => ({ ...i, valor: i.base * i.taxa / 100 }));
+    r.comServicos = r.servicos.reduce((a, i) => a + i.valor, 0);
+
+    // Comissão de serviços digitais
+    r.qtdPlano = Math.floor(x.d.plano * P + 1e-9);       // para o ticket (segue o modo)
+    r.conecta = x.d.conecta * P;                          // para o ticket (segue o modo)
+    r.qtdPlanoReal = Math.floor(x.d.plano + 1e-9);        // para a comissão (sempre realizado)
+    r.conectaReal = x.d.conecta;
+    r.comPlano = r.qtdPlanoReal * REGRAS.comissaoPlano;
+    r.taxaConecta = r.conectaReal > REGRAS.comissaoConecta.ate ? REGRAS.comissaoConecta.alta : REGRAS.comissaoConecta.baixa;
+    r.comConecta = r.conectaReal * r.taxaConecta / 100;
+    r.comDigitais = r.comPlano + r.comConecta;
+
+    // Comissão de produtos: venda por linha × taxa da linha (Preço Site paga 50%) + marketplace 2% + DSR
+    r.temComProd = TEM_VENDA_LINHA;
+    r.linhasCom = x.linhas.map(l => {
+        const taxa = taxaDaLinha(l.linha);
+        const devol = l.devolucao;
+        const venda = REGRAS.estornarDevolucoes ? l.venda : l.venda + l.devolucao;
+        const site = l.precoSite * x.v.fatorPs;
+        const valor = (venda - site * (1 - REGRAS.precoSiteFator)) * taxa / 100;
+        return { linha: l.linha, venda, devol, site, taxa, valor };
+    }).sort((a, b) => b.valor - a.valor);
+    r.devolucoes = r.linhasCom.reduce((a, l) => a + l.devol, 0);
+    r.comDevolucoes = r.linhasCom.reduce((a, l) => a + l.devol * l.taxa / 100, 0);
+    // PNPP: estimativa entre 50% (tudo a Preço Praticado) e 100% (tudo a Preço Normal) da comissão média
+    const baseMedia = r.linhasCom.filter(l => !/^BD\b/.test(l.linha)).reduce((a, l) => [a[0] + l.venda, a[1] + l.venda * l.taxa / 100], [0, 0]);
+    r.taxaMedia = baseMedia[0] > 0 ? baseMedia[1] / baseMedia[0] : 0;
+    r.pnppMin = r.pnppElegivel ? x.v.vendaPN * r.taxaMedia * 0.5 : 0;
+    r.pnppMax = r.pnppElegivel ? x.v.vendaPN * r.taxaMedia : 0;
+    r.marketplace = Math.max(0, x.v.venda - x.v.venda1p);
+    r.comMkt = r.marketplace * REGRAS.taxaMarketplace / 100;
+    r.comProdSemDsr = r.linhasCom.reduce((a, l) => a + l.valor, 0) + r.comMkt;
+    r.dsr = DSR;
+    r.valorDsr = r.comProdSemDsr * DSR;
+    r.comProdutos = r.temComProd ? r.comProdSemDsr + r.valorDsr : 0;
+
+    // Tickets
+    r.ticketPlano = r.qtdPlano >= REGRAS.ticketPlano.qtd ? REGRAS.ticketPlano.valor : 0;
+    r.ticketConecta = 0; for (const [m, v] of REGRAS.ticketConecta) { if (r.conecta >= m) { r.ticketConecta = v; break; } }
+    r.cartoes = Math.floor(x.c.ativos * P + 1e-9);
+    r.atingCartao = modo === 'proj' ? (x.c.metaAcum > 0 ? x.c.ativos / x.c.metaAcum : 0) : (x.c.meta > 0 ? x.c.ativos / x.c.meta : 0);
+    r.atingCartaoLoja = modo === 'proj' ? (L.cartMetaAcum > 0 ? L.cartAtivos / L.cartMetaAcum : 0) : (L.cartMeta > 0 ? L.cartAtivos / L.cartMeta : 0);
+    r.cartaoDobrado = x.c.meta > 0 && bateu(r.atingCartao) && bateu(r.atingCartaoLoja);
+    r.ticketCartao = r.cartoes * (r.cartaoDobrado ? REGRAS.ticketCartao.dobrado : REGRAS.ticketCartao.normal);
+    r.tickets = r.ticketPlano + r.ticketConecta + r.ticketCartao;
+
+    // Totais
+    r.comissoes = r.comServicos + r.comDigitais + r.comProdutos;
+    r.premios = r.premioVendas + r.premioPula + r.premioNsl + r.tickets;
+    r.total = r.comissoes + r.premios;
+    r.complementoPiso = Math.max(0, REGRAS.piso - r.total);
+    r.salario = r.total + r.complementoPiso;
+    r.pendentes = [];
+    if (!r.temComProd) r.pendentes.push('Comissão de Produtos');
+    if (!r.temNota) r.pendentes.push('Prêmio NSL');
+    if (r.pnppElegivel) r.pendentes.push('Prêmio PNPP');
+    return r;
+}
+
+// ==========================================
+// RANKING
+// ==========================================
+const pctCartao = x => x.c.projAting > 0 ? x.c.projAting : (x.c.meta > 0 ? x.c.ativos / x.c.meta : 0);
+const qtdCartao = v => Math.round(v) + (Math.round(v) === 1 ? ' cartão' : ' cartões');
+const RK_GRUPOS = {
+    venda:  { rotulo: 'VENDA',   ico: '📦', fat: 'MAIOR FATURAMENTO' },
+    pula:   { rotulo: 'PULA 10', ico: '🛡️', fat: 'MAIOR FATURAMENTO' },
+    cartao: { rotulo: 'CARTÃO',  ico: '💳', fat: 'MAIS CARTÕES' },
+    cdc:    { rotulo: 'CDC',     ico: '💰', fat: 'MAIOR FATURAMENTO' },
+};
+const METRICAS = {
+    venda_pct:  { valor: x => x.v.ating1p, fmt: v => pct(v), filtro: x => x.v.cota1p > 0, sub: x => kmil(x.v.venda1p) + ' de ' + kmil(x.v.cota1p) },
+    venda_fat:  { valor: x => x.v.venda, fmt: v => kmil(v), filtro: x => x.v.venda > 0, sub: x => pct(x.v.ating1p, 0) + ' de atingimento' },
+    pula_pct:   { valor: x => x.v.atingServ, fmt: v => pct(v), filtro: x => x.v.serv > 0 || x.v.atingServ > 0, sub: x => kmil(x.v.serv) + ' em serviços' },
+    pula_fat:   { valor: x => x.v.serv, fmt: v => kmil(v), filtro: x => x.v.serv > 0, sub: x => pct(x.v.atingServ, 0) + ' de atingimento' },
+    cartao_pct: { valor: pctCartao, fmt: v => pct(v), filtro: x => x.c.meta > 0, sub: x => qtdCartao(x.c.ativos) + ' de ' + Math.round(x.c.meta) },
+    cartao_fat: { valor: x => x.c.ativos, fmt: qtdCartao, filtro: x => x.c.ativos > 0, sub: x => x.c.meta > 0 ? pct(pctCartao(x), 0) + ' de atingimento' : 'sem meta' },
+    cdc_pct:    { valor: x => x.f ? x.f.ating : 0, fmt: v => pct(v), filtro: x => !!x.f && x.f.metaReceb > 0, sub: x => brl0(x.f.recebido) + ' de ' + brl0(x.f.metaReceb) },
+    cdc_fat:    { valor: x => x.cdc.venda, fmt: v => kmil(v), filtro: x => x.cdc.venda > 0, sub: x => x.cdc.meta > 0 ? kmil(x.cdc.venda) + ' de ' + kmil(x.cdc.meta) + ' da meta desafio' : 'venda CDC no mês' },
+};
+
+function rankingOrdenado() {
+    const m = METRICAS[metricaRanking];
+    return VENDEDORES.filter(m.filtro).sort((a, b) => m.valor(b) - m.valor(a) || b.v.venda - a.v.venda);
+}
+
+function renderizarChips() {
+    const G = RK_GRUPOS[grupoRk];
+    document.getElementById('chips-metrica').innerHTML =
+        `<div class="rk-grupos">${Object.entries(RK_GRUPOS).map(([k, g]) => `<button class="rk-grupo ${k === grupoRk ? 'ativo' : ''}" onclick="mudarGrupoRk('${k}')"><span>${g.ico}</span>${g.rotulo}</button>`).join('')}</div>
+         <div class="rk-tipo">
+            <button class="${tipoRk === 'pct' ? 'ativo' : ''}" onclick="mudarTipoRk('pct')">% ATING ${G.rotulo}</button>
+            <button class="${tipoRk === 'fat' ? 'ativo' : ''}" onclick="mudarTipoRk('fat')">${G.fat}</button>
+         </div>`;
+}
+function aplicarMetricaRk() { metricaRanking = grupoRk + '_' + tipoRk; gravarLS('vend_rk_grupo', grupoRk); gravarLS('vend_rk_tipo', tipoRk); renderizarChips(); renderizarRanking(); }
+function mudarGrupoRk(g) { grupoRk = g; aplicarMetricaRk(); }
+function mudarTipoRk(t) { tipoRk = t; aplicarMetricaRk(); }
+function mudarMetrica(k) { const [g, t] = k.split('_'); grupoRk = g; tipoRk = t; aplicarMetricaRk(); }
+
+function renderizarRanking() {
+    const m = METRICAS[metricaRanking];
+    const lista = rankingOrdenado();
+    [1, 2, 3].forEach(p => {
+        const x = lista[p - 1];
+        document.getElementById('avatar-' + p).innerText = x ? iniciais(x.nome) : '–';
+        document.getElementById('nome-' + p).innerHTML = x ? `<span class="nome-desk">${esc(x.curto)}</span><span class="nome-mob">${esc(x.curto.split(' ')[0])}</span>` : '—';
+        document.getElementById('cargo-' + p).innerText = x && x.lider ? '★ Liderança' : '';
+        document.getElementById('filial-' + p).innerText = x ? `FL ${x.filial} - ${x.cidade}` : '--';
+        document.getElementById('pontos-' + p).innerText = x ? m.fmt(m.valor(x)) : '--';
+    });
+    const busca = norm(document.getElementById('busca-ranking').value);
+    const max = lista.length ? m.valor(lista[0]) || 1 : 1;
+    let html = '';
+    lista.forEach((x, i) => {
+        if (i < 3 && !busca) return;
+        const alvo = norm(`${x.nome} ${x.filial} FL ${x.filial} ${x.cidade}`);
+        if (busca && !alvo.includes(busca)) return;
+        const largura = Math.max(0, Math.min(100, m.valor(x) / max * 100));
+        html += `<div class="item-lista ${x.lider ? 'lider' : ''}">
+            <span class="posicao-lista">${i + 1}º</span>
+            <div class="nome-wrap">
+                <span class="nome-filial">${esc(x.curto)}${x.lider ? '<span class="tag-lider">LIDERANÇA</span>' : ''}</span>
+                <span class="sub-lista">FL ${x.filial} - ${esc(x.cidade)} · ${esc(m.sub(x))}</span>
+                <div class="barra"><i style="width:${largura.toFixed(1)}%"></i></div>
+            </div>
+            <span class="pontos-filial">${m.fmt(m.valor(x))}</span>
+        </div>`;
+    });
+    const vazio = (metricaRanking === 'cdc_fat' && !lista.length)
+        ? '<div style="text-align:center;color:var(--mut2);padding:30px;line-height:1.5;">⏳ <b style="color:var(--gold)">Aguardando a venda CDC na planilha.</b><br>Crie a aba <b>cdc</b> com as colunas <b>CDI | META CDC | VENDA CDC</b>.</div>'
+        : '<div style="text-align:center;color:var(--mut);padding:30px;">Nenhum vendedor encontrado.</div>';
+    document.getElementById('lista-ranking').innerHTML = html || vazio;
+}
+
+// ==========================================
+// NAVEGAÇÃO E LOGIN
+// ==========================================
+const ABAS_LOGADAS = ['metas', 'nsl'];
+
+function trocarAba(nome) {
+    if (ABAS_LOGADAS.includes(nome) && !sessao) {
+        abaPendente = nome;
+        abrirLogin();
+        return;
+    }
+    if (nome !== abaAtual && typeof efeitoTrocaAba === 'function') efeitoTrocaAba();
+    abaAtual = nome;
+    const bsom = document.getElementById('btn-som'); if (bsom) bsom.style.display = nome === 'ranking' ? '' : 'none';
+    document.querySelectorAll('.tab-btn[data-aba]').forEach(b => b.classList.toggle('active', b.dataset.aba === nome));
+    document.querySelectorAll('.tab-content').forEach(a => a.classList.remove('active'));
+    document.getElementById('aba-' + nome).classList.add('active');
+    document.getElementById('topo-geral').style.display = nome === 'premios' ? 'none' : '';
+    document.getElementById('share-container').style.display = nome === 'ranking' ? 'flex' : 'none';
+    document.getElementById('shareMenu').classList.remove('show');
+    renderizarAbaAtual();
+    window.scrollTo({ top: 0 });
+    const ativa = document.querySelector('.tab-content.active');
+    if (ativa) { ativa.scrollTop = 0; ativa.classList.remove('entrada-black'); void ativa.offsetWidth; ativa.classList.add('entrada-black'); }
+}
+
+function renderizarAbaAtual() {
+    if (!dadosOk) return;
+    if (abaAtual === 'ranking') renderizarRanking();
+    else if (abaAtual === 'reguas') renderizarReguas();
+    else if (ABAS_LOGADAS.includes(abaAtual)) renderizarLogada(abaAtual);
+}
+
+function abrirLogin() {
+    const o = document.getElementById('login-overlay');
+    o.style.display = 'flex';
+    setTimeout(() => { o.style.opacity = '1'; document.getElementById('input-usuario').focus(); }, 10);
+}
+function fecharLogin() {
+    const o = document.getElementById('login-overlay');
+    o.style.opacity = '0';
+    setTimeout(() => { o.style.display = 'none'; }, 300);
+    document.getElementById('login-erro').style.display = 'none';
+    abaPendente = null;
+}
+function erroLogin(msg) { const e = document.getElementById('login-erro'); e.innerText = msg; e.style.display = 'block'; }
+
+function validarAcesso() {
+    const u = norm(document.getElementById('input-usuario').value);
+    const s = String(document.getElementById('input-senha').value).trim();
+    if (!u || !s) return erroLogin('Preencha o login e a senha.');
+    if (u === ADMIN_LOGIN && s === ADMIN_SENHA) {
+        sessao = { tipo: 'admin' }; cdiAtivo = null;
+    } else {
+        if (!dadosOk) return erroLogin('Aguarde: os dados ainda estão carregando.');
+        const x = VENDEDORES.find(v => v.login && v.login !== 'NULL' && v.login === u && chaveCdi(s) === v.cdi);
+        if (!x) return erroLogin('Acesso negado: login ou ID incorretos.');
+        sessao = { tipo: 'vendedor', cdi: x.cdi }; cdiAtivo = x.cdi;
+    }
+    gravarLS('vend_sessao', sessao);
+    document.getElementById('input-senha').value = '';
+    atualizarBotaoSair();
+    const destino = abaPendente || 'metas';
+    fecharLogin();
+    trocarAba(destino);
+}
+
+function fazerLogout() {
+    sessao = null; cdiAtivo = null;
+    gravarLS('vend_sessao', null);
+    atualizarBotaoSair();
+    trocarAba('ranking');
+}
+function atualizarBotaoSair() {
+    document.getElementById('btn-logout').style.display = sessao ? 'flex' : 'none';
+    document.querySelectorAll('.tab-btn .cadeado').forEach(c => c.style.display = sessao ? 'none' : '');
+}
+document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && document.getElementById('login-overlay').style.display === 'flex') validarAcesso();
+    if (e.key === 'Escape' && document.getElementById('login-overlay').style.display === 'flex') fecharLogin();
+});
+
+function selecionarVendedor(cdi) { cdiAtivo = cdi; renderizarAbaAtual(); window.scrollTo({ top: 0 }); const a = document.querySelector('.tab-content.active'); if (a) a.scrollTop = 0; }
+function trocarVendedor() { cdiAtivo = null; renderizarAbaAtual(); }
+function mudarModo(m) { modoCalculo = m; gravarLS('vend_modo', m); renderizarAbaAtual(); }
+
+// ==========================================
+// COMPONENTES VISUAIS
+// ==========================================
+function corPct(p) { return p >= 1 ? 'var(--green)' : p >= .9 ? 'var(--orange)' : 'var(--red)'; }
+function barraProgresso(p, texto) {
+    const quase = p >= .9 && p < 1;
+    return `<div class="progress-bg"><div class="progress-fill ${quase ? 'pulsar-laranja' : ''}" data-w="${Math.min(p * 100, 100).toFixed(1)}" style="background:${corPct(p)};box-shadow:0 0 10px ${corPct(p)};"></div><div class="progress-text">${texto || pct(p)}${quase ? ' 🔥 QUASE LÁ' : ''}</div></div>`;
+}
+function linhaMeta(titulo, real, meta, fmt, extra) {
+    const p = meta > 0 ? real / meta : 0;
+    return `<div class="meta-linha"><div class="meta-topo"><b>${titulo}</b><span>${fmt(real)} de ${fmt(meta)}</span></div>${barraProgresso(p)}${extra ? `<div class="dica">${extra}</div>` : ''}</div>`;
+}
+const chip = (estado, texto) => `<span class="chip-status ${estado}">${estado === 'ok' ? '✅' : estado === 'nao' ? '❌' : '⏳'} ${texto}</span>`;
+function blocoAguardando(titulo, cor, msg, extra = '', classe = '') {
+    return `<div class="bloco aguardando ${classe}"><h4 class="titulo-bloco" style="color:${cor}">${titulo}</h4>
+        <div class="aguardando-msg"><div class="ico">⏳</div><span class="tit">AGUARDANDO DADOS</span><p>${msg}</p></div>${extra}</div>`;
+}
+function tabelaFaixa(tab, valor, temGatilho, rotulo) {
+    const f = faixa(tab, valor);
+    return `<table class="tabela-faixa"><thead><tr><th>${rotulo}</th><th style="text-align:right">Prêmio</th></tr></thead><tbody>${tab.map(([min, premio]) => {
+        const cls = f.atual && f.atual.min === min ? (temGatilho ? 'atual' : 'atingida') : f.prox && f.prox.min === min ? 'proxima' : valor >= min ? 'atingida' : '';
+        return `<tr class="${cls}"><td>${kmil(min)}${cls === 'atual' ? ' ◀ você está aqui' : cls === 'proxima' ? ' ◀ próxima' : ''}</td><td>${brl0(premio)}</td></tr>`;
+    }).join('')}</tbody></table>`;
+}
+function animarTela(raiz) {
+    setTimeout(() => {
+        raiz.querySelectorAll('.progress-fill').forEach(el => { el.style.width = el.dataset.w + '%'; });
+        raiz.querySelectorAll('.comp-linha .cb i').forEach(el => { el.style.width = el.dataset.w + '%'; });
+        raiz.querySelectorAll('.ring-fg').forEach(c => { const cl = 2 * Math.PI * 54; c.style.strokeDasharray = cl; c.style.strokeDashoffset = cl * (1 - Math.min(1, parseFloat(c.dataset.pct || 0))); });
+        raiz.querySelectorAll('[data-contar]').forEach(el => {
+            const alvo = parseFloat(el.dataset.contar) || 0, ini = performance.now();
+            const passo = t => { const k = Math.min(1, (t - ini) / 1300), e = 1 - Math.pow(1 - k, 3); el.innerText = brl(alvo * e); if (k < 1) requestAnimationFrame(passo); };
+            requestAnimationFrame(passo);
+        });
+    }, 60);
+}
+
+// ==========================================
+// TELAS LOGADAS
+// ==========================================
+function cabecalhoVendedor(x) {
+    return `<div class="detalhe-header">
+        <h3 class="detalhe-nome">${esc(x.nome)}</h3>
+        <div class="detalhe-cidade">FL ${x.filial} - ${esc(x.cidade)}</div>
+        <span class="selo-cargo ${x.lider ? 'lider' : ''}">${x.lider ? '★ Liderança de Loja' : 'Vendedor'}${x.tempoCasa ? ' · ' + esc(x.tempoCasa) + ' de casa' : ''}</span>
+    </div>`;
+}
+function barraTopo(x, aba) {
+    const admin = sessao && sessao.tipo === 'admin';
+    return `<div class="topbar-detalhe" data-html2canvas-ignore="true">
+        ${admin ? `<button class="btn-voltar" onclick="trocarVendedor()">⟵ Trocar vendedor</button>` : '<span></span>'}
+        <div class="modo-toggle" role="group" aria-label="Modo de cálculo">
+            <button class="${modoCalculo === 'proj' ? 'ativo' : ''}" onclick="mudarModo('proj')">📈 Projeção do mês</button>
+            <button class="${modoCalculo === 'real' ? 'ativo' : ''}" onclick="mudarModo('real')">📍 Realizado até hoje</button>
+        </div>
+    </div>`;
+}
+function telaSelecao(aba) {
+    const titulos = { metas: '🎯 METAS', nsl: '⭐ NSL', reguas: '📏 RÉGUAS' };
+    const lista = [...VENDEDORES].sort((a, b) => Number(a.filial) - Number(b.filial) || a.nome.localeCompare(b.nome));
+    return `<div class="placeholder-compacto"><strong>${titulos[aba]}</strong> — modo administrador: escolha um vendedor.</div>
+        <div class="secao-lista-wrapper">
+            <input type="text" class="busca-ranking" placeholder="🔍 Pesquisar vendedor, filial ou cidade..." oninput="filtrarSelecao(this)">
+            <div class="secao-lista" id="lista-selecao">${lista.map(x => `<div class="item-lista ${x.lider ? 'lider' : ''}" data-busca="${esc(norm(x.nome + ' FL ' + x.filial + ' ' + x.cidade))}" onclick="selecionarVendedor('${x.cdi}')">
+                <div class="nome-wrap"><span class="nome-filial">${esc(x.curto)}${x.lider ? '<span class="tag-lider">LIDERANÇA</span>' : ''}</span><span class="sub-lista">FL ${x.filial} - ${esc(x.cidade)}</span></div>
+                <span class="pontos-filial" style="color:var(--mut2)">Acessar ➔</span></div>`).join('')}</div>
+        </div>`;
+}
+function filtrarSelecao(inp) {
+    const q = norm(inp.value);
+    document.querySelectorAll('#lista-selecao .item-lista').forEach(i => { i.style.display = i.dataset.busca.includes(q) ? 'flex' : 'none'; });
+}
+
+function renderizarLogada(aba) {
+    const alvo = document.getElementById('conteudo-' + aba);
+    const x = VENDEDORES.find(v => v.cdi === cdiAtivo);
+    if (!x) {
+        if (sessao && sessao.tipo === 'admin') { alvo.innerHTML = telaSelecao(aba); return; }
+        alvo.innerHTML = `<div class="placeholder-compacto">Não encontramos os seus dados na planilha deste mês. Fale com a sua liderança.</div>`;
+        return;
+    }
+    const r = calcular(x);
+    const fn = { metas: htmlMetas, nsl: htmlNsl }[aba];
+    alvo.innerHTML = barraTopo(x, aba) + `<div class="card-maximized">${cabecalhoVendedor(x)}${fn(x, r)}</div>`;
+    animarTela(alvo);
+}
+
+// ---------- METAS ----------
+function htmlMetas(x, r) {
+    const P = r.P, v = x.v;
+    const fmtK = n => kmil(n), fmtN = n => String(Math.round(n));
+    // Pula 10: meta do mês = 10% da cota de venda (se não houver cota, usa o PMT de serviços projetado)
+    const metaPula = v.cotaVenda > 0 ? v.cotaVenda * 0.10 : v.pmtServ * v.fator;
+    const blocoFpp = x.f ? `<div class="bloco">
+            <h4 class="titulo-bloco" style="color:var(--orange)">💳 CDC · COBRANÇA (FPP)</h4>
+            <div class="sub-bloco">Vale 30 pontos na nota NSL</div>
+            ${linhaMeta('Recebimento', x.f.recebido, x.f.metaReceb, brl0, x.f.faltaMeta > 0 ? `Faltam receber <b>${brl0(x.f.faltaMeta)}</b> para a meta.` : 'Meta de recebimento batida ✅')}
+            <div class="ind-grid-3">
+                <div class="item-ind"><div class="label-ind">Carteira</div><div class="val-ind" style="font-size:1.05em">${brl0(x.f.carteira)}</div></div>
+                <div class="item-ind"><div class="label-ind">FPP real</div><div class="val-ind" style="font-size:1.05em">${pct(x.f.realFpp)}</div></div>
+                <div class="item-ind"><div class="label-ind">Atingimento</div><div class="val-ind" style="font-size:1.05em;color:${corPct(x.f.ating)}">${pct(x.f.ating, 0)}</div></div>
+            </div>
+        </div>` : blocoAguardando('💳 CDC · COBRANÇA (FPP)', 'var(--orange)', 'Não há carteira de cobrança para este vendedor na aba fpp.');
+
+    const blocoCartao = `<div class="bloco">
+            <h4 class="titulo-bloco" style="color:#4dff7a">💳 CARTÃO LUIZA</h4>
+            <div class="sub-bloco">Cartões ativados no mês</div>
+            ${linhaMeta('Cartões ativados', r.cartoes, x.c.meta || 0, fmtN, x.c.meta ? (r.cartaoDobrado ? 'Meta individual + meta da loja batidas: <b>R$ 12 por cartão</b> ✅' : `R$ 6 por cartão · vira <b>R$ 12</b> com 100% da meta individual e 100% da loja (loja hoje ${pct(r.atingCartaoLoja, 0)}).`) : 'Sem meta de cartão cadastrada.')}
+            <div class="ind-grid-3">
+                <div class="item-ind"><div class="label-ind">Pré-aprovados</div><div class="val-ind" style="font-size:1.05em">${Math.round(x.c.preAprov)}</div></div>
+                <div class="item-ind"><div class="label-ind">Conversão</div><div class="val-ind" style="font-size:1.05em">${pct(x.c.conversao)}</div></div>
+                <div class="item-ind"><div class="label-ind">Ticket</div><div class="val-ind" style="font-size:1.05em;color:var(--green)">${brl0(r.ticketCartao)}</div></div>
+            </div>
+        </div>`;
+
+    return `<div class="grid-blocos">
+        <div class="bloco bloco-full">
+            <h4 class="titulo-bloco" style="color:var(--cyan)">📦 VENDAS</h4>
+            <div class="sub-bloco">${r.modo === 'proj' ? 'Atingimento no ritmo atual (venda ÷ meta proporcional do dia)' : 'Realizado até hoje sobre a meta do mês'}</div>
+            ${(() => { const real1p = r.modo === 'proj' ? v.venda1p * P : v.venda1p; const ok = v.cota1p > 0 && bateu(real1p / v.cota1p);
+                return linhaMeta('Meta 1P', real1p, v.cota1p, fmtK, ok ? 'Meta 1P batida: gatilho do NSL garantido ✅' : `Para bater a meta 1P faltam <b>${brl0(Math.max(0, v.cota1p - real1p))}</b>${r.modo === 'proj' ? ' na projeção' : ''}.`); })()}
+            ${linhaMeta('Pula pra 10 (serviços)', r.pula10, metaPula, fmtK, r.pula10 >= metaPula && metaPula > 0 ? 'Meta de serviços batida ✅' : `Faltam <b>${brl0(Math.max(0, metaPula - r.pula10))}</b> em serviços${r.modo === 'proj' ? ' na projeção' : ''} · meta = 10% da cota de venda.`)}
+        </div>
+        ${blocoCartao}
+        ${blocoFpp}
+        <div class="bloco bloco-full">
+            <h4 class="titulo-bloco" style="color:var(--gold)">📱 DIGITAIS</h4>
+            <div class="sub-bloco">Magalu Conecta e Plano Controle</div>
+            ${linhaMeta('Magalu Conecta', r.conecta, x.d.metaConecta, brl0, r.ticketConecta ? `Ticket garantido: <b>${brl0(r.ticketConecta)}</b> 🎟️` : 'Ticket a partir de R$ 1.500 (R$ 160) · R$ 2 mil (R$ 200) · R$ 3 mil (R$ 300).')}
+            ${linhaMeta('Plano Controle', r.qtdPlano, x.d.metaPlano, fmtN, r.ticketPlano ? 'Ticket de <b>R$ 150</b> garantido 🎟️' : `Faltam <b>${Math.max(0, REGRAS.ticketPlano.qtd - r.qtdPlano)}</b> para o ticket de R$ 150.`)}
+        </div>
+    </div>`;
+}
+
+// ---------- NSL ----------
+function htmlNsl(x, r) {
+    const cob = x.f ? x.f.ating * 100 : null;
+    const status = (ind) => {
+        if (ind.chave === 'cobranca' && cob !== null) {
+            const [min, cem, cento20] = ind.regua;
+            const faixaTxt = cob >= cento20 ? 'Régua 120% ✅' : cob >= cem ? 'Régua 100% ✅' : cob >= min ? 'Régua mínima' : 'Abaixo da régua';
+            return `<td class="n" style="color:${cob >= cem ? 'var(--green)' : cob >= min ? 'var(--orange)' : 'var(--red)'}">${cob.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%</td><td class="n">${faixaTxt}</td>`;
+        }
+        return `<td class="n" style="color:var(--gold)">⏳</td><td class="n" style="color:var(--mut)">aguardando</td>`;
+    };
+    const notaBloco = r.temNota ? `<div class="premio-gigante" style="color:${r.notaNsl >= 90 ? 'var(--green)' : 'var(--red)'}">${r.notaNsl.toLocaleString('pt-BR', { maximumFractionDigits: 1 })}%</div>`
+        : `<div class="aguardando-msg"><div class="ico">⏳</div><span class="tit">NOTA NSL AGUARDANDO RELATÓRIO</span><p>Esta área já está pronta e calcula o prêmio sozinha quando a nota individual entrar na planilha (aba <b>nsl</b>).</p></div>`;
+    const premioTxt = r.temNota ? brl0(r.premioNsl) : '⏳';
+    const dobroTxt = !x.lider ? '' : r.lojaTemCota
+        ? chip(r.dobraNsl ? 'ok' : 'nao', `Loja ${pct(r.atingLoja, 0)} da cota → ${r.dobraNsl ? 'prêmio DOBRADO' : 'sem dobro'}`)
+        : chip('pend', 'Cota da loja aguardando (dobro da Liderança)');
+
+    return `<div class="grid-blocos">
+        <div class="bloco bloco-full ${r.temNota ? '' : 'aguardando'}">
+            <h4 class="titulo-bloco" style="color:var(--green)">⭐ PRÊMIO NSL – NÍVEL DE SERVIÇO DO SALÃO</h4>
+            <div class="sub-bloco">Gatilhos: 100% da cota 1P e nota individual de pelo menos 90%</div>
+            <div class="chips-status">${chip(r.bateu1p ? 'ok' : 'nao', 'Cota 1P ' + pct(r.ating1p, 0))}${chip(r.temNota ? (r.notaNsl >= 90 ? 'ok' : 'nao') : 'pend', r.temNota ? 'Nota ' + r.notaNsl.toFixed(1) + '%' : 'Nota NSL aguardando')}${dobroTxt}</div>
+            ${notaBloco}
+            <div class="ind-grid-4" style="margin-top:12px">
+                ${[['< 90%', 0], ['90%', 250], ['100%', 300], ['120%', 400]].map(([n, v]) => `<div class="item-ind" style="${r.temNota && r.premioNslBase === v && (v > 0 || r.notaNsl < 90) ? 'border-color:var(--green);background:rgba(52,245,160,.12)' : ''}"><div class="label-ind">Nota ${n}</div><div class="val-ind" style="font-size:1.15em">${brl0(v)}</div></div>`).join('')}
+            </div>
+            <div class="dica" style="text-align:center;margin-top:12px">Prêmio NSL: <b>${premioTxt}</b>${x.lider ? ' · Liderança: o prêmio individual <b>dobra</b> quando a loja bate 100% da cota (se o individual for zero, continua zero).' : ''}</div>
+        </div>
+        <div class="bloco bloco-full">
+            <h4 class="titulo-bloco" style="color:var(--cyan)">📊 INDICADORES DA NOTA</h4>
+            <div class="sub-bloco">5 metas + Super Bônus de Conversão de Loja (+20 pts)</div>
+            <div class="tabela-wrap"><table class="tabela-simples"><thead><tr><th>Indicador</th><th class="n">Pts</th><th class="n">Mínima</th><th class="n">100%</th><th class="n">120%</th><th class="n">Hoje</th><th class="n">Situação</th></tr></thead>
+            <tbody>${REGRAS.nslIndicadores.map(i => `<tr><td>${i.nome}</td><td class="n">${i.pts}</td><td class="n">${i.regua[0]}</td><td class="n">${i.regua[1]}</td><td class="n">${i.regua[2]}</td>${status(i)}</tr>`).join('')}
+                <tr><td>Super Bônus: Conversão de Loja</td><td class="n">+20</td><td class="n" colspan="3"></td><td class="n" style="color:var(--gold)">⏳</td><td class="n" style="color:var(--mut)">aguardando</td></tr></tbody></table></div>
+            <div class="dica" style="text-align:center">A Cobrança CDC já vem da aba fpp; os demais indicadores entram junto com o relatório da nota.</div>
+        </div>
+    </div>`;
+}
+
+// ---------- RÉGUAS ----------
+// Tabela de faixas marcando onde o vendedor está e a próxima faixa
+function tabelaRegua(tab, valor, rotulo, fmtMin, fmtPremio, temGatilho = true) {
+    const f = faixa(tab, valor);
+    return `<table class="tabela-faixa"><thead><tr><th>${rotulo}</th><th style="text-align:right">Prêmio</th></tr></thead><tbody>${tab.map(([min, premio]) => {
+        let cls = '', tag = '';
+        if (f.atual && f.atual.min === min) { cls = temGatilho ? 'atual' : 'semgatilho'; tag = temGatilho ? '<span class="tag-aqui">VOCÊ ESTÁ AQUI</span>' : '<span class="tag-sg">AQUI · SEM GATILHO</span>'; }
+        else if (f.prox && f.prox.min === min) { cls = 'proxima'; tag = '<span class="tag-prox">PRÓXIMA</span>'; }
+        else if (valor >= min) cls = 'atingida';
+        return `<tr class="${cls}"><td>${fmtMin(min)}${tag}</td><td>${fmtPremio(premio)}</td></tr>`;
+    }).join('')}</tbody></table>`;
+}
+function textoProxima(f, valor, fmtFalta, fmtMin, unidade = '') {
+    if (!f.prox) return f.atual ? 'Você está na faixa máxima! 🏆' : '';
+    return `Faltam <b>${fmtFalta(f.prox.min - valor)}</b>${unidade} para a faixa de ${fmtMin(f.prox.min)} (prêmio de <b>${brl0(f.prox.premio)}</b>).`;
+}
+const NSL_REGUA = [[90, 250], [100, 300], [120, 400]];
+const CONECTA_REGUA = [[1500, 160], [2000, 200], [3000, 300]];
+const PLANO_REGUA = [[10, 150]];
+const nTxt = v => (Number(v) || 0).toLocaleString('pt-BR', { maximumFractionDigits: 1 });
+
+function htmlReguasPessoal(x, r) {
+    const t = x.lider ? 'lider' : 'vendedor';
+    const fV = r.fVendas, fP = r.fPula;
+    const nota = r.temNota ? r.notaNsl : 0;
+    const fN = faixa(NSL_REGUA, nota), fC = faixa(CONECTA_REGUA, r.conecta), fPl = faixa(PLANO_REGUA, r.qtdPlano);
+    const card = (cor, tit, val, sub) => `<div class="rr-card" style="--c:${cor}"><div class="rr-t">${tit}</div><div class="rr-v">${val}</div><div class="rr-s">${sub}</div></div>`;
+    const gat = r.bateuGatilho ? '' : ` · <b style="color:var(--red)">gatilho de ${kmil(r.gatilhoVenda)} não atingido</b>`;
+
+    const resumo = `<div class="regua-resumo">
+        ${card('var(--cyan)', 'Faixa de Vendas', fV.atual ? kmil(fV.atual.min) : '—', (fV.prox ? `próxima: <b>${kmil(fV.prox.min)}</b>` : 'faixa máxima 🏆') + gat)}
+        ${card('#9b00e8', 'Pula 10', fP.atual ? kmil(fP.atual.min) : '—', (fP.prox ? `próxima: <b>${kmil(fP.prox.min)}</b>` : 'faixa máxima 🏆') + gat)}
+        ${card('var(--green)', 'NSL', r.temNota ? nTxt(nota) + '%' : '⏳', r.temNota ? (fN.prox ? `próxima: <b>${fN.prox.min}%</b> (${brl0(fN.prox.premio)})` : 'faixa máxima 🏆') : 'nota ainda não saiu')}
+        ${card('#ff0055', 'Tickets', brl0(r.tickets), `Conecta ${brl0(r.ticketConecta)} · Plano ${brl0(r.ticketPlano)} · Cartão ${brl0(r.ticketCartao)}`)}
+    </div>`;
+
+    return resumo + `<div class="grid-blocos">
+        <div class="bloco">
+            <h4 class="titulo-bloco" style="color:var(--cyan)">📦 FAIXA DE VENDAS</h4>
+            <div class="sub-bloco">${x.lider ? 'Liderança' : 'Vendedor'} · ${r.modo === 'proj' ? 'projeção' : 'realizado'}: <b style="color:#fff">${kmil(r.venda)}</b></div>
+            <div class="chips-status">${chip(r.bateuGatilho ? 'ok' : 'nao', 'Gatilho ' + kmil(r.gatilhoVenda))}</div>
+            ${tabelaRegua(REGRAS.faixaVendas[t], r.venda, 'Faixa de vendas', kmil, brl0, r.bateuGatilho)}
+            <div class="dica" style="text-align:center">${textoProxima(fV, r.venda, brl0, kmil)}</div>
+        </div>
+        <div class="bloco">
+            <h4 class="titulo-bloco" style="color:#b46bff">🛡️ FAIXA PULA 10</h4>
+            <div class="sub-bloco">Serviços · ${r.modo === 'proj' ? 'projeção' : 'realizado'}: <b style="color:#fff">${kmil(r.pula10)}</b></div>
+            <div class="chips-status">${chip(r.bateuGatilho ? 'ok' : 'nao', 'Gatilho ' + kmil(r.gatilhoVenda))}</div>
+            ${tabelaRegua(REGRAS.faixaPula10[t], r.pula10, 'Faixa Pula 10', kmil, brl0, r.bateuGatilho)}
+            <div class="dica" style="text-align:center">${textoProxima(fP, r.pula10, brl0, kmil, ' em serviços')}</div>
+        </div>
+        <div class="bloco">
+            <h4 class="titulo-bloco" style="color:var(--green)">⭐ NSL</h4>
+            <div class="sub-bloco">Gatilho: 100% da cota 1P + nota individual ≥ 90%</div>
+            <div class="chips-status">${chip(r.bateu1p ? 'ok' : 'nao', 'Cota 1P ' + pct(r.ating1p, 0))}${chip(r.temNota ? (nota >= 90 ? 'ok' : 'nao') : 'pend', r.temNota ? 'Nota ' + nTxt(nota) + '%' : 'Nota aguardando')}</div>
+            ${r.temNota ? tabelaRegua(NSL_REGUA, nota, 'Nota NSL', m => m + '%', brl0, r.bateu1p) : tabelaRegua(NSL_REGUA, -1, 'Nota NSL', m => m + '%', brl0)}
+            <div class="dica" style="text-align:center">${r.temNota ? (fN.prox ? `Faltam <b>${nTxt(fN.prox.min - nota)} pontos</b> para a faixa de ${fN.prox.min}% (prêmio de <b>${brl0(fN.prox.premio)}</b>).` : 'Você está na faixa máxima! 🏆') : 'A posição aparece quando a nota individual entrar na planilha.'}${x.lider ? '<br>Liderança: o prêmio <b>dobra</b> quando a loja bate 100% da cota.' : ''}</div>
+        </div>
+        <div class="bloco">
+            <h4 class="titulo-bloco" style="color:var(--gold)">🎟️ TICKETS</h4>
+            <div class="sub-bloco">Magalu Conecta · ${r.modo === 'proj' ? 'projeção' : 'realizado'}: <b style="color:#fff">${brl0(r.conecta)}</b></div>
+            ${tabelaRegua(CONECTA_REGUA, r.conecta, 'Magalu Conecta', brl0, brl0)}
+            <div class="dica" style="text-align:center;margin-bottom:12px">${fC.prox ? `Faltam <b>${brl0(fC.prox.min - r.conecta)}</b> para o ticket de ${brl0(fC.prox.premio)}.` : 'Ticket máximo do Conecta garantido! 🏆'}</div>
+            ${tabelaRegua(PLANO_REGUA, r.qtdPlano, `Plano Controle (você: ${r.qtdPlano})`, m => m + ' ou mais', brl0)}
+            <div class="dica" style="text-align:center;margin-bottom:12px">${fPl.prox ? `Faltam <b>${fPl.prox.min - r.qtdPlano}</b> planos para o ticket de R$ 150.` : 'Ticket do Plano Controle garantido! 🏆'}</div>
+            <table class="tabela-faixa"><thead><tr><th>Cartão ativado (você: ${r.cartoes})</th><th style="text-align:right">Por cartão</th></tr></thead><tbody>
+                <tr class="${r.cartaoDobrado ? 'atingida' : 'atual'}"><td>Normal${r.cartaoDobrado ? '' : '<span class="tag-aqui">VOCÊ ESTÁ AQUI</span>'}</td><td>R$ 6</td></tr>
+                <tr class="${r.cartaoDobrado ? 'atual' : 'proxima'}"><td>100% meta individual + 100% loja${r.cartaoDobrado ? '<span class="tag-aqui">VOCÊ ESTÁ AQUI</span>' : '<span class="tag-prox">PRÓXIMA</span>'}</td><td>R$ 12</td></tr>
+            </tbody></table>
+            <div class="dica" style="text-align:center">Meta individual hoje: ${pct(r.atingCartao, 0)} · loja: ${pct(r.atingCartaoLoja, 0)}</div>
+        </div>
+    </div>`;
+}
+
+function htmlReguasGerais() {
+    const tab = (linhas, rot) => `<table class="tabela-simples"><thead><tr><th>${rot}</th><th class="n">Prêmio</th></tr></thead><tbody>${linhas.map(([m, p]) => `<tr><td>${kmil(m)}</td><td class="n">${brl0(p)}</td></tr>`).join('')}</tbody></table>`;
+    return `<div class="grid-blocos">
+        <div class="bloco"><h4 class="titulo-bloco" style="color:var(--cyan)">VENDEDOR</h4><div class="sub-bloco">Gatilho: venda mínima de R$ 100 mil</div>
+            <div class="ind-grid-2">${tab(REGRAS.faixaVendas.vendedor, 'Vendas')}${tab(REGRAS.faixaPula10.vendedor, 'Pula 10')}</div></div>
+        <div class="bloco"><h4 class="titulo-bloco" style="color:var(--gold)">LIDERANÇA DE LOJA</h4><div class="sub-bloco">Gatilho: venda mínima de R$ 80 mil</div>
+            <div class="ind-grid-2">${tab(REGRAS.faixaVendas.lider, 'Vendas')}${tab(REGRAS.faixaPula10.lider, 'Pula 10')}</div></div>
+        <div class="bloco"><h4 class="titulo-bloco" style="color:var(--green)">NSL</h4><div class="sub-bloco">Gatilho: 100% da cota 1P + nota individual ≥ 90%</div>
+            <table class="tabela-simples"><thead><tr><th>Nota NSL</th><th class="n">Prêmio</th></tr></thead><tbody><tr><td>Abaixo de 90%</td><td class="n">R$ 0</td></tr><tr><td>90%</td><td class="n">R$ 250</td></tr><tr><td>100%</td><td class="n">R$ 300</td></tr><tr><td>120%</td><td class="n">R$ 400</td></tr></tbody></table>
+            <div class="dica">Liderança: o prêmio individual <b>dobra</b> quando a loja bate 100% da cota.</div></div>
+        <div class="bloco"><h4 class="titulo-bloco" style="color:var(--gold)">TICKETS</h4>
+            <table class="tabela-simples"><tbody>
+                <tr><td>10 ou mais Planos Controle (não acumula)</td><td class="n">R$ 150</td></tr>
+                <tr><td>Cartão ativado (compra de R$ 49,90)</td><td class="n">R$ 6</td></tr>
+                <tr><td>Cartão com 100% meta individual + 100% loja</td><td class="n">R$ 12</td></tr>
+                <tr><td>Magalu Conecta R$ 1.500</td><td class="n">R$ 160</td></tr>
+                <tr><td>Magalu Conecta R$ 2.000</td><td class="n">R$ 200</td></tr>
+                <tr><td>Magalu Conecta R$ 3.000 ou mais</td><td class="n">R$ 300</td></tr></tbody></table>
+            <div class="dica">Piso salarial: <b>R$ 2.000</b>. Se comissões + prêmios ficarem abaixo, a empresa completa a diferença.</div></div>
+    </div>`;
+}
+
+function renderizarReguas() {
+    const alvo = document.getElementById('conteudo-reguas');
+    const admin = sessao && sessao.tipo === 'admin';
+    const x = sessao ? VENDEDORES.find(v => v.cdi === cdiAtivo) : null;
+    const cab = `<div class="detalhe-header"><h3 class="detalhe-nome">📏 Réguas de Prêmios</h3><div class="detalhe-cidade">POLÍTICA SALARIAL · VENDEDORES</div></div>`;
+    let topo = '';
+    if (admin) {
+        const lista = [...VENDEDORES].sort((a, b) => Number(a.filial) - Number(b.filial) || a.nome.localeCompare(b.nome));
+        topo = `<select class="select-vend" onchange="this.value ? selecionarVendedor(this.value) : trocarVendedor()" data-html2canvas-ignore="true">
+            <option value="">📏 Réguas gerais (escolha um vendedor para ver onde ele está)</option>
+            ${lista.map(v => `<option value="${v.cdi}" ${v.cdi === cdiAtivo ? 'selected' : ''}>FL ${v.filial} - ${esc(v.curto)}${v.lider ? ' (Liderança)' : ''}</option>`).join('')}
+        </select>`;
+    } else if (!sessao) {
+        topo = `<div class="entrar-regua" data-html2canvas-ignore="true"><button class="btn-top10" onclick="abaPendente='reguas';abrirLogin()">🔒 Entrar para ver onde você está</button></div>`;
+    }
+    if (x) {
+        const r = calcular(x);
+        alvo.innerHTML = topo + `<div class="topbar-detalhe" data-html2canvas-ignore="true"><span></span><div class="modo-toggle" role="group" aria-label="Modo de cálculo">
+            <button class="${modoCalculo === 'proj' ? 'ativo' : ''}" onclick="mudarModo('proj')">📈 Projeção do mês</button>
+            <button class="${modoCalculo === 'real' ? 'ativo' : ''}" onclick="mudarModo('real')">📍 Realizado até hoje</button></div></div>
+            <div class="card-maximized">${cabecalhoVendedor(x)}${htmlReguasPessoal(x, r)}</div>`;
+        animarTela(alvo);
+    } else {
+        alvo.innerHTML = topo + `<div class="card-maximized">${cab}${htmlReguasGerais()}</div>`;
+    }
+}
+
+// ==========================================
+// PÓDIO: EFEITOS
+// ==========================================
+function mensagemFlutuante(id, texto, cor) {
+    const el = document.getElementById(id), r = el.getBoundingClientRect();
+    const m = document.createElement('div'); m.className = 'floating-msg'; m.innerText = texto; m.style.color = cor;
+    let xx = r.left + r.width / 2; xx = Math.max(140, Math.min(window.innerWidth - 140, xx));
+    m.style.left = xx + 'px'; m.style.top = r.top + 'px';
+    if (window.innerWidth < 600) m.style.fontSize = '1.2em';
+    document.body.appendChild(m); setTimeout(() => m.remove(), 2500);
+}
+function tocar(id) {
+    ['som-vitoria', 'som-prata', 'som-bronze'].forEach(s => { const a = document.getElementById(s); if (a) a.pause(); });
+    if (typeof somAtivo !== 'undefined' && !somAtivo) return;
+    const a = document.getElementById(id); if (a) { a.currentTime = 0; a.play().catch(() => {}); }
+}
+document.getElementById('primeiro-lugar').addEventListener('click', () => { confetti({ particleCount: 140, spread: 85, origin: { y: .6 }, colors: ['#ffd24a', '#fff3b0', '#1a1a1f', '#000000', '#ff0055', '#9b00e8'] }); mensagemFlutuante('primeiro-lugar', '🏆 O TOPO É SEU!!!', '#ffd24a'); tocar('som-vitoria'); });
+document.getElementById('segundo-lugar').addEventListener('click', () => { confetti({ particleCount: 100, spread: 70, origin: { y: .6 }, colors: ['#C0C0C0', '#E0E0E0', '#ffffff'] }); mensagemFlutuante('segundo-lugar', '🥈 ACELERAAA!', '#22d3ee'); tocar('som-prata'); });
+document.getElementById('terceiro-lugar').addEventListener('click', () => { confetti({ particleCount: 100, spread: 70, origin: { y: .6 }, colors: ['#CD7F32', '#D2691E', '#ff7b00'] }); mensagemFlutuante('terceiro-lugar', '🥉 TÁ NO PÓDIO! BORA SUBIR!', '#ff9f1c'); tocar('som-bronze'); });
+
+// ==========================================
+// CARREGAMENTO
+// ==========================================
+const MESES = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
+function aplicarTitulo(json) {
+    let mes = new Date().getMonth(), ano = new Date().getFullYear();
+    const s = tabela(json.servico)[0];
+    const comp = s ? String(col(s, 'COMPETENCIA') || '') : '';
+    if (/^\d{6}$/.test(comp)) { ano = +comp.slice(0, 4); mes = +comp.slice(4) - 1; }
+    DSR = calcularDsr(ano, mes);
+    if (ano * 12 + mes < 2026 * 12 + 10) { mes = 10; ano = 2026; }   // edição Black: NOVEMBRO/2026
+    document.getElementById('titulo-dashboard').innerText = `🏆 VENDEDORES EDIÇÃO BLACK DAS BLACK'S - ${MESES[mes]} / ${ano} 🏆`;
+    document.getElementById('sb-sub').innerText = `REGIONAL CAMPO BOM • ${MESES[mes]} ${ano}`;
+    { const pm = document.getElementById('pz-mes'); if (pm) pm.innerText = `${MESES[mes]} / ${ano}`; }
+    document.title = `Vendedores Black - Regional Campo Bom - ${MESES[mes]} ${ano}`;
+}
+
+function processar(json) {
+    aplicarTitulo(json);
+    montarDados(json);
+    dadosOk = true;
+    if (sessao && sessao.tipo === 'vendedor' && !VENDEDORES.find(v => v.cdi === sessao.cdi)) { sessao = null; cdiAtivo = null; gravarLS('vend_sessao', null); }
+    atualizarBotaoSair();
+    renderizarChips();
+    renderizarAbaAtual();
+    if (abaAtual !== 'ranking') renderizarRanking();
+}
+
+async function carregarDados(tentativas = 3) {
+    const memo = lerLS('vend_dados_v3', null);
+    if (memo && !dadosOk) { try { processar(memo); document.getElementById('texto-carregando').innerText = 'Sincronizando...'; } catch (e) { gravarLS('vend_dados_v3', null); } }
+
+    if (!/^https:\/\//.test(URL_WEB_APP)) {
+        document.getElementById('texto-carregando').innerText = '';
+        const av = document.getElementById('aviso-erro');
+        av.style.display = 'block';
+        av.innerHTML = '⚙️ Falta configurar a URL do Apps Script no código (const URL_WEB_APP).';
+        document.getElementById('lista-ranking').innerHTML = '';
+        return;
+    }
+    try {
+        const ctrl = new AbortController(), to = setTimeout(() => ctrl.abort(), 60000);
+        const resp = await fetch(URL_WEB_APP + '?t=' + Date.now(), { signal: ctrl.signal });
+        clearTimeout(to);
+        if (!resp.ok) throw new Error('O Google recusou a conexão.');
+        let json;
+        try { json = JSON.parse(await resp.text()); } catch (e) { throw new Error('Resposta inválida. Confira se a URL do Apps Script está correta.'); }
+        if (json.erro) throw new Error('Erro no script: ' + json.erro);
+        if (!json.venda || !json.venda.length || !json.dados_vendedores || !json.dados_vendedores.length) throw new Error('As abas "venda" e "dados vendedores" estão vazias ou não foram encontradas.');
+        gravarLS('vend_dados_v3', json);
+        processar(json);
+        document.getElementById('texto-carregando').innerText = '';
+        document.getElementById('aviso-erro').style.display = 'none';
+        document.getElementById('rodape-sync').innerHTML = `🟢 Dados atualizados hoje às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`;
+    } catch (erro) {
+        if (tentativas > 1) { setTimeout(() => carregarDados(tentativas - 1), 3000); return; }
+        document.getElementById('texto-carregando').innerText = '';
+        if (dadosOk) { document.getElementById('rodape-sync').innerHTML = '🟡 Exibindo dados da memória (offline)'; return; }
+        const av = document.getElementById('aviso-erro');
+        av.style.display = 'block'; av.innerHTML = '⚠️ Erro de conexão: ' + esc(erro.message);
+        document.getElementById('lista-ranking').innerHTML = '';
+    }
+}
+
+// ==========================================
+// COMPARTILHAR NO INSTAGRAM
+// ==========================================
+async function gerarImagem(formato) {
+    const sc = document.getElementById('share-container');
+    document.getElementById('shareMenu').classList.remove('show');
+    sc.style.display = 'none';
+    showToast('Gerando imagem...', 'info', 2500);
+    try {
+        const canvas = await html2canvas(document.body, {
+            backgroundColor: '#060913', scale: 2, useCORS: true,
+            onclone: d => { const b = d.getElementById('share-banner'); if (b) b.style.display = 'block'; d.body.style.backgroundImage = 'none'; },
+            ignoreElements: el => el.classList.contains('share-container') || el.classList.contains('tab-container') || el.classList.contains('bg-efeito-cores') || el.id === 'bg-clouds' || el.classList.contains('fumaca') || el.id === 'fumaca-palco' || el.id === 'btn-som' || el.id === 'intro-black' || el.classList.contains('sync-container') || el.id === 'toast-box' || el.id === 'login-overlay' || el.id === 'aviso-erro' || el.id === 'texto-carregando'
+        });
+        sc.style.display = 'flex';
+        const fc = document.createElement('canvas'), ctx = fc.getContext('2d');
+        const W = 1080, H = formato === 'feed' ? 1080 : 1920;
+        fc.width = W; fc.height = H;
+        ctx.fillStyle = '#060913'; ctx.fillRect(0, 0, W, H);
+        const g = ctx.createRadialGradient(W / 2, 0, 50, W / 2, 0, H * .7); g.addColorStop(0, 'rgba(155,0,232,0.24)'); g.addColorStop(1, 'rgba(155,0,232,0)');
+        ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+        const mg = formato === 'feed' ? 100 : 150, k = Math.min((W - mg) / canvas.width, (H - mg) / canvas.height);
+        ctx.drawImage(canvas, (W - canvas.width * k) / 2, (H - canvas.height * k) / 2, canvas.width * k, canvas.height * k);
+        fc.toBlob(async blob => {
+            const arq = new File([blob], `ranking-vendedores-black-${formato}.png`, { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [arq] })) { try { await navigator.share({ files: [arq], title: 'Ranking Vendedores' }); } catch (e) {} }
+            else { const a = document.createElement('a'); a.download = arq.name; a.href = fc.toDataURL('image/png'); a.click(); }
+        }, 'image/png');
+    } catch (e) { sc.style.display = 'flex'; showToast('Ocorreu um erro ao gerar a imagem.', 'erro'); }
+}
+
+// ===== EFEITOS BLACK (fundo, fumaça, sons e intro) =====
+document.addEventListener('mousemove', function(e) {
+    const bg = document.getElementById('bg-clouds');
+    if(bg && window.innerWidth > 850) { // Aplica apenas no desktop
+        const moveX = (window.innerWidth / 2 - e.pageX) / 45;
+        const moveY = (window.innerHeight / 2 - e.pageY) / 45;
+        bg.style.transform = `translate(${moveX}px, ${moveY}px) scale(1.05)`;
+    }
+});
+
+function criarEfeitosFundo() {
+    const bg = document.createElement('div'); 
+    bg.className = 'bg-efeito-cores'; 
+    document.body.prepend(bg);
+    
+    const mobile = window.innerWidth < 700; 
+    const nParticles = mobile ? 20 : 45; // Respingos de tinta soltos
+    
+    const coresSolidas = ['#00d2ff', '#9b00e8', '#ff0055', '#ff8c00', '#ffe100', '#34f5a0'];
+
+    // Gerar partículas de respingo vivas
+    for (let i = 0; i < nParticles; i++) {
+        let p = document.createElement('div'); 
+        p.style.position = 'absolute';
+        let size = Math.random() * 6 + 2; 
+        p.style.width = size + 'px'; 
+        p.style.height = size + 'px';
+        p.style.background = coresSolidas[Math.floor(Math.random() * coresSolidas.length)];
+        p.style.borderRadius = Math.random() > 0.5 ? '50%' : '30% 70% 70% 30% / 30% 30% 70% 70%';
+        p.style.left = Math.random() * 100 + 'vw'; 
+        p.style.top = Math.random() * 100 + 'vh';
+        p.style.boxShadow = `0 0 ${size*2}px ${p.style.background}`; 
+        p.style.animation = `flutuarParticula ${Math.random() * 15 + 10}s linear infinite alternate`; 
+        bg.appendChild(p);
+    }
+}
+    criarEfeitosFundo();
+
+/* ===== FUMAÇA DE PALCO (jatos de CO2 de balada) ===== */
+const fumacaPalco = (function () {
+    const cv = document.getElementById('fumaca-palco');
+    const ctx = cv.getContext('2d');
+    const CORES = [[235,240,255],[235,240,255],[235,240,255],[200,120,255],[255,90,170],[90,220,255]];
+    const sprites = CORES.map(([r,g,b]) => {
+        const s = document.createElement('canvas'); s.width = s.height = 128;
+        const g2 = s.getContext('2d'), gr = g2.createRadialGradient(64,64,0,64,64,64);
+        gr.addColorStop(0, `rgba(${r},${g},${b},.42)`); gr.addColorStop(.45, `rgba(${r},${g},${b},.15)`); gr.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        g2.fillStyle = gr; g2.fillRect(0,0,128,128); return s;
+    });
+    let parts = [], rodando = false, inicio = 0, W = 0, H = 0, jatos = [];
+    function emitir(n) {
+        const esc = Math.min(W, H) / 800;
+        for (let i = 0; i < n; i++) {
+            const j = jatos[Math.floor(Math.random() * jatos.length)];
+            parts.push({
+                x: j + (Math.random() - .5) * 30 * esc, y: H + 20,
+                vx: (Math.random() - .5) * .12 * esc, vy: -(H * (0.0019 + Math.random() * 0.0011)),   // px por ms
+                r: (16 + Math.random() * 20) * esc, cresc: (.2 + Math.random() * .22) * esc,
+                vida: 0, max: 900 + Math.random() * 600, rot: Math.random() * 6.28, vr: (Math.random() - .5) * .0012,
+                spr: sprites[Math.random() < .7 ? 0 : 1 + Math.floor(Math.random() * (sprites.length - 1))]
+            });
+        }
+    }
+    let acum = 0;
+    function quadro(ts) {
+        const dt = Math.min(50, ts - (quadro.ult || ts)) || 16; quadro.ult = ts;
+        const t = ts - inicio;
+        if (t < 320) { acum += dt * (W < 700 ? .35 : .6); const n = Math.floor(acum); acum -= n; emitir(n); }
+        ctx.clearRect(0, 0, W, H);
+        const nev = t < 300 ? t / 300 : Math.max(0, 1 - (t - 300) / 900);
+        if (nev > 0) { const g = ctx.createLinearGradient(0, H, 0, 0); g.addColorStop(0, `rgba(210,215,240,${.20 * nev})`); g.addColorStop(.5, `rgba(150,130,200,${.08 * nev})`); g.addColorStop(1, 'rgba(0,0,0,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+        parts = parts.filter(p => p.vida < p.max);
+        for (const p of parts) {
+            p.vida += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy *= Math.pow(.9965, dt);
+            p.r += p.cresc * dt; p.rot += p.vr * dt;
+            const k = p.vida / p.max, a = k < .1 ? k / .1 : Math.max(0, 1 - (k - .1) / .9);
+            ctx.globalAlpha = a * .9; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+            ctx.drawImage(p.spr, -p.r, -p.r, p.r * 2, p.r * 2); ctx.restore();
+        }
+        ctx.globalAlpha = 1;
+        if (parts.length || t < 400) requestAnimationFrame(quadro);
+        else { rodando = false; cv.style.display = 'none'; ctx.clearRect(0, 0, W, H); }
+    }
+    return function disparar() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        W = window.innerWidth; H = window.innerHeight;
+        cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const n = W < 700 ? 3 : 5; jatos = [...Array(n)].map((_, i) => W * (i + .5) / n);
+        cv.style.display = 'block'; inicio = performance.now(); quadro.ult = 0;
+        acum = 0; if (!rodando) { rodando = true; parts = []; requestAnimationFrame(quadro); }
+    };
+})();
+function efeitoTrocaAba() { fumacaPalco(); }
+/* ===== SOM: efeitos sintetizados (Web Audio) ===== */
+let somAtivo = true;
+try { somAtivo = localStorage.getItem('som_black') !== 'off'; } catch (e) {}
+let audioCtx = null, ruidoBuffer = null, busMaster = null, busReverb = null;
+function criarImpulso(ac, seg, decai) {
+    const len = ac.sampleRate * seg, imp = ac.createBuffer(2, len, ac.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = imp.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decai); }
+    return imp;
+}
+function audio(forcar) {
+    if (!somAtivo) return null;
+    try {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const ac = audioCtx, len = ac.sampleRate * 3;
+            ruidoBuffer = ac.createBuffer(2, len, ac.sampleRate);
+            for (let c = 0; c < 2; c++) { const d = ruidoBuffer.getChannelData(c); for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1; }
+            // master com compressor (deixa tudo "cheio" sem estourar)
+            const comp = ac.createDynamicsCompressor();
+            comp.threshold.value = -16; comp.knee.value = 8; comp.ratio.value = 5; comp.attack.value = .004; comp.release.value = .3;
+            busMaster = ac.createGain(); busMaster.gain.value = VOLUME_GERAL;
+            busMaster.connect(comp).connect(ac.destination);
+            // reverb de "arena"
+            const conv = ac.createConvolver(); conv.buffer = criarImpulso(ac, 3.8, 2.6);
+            busReverb = ac.createGain(); busReverb.gain.value = .55;
+            busReverb.connect(conv).connect(busMaster);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        return audioCtx;
+    } catch (e) { return null; }
+}
+let somTrim = 1;   // equaliza o volume entre as opções
+function saidaFx(ac, seco = 1, molhado = .6, pan = 0) {
+    const g = ac.createGain(); g.gain.value = somTrim; const p = ac.createStereoPanner ? ac.createStereoPanner() : null;
+    const ds = ac.createGain(), wt = ac.createGain(); ds.gain.value = seco; wt.gain.value = molhado;
+    if (p) { p.pan.value = pan; g.connect(p); p.connect(ds); p.connect(wt); } else { g.connect(ds); g.connect(wt); }
+    ds.connect(busMaster); wt.connect(busReverb);
+    return g;
+}
+function curvaDist(k) { const n = 2048, c = new Float32Array(n); for (let i = 0; i < n; i++) { const x = i * 2 / n - 1; c[i] = (1 + k) * x / (1 + k * Math.abs(x)); } return c; }
+
+// ---- Arquivos opcionais: se existirem na pasta, são usados no lugar do som sintetizado
+const SOM_ARQUIVOS = { entrada: 'entrada.mp3', fumaca: 'fumaca.mp3' };
+const somArquivo = {};
+Object.entries(SOM_ARQUIVOS).forEach(([k, src]) => {
+    const a = new Audio(); a.preload = 'auto';
+    a.addEventListener('canplaythrough', () => { somArquivo[k] = a; }, { once: true });
+    a.addEventListener('error', () => {}, { once: true });
+    a.src = src;
+});
+function tocarArquivo(k) {
+    if (!somAtivo || !somArquivo[k]) return false;
+    try { const a = somArquivo[k]; a.currentTime = 0; a.volume = Math.min(1, VOLUME_GERAL * 1.6); a.play().catch(() => {}); return true; } catch (e) { return false; }
+}
+
+// ---- BRAAM de trailer (metais graves distorcidos + sub + impacto + cauda de reverb)
+function somBraam(atraso = 0, forca = 1, nota = 55) {
+    const ac = audio(); if (!ac) return;
+    const t0 = ac.currentTime + atraso, dur = 2.6;
+    const out = saidaFx(ac, .9, .7);
+    const vca = ac.createGain();
+    vca.gain.setValueAtTime(0.0001, t0); vca.gain.exponentialRampToValueAtTime(.55 * forca, t0 + .06);
+    vca.gain.setValueAtTime(.55 * forca, t0 + .5); vca.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.Q.value = 6;
+    lp.frequency.setValueAtTime(180, t0); lp.frequency.exponentialRampToValueAtTime(1600, t0 + .12); lp.frequency.exponentialRampToValueAtTime(380, t0 + dur);
+    const sh = ac.createWaveShaper(); sh.curve = curvaDist(6); sh.oversample = '4x';
+    sh.connect(lp).connect(vca).connect(out);
+    [[1, -9], [1, 9], [2, -5], [2, 6], [1.5, 0], [.5, 0]].forEach(([mult, det]) => {
+        const o = ac.createOscillator(); o.type = 'sawtooth'; o.frequency.value = nota * mult; o.detune.value = det;
+        const g = ac.createGain(); g.gain.value = mult === .5 ? .5 : .22;
+        o.connect(g).connect(sh); o.start(t0); o.stop(t0 + dur + .1);
+    });
+    // sub drop
+    const sub = ac.createOscillator(); sub.type = 'sine';
+    sub.frequency.setValueAtTime(nota * 1.2, t0); sub.frequency.exponentialRampToValueAtTime(nota * .55, t0 + 1.6);
+    const gs = ac.createGain(); gs.gain.setValueAtTime(0.0001, t0); gs.gain.exponentialRampToValueAtTime(.9 * forca, t0 + .02); gs.gain.exponentialRampToValueAtTime(0.0001, t0 + 2);
+    sub.connect(gs).connect(saidaFx(ac, 1, .15)); sub.start(t0); sub.stop(t0 + 2.1);
+    // ataque (pancada de tambor grande)
+    const n = ac.createBufferSource(); n.buffer = ruidoBuffer;
+    const lpn = ac.createBiquadFilter(); lpn.type = 'lowpass'; lpn.frequency.setValueAtTime(3500, t0); lpn.frequency.exponentialRampToValueAtTime(200, t0 + .4);
+    const gn = ac.createGain(); gn.gain.setValueAtTime(0.0001, t0); gn.gain.exponentialRampToValueAtTime(.8 * forca, t0 + .005); gn.gain.exponentialRampToValueAtTime(0.0001, t0 + .5);
+    n.connect(lpn).connect(gn).connect(saidaFx(ac, .8, 1)); n.start(t0, Math.random()); n.stop(t0 + .6);
+}
+// ---- Subida (riser) com tom crescente + ruído, terminando no primeiro BRAAM
+function somRiser(atraso = 0, dur = 1) {
+    const ac = audio(); if (!ac) return;
+    const t0 = ac.currentTime + atraso, out = saidaFx(ac, .7, .9);
+    const n = ac.createBufferSource(); n.buffer = ruidoBuffer;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = 1.5;
+    bp.frequency.setValueAtTime(400, t0); bp.frequency.exponentialRampToValueAtTime(9000, t0 + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(.5, t0 + dur * .97); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur + .03);
+    n.connect(bp).connect(g).connect(out); n.start(t0); n.stop(t0 + dur + .1);
+    const o = ac.createOscillator(); o.type = 'sawtooth';
+    o.frequency.setValueAtTime(80, t0); o.frequency.exponentialRampToValueAtTime(880, t0 + dur);
+    const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(400, t0); lp.frequency.exponentialRampToValueAtTime(5000, t0 + dur);
+    const go = ac.createGain(); go.gain.setValueAtTime(0.0001, t0); go.gain.exponentialRampToValueAtTime(.12, t0 + dur * .97); go.gain.exponentialRampToValueAtTime(0.0001, t0 + dur + .03);
+    o.connect(lp).connect(go).connect(out); o.start(t0); o.stop(t0 + dur + .1);
+}
+// ---- Swell reverso (cresce de baixo e "suga") antes do TROFÉU GLOBAL
+function somSwell(atraso = 0, dur = 1.2) {
+    const ac = audio(); if (!ac) return;
+    const t0 = ac.currentTime + atraso;
+    const n = ac.createBufferSource(); n.buffer = ruidoBuffer;
+    const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2500;
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(.35, t0 + dur); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur + .04);
+    n.connect(hp).connect(g).connect(saidaFx(ac, .6, .8)); n.start(t0); n.stop(t0 + dur + .1);
+}
+// ---- Final dourado: acorde grande e brilhante com cauda longa
+function somFinal(atraso = 0) {
+    const ac = audio(); if (!ac) return;
+    const t0 = ac.currentTime + atraso, out = saidaFx(ac, .55, 1);
+    [110, 164.8, 220, 277.2, 329.6, 440, 659.3].forEach((f, i) => {
+        ['sawtooth', 'triangle'].forEach((tipo, j) => {
+            const o = ac.createOscillator(); o.type = tipo; o.frequency.value = f; o.detune.value = j ? 6 : -6;
+            const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.setValueAtTime(600, t0); lp.frequency.exponentialRampToValueAtTime(4200, t0 + .25); lp.frequency.exponentialRampToValueAtTime(900, t0 + 3);
+            const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(i < 2 ? .1 : .055, t0 + .05); g.gain.exponentialRampToValueAtTime(0.0001, t0 + 3.2);
+            o.connect(lp).connect(g).connect(out); o.start(t0); o.stop(t0 + 3.3);
+        });
+    });
+    somBraam(atraso, .7, 55);
+}
+// ---- Jatos de CO2: 3 disparos em sequência, abertos no estéreo, com reverb de casa de show
+function fumacaTriplo() {
+    const ac = audio(); if (!ac) return;
+    [[0, -.7], [.09, .7], [.18, 0]].forEach(([d, pan], idx) => {
+        const t0 = ac.currentTime + .02 + d, dur = 1.9 - idx * .15;
+        const out = saidaFx(ac, .85, .55, pan);
+        const n = ac.createBufferSource(); n.buffer = ruidoBuffer;
+        const hp = ac.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 900;
+        const pk = ac.createBiquadFilter(); pk.type = 'peaking'; pk.Q.value = 1.2; pk.gain.value = 9;
+        pk.frequency.setValueAtTime(4200, t0); pk.frequency.exponentialRampToValueAtTime(2400, t0 + dur);
+        const g = ac.createGain();
+        g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(.75, t0 + .015);
+        g.gain.setValueAtTime(.7, t0 + .5); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+        n.connect(hp).connect(pk).connect(g).connect(out); n.start(t0, Math.random() * 1.5); n.stop(t0 + dur + .05);
+        // "pop" da válvula abrindo
+        const b = ac.createBufferSource(); b.buffer = ruidoBuffer;
+        const lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 700;
+        const gb = ac.createGain(); gb.gain.setValueAtTime(0.0001, t0); gb.gain.exponentialRampToValueAtTime(.9, t0 + .006); gb.gain.exponentialRampToValueAtTime(0.0001, t0 + .22);
+        b.connect(lp).connect(gb).connect(out); b.start(t0, Math.random()); b.stop(t0 + .25);
+    });
+}
+// Sequência completa da entrada
+function entradaTrailer() {
+    somRiser(0, 1);
+    somBraam(.95, 1, 55);      // BLACK
+    somBraam(1.75, 1.2, 49);   // BLACKS (mais grave)
+    somSwell(2.1, 1.2);
+    somFinal(3.3);             // TROFÉU GLOBAL
+}
+
+/* =========================================================
+   ESCOLHA DOS SONS  (troque aqui)
+   Entrada: 'trailer' | 'impacto' | 'balada' | 'gold'
+   Fumaça:  'triplo'  | 'unico'   | 'curto'
+   ========================================================= */
+const SOM_ENTRADA = 'impacto';
+const SOM_FUMACA = 'triplo';
+const VOLUME_GERAL = 0.4;   // 0.1 (baixinho) até 1.0 (máximo)
+
+// ---------- utilidades ----------
+function ruido(ac, t0, dur, cadeia, ganho, ataque, pan = 0, seco = .8, molhado = .6) {
+    const n = ac.createBufferSource(); n.buffer = ruidoBuffer;
+    const g = ac.createGain();
+    g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(ganho, t0 + ataque); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    let no = n; cadeia.forEach(f => { no.connect(f); no = f; });
+    no.connect(g).connect(saidaFx(ac, seco, molhado, pan));
+    n.start(t0, Math.random() * 1.5); n.stop(t0 + dur + .05);
+}
+function filtro(ac, tipo, f, q = 1) { const b = ac.createBiquadFilter(); b.type = tipo; b.frequency.value = f; b.Q.value = q; return b; }
+function tom(ac, t0, f1, f2, dur, ganho, tipo = 'sine', seco = 1, molhado = .3) {
+    const o = ac.createOscillator(); o.type = tipo;
+    o.frequency.setValueAtTime(f1, t0); o.frequency.exponentialRampToValueAtTime(f2, t0 + dur * .8);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(ganho, t0 + .008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(g).connect(saidaFx(ac, seco, molhado)); o.start(t0); o.stop(t0 + dur + .05);
+}
+function whooshReverso(ac, t0, dur = .5, ganho = .35) {
+    const n = ac.createBufferSource(); n.buffer = ruidoBuffer;
+    const bp = filtro(ac, 'bandpass', 800, .8); bp.frequency.setValueAtTime(500, t0); bp.frequency.exponentialRampToValueAtTime(4000, t0 + dur);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(ganho, t0 + dur); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur + .03);
+    n.connect(bp).connect(g).connect(saidaFx(ac, .7, .8)); n.start(t0); n.stop(t0 + dur + .1);
+}
+
+// ---------- ENTRADA 2: IMPACTO SECO (pancadas de cinema, sem zumbido) ----------
+function batidaCinema(ac, t0, forca = 1) {
+    whooshReverso(ac, t0 - .45, .45, .3 * forca);
+    tom(ac, t0, 95, 38, 1.6, .95 * forca, 'sine', 1, .25);                     // sub
+    tom(ac, t0, 180, 70, .5, .5 * forca, 'triangle', .9, .9);                  // tambor grave
+    ruido(ac, t0, .45, [filtro(ac, 'lowpass', 2500)], .7 * forca, .003, 0, .7, 1);  // pancada
+    [312, 517, 851, 1290].forEach((f, i) => tom(ac, t0, f, f * .98, 1.4 - i * .2, .09 * forca, 'sine', .5, 1)); // metal
+}
+function entradaImpacto() {
+    const ac = audio(); if (!ac) return; const t = ac.currentTime + .05;
+    batidaCinema(ac, t + .9, .9); batidaCinema(ac, t + 1.7, 1.1); batidaCinema(ac, t + 3.3, 1.25);
+}
+
+// ---------- ENTRADA 3: BALADA (virada de caixa acelerando + drop) ----------
+function caixa(ac, t0, ganho) {
+    ruido(ac, t0, .12, [filtro(ac, 'bandpass', 1900, .9)], ganho, .002, 0, .9, .35);
+    tom(ac, t0, 220, 160, .09, ganho * .5, 'triangle', .9, .2);
+}
+function bumbo(ac, t0, ganho = 1) { tom(ac, t0, 150, 42, .45, ganho, 'sine', 1, .1); ruido(ac, t0, .03, [filtro(ac, 'lowpass', 3000)], ganho * .4, .001, 0, 1, 0); }
+function entradaBalada() {
+    const ac = audio(); if (!ac) return; const t = ac.currentTime + .05, drop = t + 3.3;
+    // virada acelerando até o drop
+    let x = t, passo = .32, i = 0;
+    while (x < drop - .03) { caixa(ac, x, Math.min(.55, .12 + i * .012)); x += passo; passo = Math.max(.045, passo * .9); i++; }
+    // subida
+    const o = ac.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(110, t + 1); o.frequency.exponentialRampToValueAtTime(1760, drop);
+    const lp = filtro(ac, 'lowpass', 400, 4); lp.frequency.setValueAtTime(300, t + 1); lp.frequency.exponentialRampToValueAtTime(6000, drop);
+    const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t + 1); g.gain.exponentialRampToValueAtTime(.12, drop - .02); g.gain.exponentialRampToValueAtTime(0.0001, drop);
+    o.connect(lp).connect(g).connect(saidaFx(ac, .8, .5)); o.start(t + 1); o.stop(drop + .05);
+    ruido(ac, t + 1, drop - t - 1, [filtro(ac, 'highpass', 3000)], .25, drop - t - 1.05, 0, .6, .6);
+    // DROP: bumbo 4x4 + baixo + prato + acorde
+    for (let k = 0; k < 5; k++) bumbo(ac, drop + k * .47, k ? .8 : 1);
+    ruido(ac, drop, 2.2, [filtro(ac, 'highpass', 5000)], .35, .005, 0, .6, 1);
+    [55, 110].forEach(f => { const b = ac.createOscillator(); b.type = 'sawtooth'; b.frequency.value = f; const bl = filtro(ac, 'lowpass', 300, 2); const bg = ac.createGain(); bg.gain.setValueAtTime(0.0001, drop); bg.gain.exponentialRampToValueAtTime(.18, drop + .02); bg.gain.exponentialRampToValueAtTime(0.0001, drop + 2.2); b.connect(bl).connect(bg).connect(saidaFx(ac, 1, .2)); b.start(drop); b.stop(drop + 2.3); });
+    [220, 261.6, 329.6, 392].forEach(f => tom(ac, drop, f, f, 1.6, .06, 'sawtooth', .6, 1));
+}
+
+// ---------- ENTRADA 4: BLACK GOLD (tapete escuro + bumbo + sinos dourados) ----------
+function entradaGold() {
+    const ac = audio(); if (!ac) return; const t = ac.currentTime + .05;
+    // tapete escuro crescendo
+    [55, 65.4, 82.4, 110].forEach((f, i) => ['sawtooth', 'sawtooth'].forEach((tp, j) => {
+        const o = ac.createOscillator(); o.type = tp; o.frequency.value = f; o.detune.value = j ? 8 : -8;
+        const lp = filtro(ac, 'lowpass', 200, 1); lp.frequency.setValueAtTime(150, t); lp.frequency.exponentialRampToValueAtTime(1200, t + 3.3); lp.frequency.exponentialRampToValueAtTime(300, t + 5.5);
+        const g = ac.createGain(); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(.05, t + 3.2); g.gain.exponentialRampToValueAtTime(0.0001, t + 5.6);
+        o.connect(lp).connect(g).connect(saidaFx(ac, .6, .9)); o.start(t); o.stop(t + 5.7);
+    }));
+    tom(ac, t + .9, 80, 36, 1.8, .7, 'sine', 1, .4);
+    tom(ac, t + 1.7, 75, 33, 2, .85, 'sine', 1, .4);
+    // sinos dourados
+    tom(ac, t + 3.3, 70, 32, 2.2, .9, 'sine', 1, .4);
+    [1046.5, 1318.5, 1568, 2093, 2637].forEach((f, i) => [1, 2.76, 5.4].forEach((h, j) => tom(ac, t + 3.3 + i * .09, f * h, f * h, 2.6 - j * .7, (.05 / (j + 1)), 'sine', .4, 1)));
+}
+
+// ---------- FUMAÇA 2: JATO ÚNICO LONGO ----------
+function fumacaUnico() {
+    const ac = audio(); if (!ac) return; const t0 = ac.currentTime + .02;
+    [-.5, .5].forEach(pan => {
+        const pk = filtro(ac, 'peaking', 3800, 1); pk.gain.value = 8; pk.frequency.setValueAtTime(4000, t0); pk.frequency.exponentialRampToValueAtTime(2000, t0 + 2.6);
+        ruido(ac, t0, 2.6, [filtro(ac, 'highpass', 700), pk], .5, .03, pan, .8, .5);
+    });
+    ruido(ac, t0, .25, [filtro(ac, 'lowpass', 600)], .7, .005, 0, .9, .4);
+}
+// ---------- FUMAÇA 3: RAJADA CURTA ----------
+function fumacaCurto() {
+    const ac = audio(); if (!ac) return; const t0 = ac.currentTime + .02;
+    ruido(ac, t0, .8, [filtro(ac, 'highpass', 1200), filtro(ac, 'peaking', 4500, 1)], .6, .01, 0, .9, .5);
+    ruido(ac, t0, .18, [filtro(ac, 'lowpass', 700)], .6, .004, 0, .9, .3);
+}
+
+// ---------- despachantes ----------
+function somEntrada() {
+    if (tocarArquivo('entrada')) return;
+    const op = { trailer: [entradaTrailer, .65], impacto: [entradaImpacto, 1], balada: [entradaBalada, 1.35], gold: [entradaGold, 1] }[SOM_ENTRADA] || [entradaTrailer, .65];
+    somTrim = op[1]; op[0](); somTrim = 1;
+}
+function somFumaca() {
+    if (tocarArquivo('fumaca')) return;
+    const op = { triplo: [fumacaTriplo, .55], unico: [fumacaUnico, 1.1], curto: [fumacaCurto, 2.2] }[SOM_FUMACA] || [fumacaTriplo, .55];
+    somTrim = op[1]; op[0](); somTrim = 1;
+}
+
+function alternarSom() {
+    somAtivo = !somAtivo;
+    try { localStorage.setItem('som_black', somAtivo ? 'on' : 'off'); } catch (e) {}
+    atualizarBotaoSom();
+    showToast(somAtivo ? '🔊 Efeitos sonoros ligados' : '🔇 Efeitos sonoros desligados', 'info', 1800);
+}
+function atualizarBotaoSom() { const b = document.getElementById('btn-som'); b.textContent = somAtivo ? '🔊' : '🔇'; b.classList.toggle('mudo', !somAtivo); }
+atualizarBotaoSom();
+
+// Troca de aba: só a fumaça visual (som da fumaça apenas na abertura) -> efeitoTrocaAba definida acima
+
+
+/* ===== DESBLOQUEIO DE ÁUDIO NO CELULAR (iPhone/Android) =====
+   No 1º toque: retoma o áudio, toca um som vazio e um <audio> silencioso
+   (isso faz o som sair mesmo com o iPhone na chave de silencioso). */
+let audioDesbloqueado = false;
+const SILENCIO_WAV = 'data:audio/wav;base64,UklGRvQHAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YdAHAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+let audioSilencio = null;
+function desbloquearAudio() {
+    if (audioDesbloqueado || !somAtivo) return;
+    audioDesbloqueado = true;
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+    try {
+        audioSilencio = new Audio(SILENCIO_WAV); audioSilencio.loop = true; audioSilencio.volume = 0.01;
+        audioSilencio.setAttribute('playsinline', ''); audioSilencio.play().catch(() => {});
+        setTimeout(() => { try { audioSilencio.pause(); } catch (e) {} }, 12000);
+    } catch (e) {}
+    const ac = audio();
+    if (ac) { try { const b = ac.createBuffer(1, 1, 22050), s = ac.createBufferSource(); s.buffer = b; s.connect(ac.destination); s.start(0); } catch (e) {} }
+}
+['touchstart', 'touchend', 'pointerdown', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, desbloquearAudio, { capture: true, passive: true }));
+
+let introTimer = null;
+function cliqueIntro() {
+    const ib = document.getElementById('intro-black');
+    if (!ib.classList.contains('rodando')) return iniciarIntro();
+    if (performance.now() - introInicio < 1500) return;   // ignora o mesmo clique que acabou de iniciar
+    fecharIntro();   // segundo clique pula
+}
+let introInicio = 0;
+function iniciarIntro() {
+    const ib = document.getElementById('intro-black');
+    if (ib.classList.contains('rodando') || ib.classList.contains('saindo')) return;   // nunca inicia 2x
+    introInicio = performance.now();
+    ib.classList.add('rodando');
+    desbloquearAudio();
+    audio();
+    somEntrada();
+    introTimer = setTimeout(fecharIntro, 5600);
+}
+function fecharIntro() {
+    const ib = document.getElementById('intro-black');
+    if (!ib.classList.contains('show') || ib.classList.contains('saindo')) return;
+    clearTimeout(introTimer);
+    try { sessionStorage.setItem('intro_black_vend', '1'); } catch (e) {}
+    ib.classList.add('saindo');
+    fumacaPalco(); somFumaca();
+    setTimeout(() => { ib.classList.remove('show', 'saindo', 'rodando'); }, 1300);
+}
+(function introBlack() {
+    let visto = false;
+    try { visto = sessionStorage.getItem('intro_black_vend') === '1'; } catch (e) {}
+    if (visto) return;
+    const ib = document.getElementById('intro-black');
+    ib.classList.add('show');
+    // Tenta começar sozinho COM som. Se o navegador bloquear o áudio, mostra o botão "Entrar na Black".
+    if (!somAtivo) { iniciarIntro(); return; }
+    const ac = audio();
+    const tentar = () => { if (ac && ac.state === 'running') { iniciarIntro(); return true; } return false; };
+    if (tentar()) return;
+    if (ac) ac.resume().then(tentar).catch(() => {});
+    setTimeout(() => { if (!ib.classList.contains('rodando')) ib.classList.add('pedir-clique'); }, 250);
+})();
+// Qualquer tecla também inicia a intro
+document.addEventListener('keydown', e => {
+    const ib = document.getElementById('intro-black');
+    if (ib.classList.contains('show') && !ib.classList.contains('rodando') && e.key !== 'Escape') iniciarIntro();
+}, { once: false });
+
+renderizarChips();
+atualizarBotaoSair();
+carregarDados();
+</script>
+</body>
+</html>
