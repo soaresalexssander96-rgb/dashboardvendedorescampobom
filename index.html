@@ -689,7 +689,7 @@
         <div class="ib-eyebrow">REGIONAL CAMPO BOM APRESENTA</div>
         <div class="ib-titulo"><span>BLACK</span><small>DAS</small><span>BLACK'S</span></div>
         <div class="ib-linha"></div>
-        <div class="ib-sub">VENDEDORES EDIÇÃO ESPECIAL</div>
+        <div class="ib-sub">EDIÇÃO ESPECIAL VENDEDORES</div>
     </div>
 </div>
 
@@ -1017,7 +1017,7 @@ let LOJAS = {};               // dados de loja por filial
 let PULA15 = {};              // % meta desafio CDC por filial (campanha Pula pra 15)
 let grupoRk = lerLS('vend_rk_grupo', 'venda'), tipoRk = lerLS('vend_rk_tipo', 'pct');
 let metricaRanking = grupoRk + '_' + tipoRk;
-let modoCalculo = lerLS('vend_modo', 'proj');  // 'proj' = projeção do mês | 'real' = realizado até hoje
+let modoCalculo = 'real'; // Força para mostrar apenas a venda já realizada
 let sessao = lerLS('vend_sessao', null);       // { tipo: 'admin' } | { tipo: 'vendedor', cdi }
 let cdiAtivo = sessao && sessao.tipo === 'vendedor' ? sessao.cdi : null;
 let abaAtual = 'ranking', abaPendente = null;
@@ -1198,14 +1198,33 @@ function montarDados(json) {
         if (nn) { const raw = col(nn, 'NOTA NSL', 'NOTA', 'NSL'); if (raw !== undefined && String(raw).trim() !== '') { nota = num(raw); if (nota > 0 && nota <= 2) nota *= 100; } }
         const linhas = (mLinha[cdi] || []).map(o => ({ linha: String(col(o, 'LINHA') || '').trim(), venda: num(col(o, 'VENDA')), devolucao: num(col(o, 'DEVOLUCAO')), precoSite: num(col(o, 'CA/PS')), qtd: num(col(o, 'QTD ITENS')) }));
 
+        // --- CÓDIGO NOVO DA FOTO AQUI ---
+        const fotoRaw = String(col(o, 'FOTOS', 'FOTO') || '').trim();
+        let foto = '';
+        if (fotoRaw) {
+            const match = fotoRaw.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+            // Atualizado para API de miniatura (evita bloqueios de segurança do Google)
+            foto = match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w200-h200` : fotoRaw;
+        }
+        // --------------------------------
+
         lista.push({
             cdi, nome, curto: nomeCurto(nome), login: norm(col(o, 'LOGIN')), lider, cargo: lider ? 'Liderança' : 'Vendedor',
+            foto, // <-- A PALAVRA FOTO ENTRA AQUI
             filial: chaveCdi(col(o, 'FILIAL')), cidade: String(col(o, 'CIDADE') || '').trim(), tempoCasa: String(col(o, 'TEMPO DE CASA') || '').trim(),
             admissao: String(col(o, 'DATA ADMISSAO', 'DATA ADMISSÃO') || '').trim(),
             v, s, d, c, f, nota, linhas, cdc
         });
-    });
+   });
+
     VENDEDORES = lista;
+VENDEDORES.forEach(v => {
+        if (v.foto) {
+            const img = new Image();
+            img.src = v.foto;
+        }
+    });
+    // --------------------------------------------------
 }
 
 // ==========================================
@@ -1360,7 +1379,11 @@ function renderizarChips() {
          </div>`;
 }
 function aplicarMetricaRk() { metricaRanking = grupoRk + '_' + tipoRk; gravarLS('vend_rk_grupo', grupoRk); gravarLS('vend_rk_tipo', tipoRk); renderizarChips(); renderizarRanking(); }
-function mudarGrupoRk(g) { grupoRk = g; aplicarMetricaRk(); }
+function mudarGrupoRk(g) { 
+    grupoRk = g; 
+    tipoRk = 'pct'; // <--- Sempre força para "% ATING" ao trocar de grupo
+    aplicarMetricaRk(); 
+}
 function mudarTipoRk(t) { tipoRk = t; aplicarMetricaRk(); }
 function mudarMetrica(k) { const [g, t] = k.split('_'); grupoRk = g; tipoRk = t; aplicarMetricaRk(); }
 
@@ -1369,7 +1392,42 @@ function renderizarRanking() {
     const lista = rankingOrdenado();
     [1, 2, 3].forEach(p => {
         const x = lista[p - 1];
-        document.getElementById('avatar-' + p).innerText = x ? iniciais(x.nome) : '–';
+        const avatarEl = document.getElementById('avatar-' + p);
+        
+       if (x) {
+            if (x.foto) {
+                avatarEl.innerText = '';
+                // Solução para o delay: Criar o elemento de imagem diretamente
+                avatarEl.style.backgroundImage = 'none'; // Limpa o background anterior
+                
+                // Verifica se já tem uma tag <img> dentro, se sim, remove
+                const imgAntiga = avatarEl.querySelector('img');
+                if(imgAntiga) imgAntiga.remove();
+
+                const img = document.createElement('img');
+                img.src = x.foto;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.objectPosition = 'center top';
+                img.style.borderRadius = '50%'; // Garante que fique redondo
+                avatarEl.appendChild(img);
+
+            } else {
+                const imgAntiga = avatarEl.querySelector('img');
+                if(imgAntiga) imgAntiga.remove();
+                
+                avatarEl.innerText = iniciais(x.nome);
+                avatarEl.style.backgroundImage = 'none'; 
+            }
+        } else {
+             const imgAntiga = avatarEl.querySelector('img');
+             if(imgAntiga) imgAntiga.remove();
+             
+            avatarEl.innerText = '–';
+            avatarEl.style.backgroundImage = 'none';
+        }
+        
         document.getElementById('nome-' + p).innerHTML = x ? `<span class="nome-desk">${esc(x.curto)}</span><span class="nome-mob">${esc(x.curto.split(' ')[0])}</span>` : '—';
         document.getElementById('cargo-' + p).innerText = x && x.lider ? '★ Liderança' : '';
         document.getElementById('filial-' + p).innerText = x ? `FL ${x.filial} - ${x.cidade}` : '--';
@@ -1552,10 +1610,6 @@ function barraTopo(x, aba) {
     const admin = sessao && sessao.tipo === 'admin';
     return `<div class="topbar-detalhe" data-html2canvas-ignore="true">
         ${admin ? `<button class="btn-voltar" onclick="trocarVendedor()">⟵ Trocar vendedor</button>` : '<span></span>'}
-        <div class="modo-toggle" role="group" aria-label="Modo de cálculo">
-            <button class="${modoCalculo === 'proj' ? 'ativo' : ''}" onclick="mudarModo('proj')">📈 Projeção do mês</button>
-            <button class="${modoCalculo === 'real' ? 'ativo' : ''}" onclick="mudarModo('real')">📍 Realizado até hoje</button>
-        </div>
     </div>`;
 }
 function telaSelecao(aba) {
@@ -1816,10 +1870,7 @@ function renderizarReguas() {
     }
     if (x) {
         const r = calcular(x);
-        alvo.innerHTML = topo + `<div class="topbar-detalhe" data-html2canvas-ignore="true"><span></span><div class="modo-toggle" role="group" aria-label="Modo de cálculo">
-            <button class="${modoCalculo === 'proj' ? 'ativo' : ''}" onclick="mudarModo('proj')">📈 Projeção do mês</button>
-            <button class="${modoCalculo === 'real' ? 'ativo' : ''}" onclick="mudarModo('real')">📍 Realizado até hoje</button></div></div>
-            <div class="card-maximized">${cabecalhoVendedor(x)}${htmlReguasPessoal(x, r)}</div>`;
+        alvo.innerHTML = topo + `<div class="card-maximized">${cabecalhoVendedor(x)}${htmlReguasPessoal(x, r)}</div>`;
         animarTela(alvo);
     } else {
         alvo.innerHTML = topo + `<div class="card-maximized">${cab}${htmlReguasGerais()}</div>`;
