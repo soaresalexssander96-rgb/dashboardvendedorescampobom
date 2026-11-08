@@ -182,6 +182,27 @@
         .progress-text { position: absolute; width: 100%; text-align: center; left: 0; top: 0; line-height: 24px; font-size: .82em; font-weight: 900; color: #fff; text-shadow: 1px 1px 3px rgba(0,0,0,.9); z-index: 2; }
         .pulsar-laranja { animation: pulseOrange 1s infinite alternate; }
         @keyframes pulseOrange { from { box-shadow: 0 0 5px var(--orange); } to { box-shadow: 0 0 20px var(--orange); } }
+        /* ===== CARDS DE META (estilo Looqbox) ===== */
+        .mc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+        .mc { background: rgba(8,13,26,.85); border: 1px solid var(--line); border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+        .mc-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .mc-tit { font-weight: 800; color: var(--mut2); font-size: .9em; letter-spacing: .5px; text-transform: uppercase; }
+        .mc-proj { font-size: .78em; font-weight: 700; color: var(--mut2); text-align: right; }
+        .mc-proj b { font-size: 1.15em; }
+        .mc-real { font-family: var(--font-t); font-size: 1.75em; font-weight: 800; color: #fff; line-height: 1.1; }
+        .mc-real small { display: block; font-family: 'Inter', sans-serif; font-size: .42em; font-weight: 600; color: var(--mut); letter-spacing: .5px; margin-top: 2px; }
+        .mc-bar { height: 10px; border-radius: 6px; background: rgba(255,255,255,.12); overflow: hidden; margin: 4px 0 2px; }
+        .mc-bar i { display: block; height: 100%; border-radius: 6px; }
+        .mc-base { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+        .mc-meta small { display: block; font-size: .72em; color: var(--mut); font-weight: 600; }
+        .mc-meta b { font-size: 1.15em; color: #fff; }
+        .mc-pill { font-size: .78em; font-weight: 800; padding: 6px 10px; border-radius: 10px; white-space: nowrap; }
+        .mc-pill.falta { background: rgba(255,84,112,.14); color: #ff9aac; }
+        .mc-pill.ok { background: rgba(52,245,160,.14); color: var(--green); }
+        .mc-dica { font-size: .74em; color: var(--mut); line-height: 1.35; }
+        .mc-legenda { text-align: center; font-size: .8em; color: var(--mut2); margin: -4px 0 14px; line-height: 1.4; }
+        @media (max-width: 1000px) { .mc-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 640px) { .mc-grid { grid-template-columns: 1fr; } .mc-real { font-size: 1.5em; } }
         .meta-linha { margin-bottom: 16px; }
         .meta-linha:last-child { margin-bottom: 0; }
         .meta-topo { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; font-size: .85em; }
@@ -1476,6 +1497,22 @@ function linhaMeta(titulo, real, meta, fmt, extra) {
     const p = meta > 0 ? real / meta : 0;
     return `<div class="meta-linha"><div class="meta-topo"><b>${titulo}</b><span>${fmt(real)} de ${fmt(meta)}</span></div>${barraProgresso(p)}${extra ? `<div class="dica">${extra}</div>` : ''}</div>`;
 }
+// Card de meta: mostra SEMPRE o realizado de verdade; a projeção aparece só como % ao lado
+function cardMeta(o) {
+    const { titulo, real, meta, proj, pmt, fmt = brl0, dica = '' } = o;
+    const p = proj != null ? proj : (meta > 0 ? real / meta : 0);
+    const cor = corPct(p);
+    const falta = Math.max(0, meta - real);
+    const pill = meta <= 0 ? '' : falta <= 0 ? `<span class="mc-pill ok">Meta batida ✅</span>` : `<span class="mc-pill falta">Faltam ${fmt(falta)}</span>`;
+    return `<div class="mc">
+        <div class="mc-top"><span class="mc-tit">${titulo}</span>${meta > 0 ? `<span class="mc-proj">projeção<br><b style="color:${cor}">${pct(p, 1)}</b></span>` : ''}</div>
+        <div class="mc-real">${fmt(real)}<small>REALIZADO ATÉ AGORA</small></div>
+        ${meta > 0 ? `<div class="mc-bar"><i style="width:${Math.min(100, p * 100).toFixed(1)}%;background:${cor}"></i></div>` : ''}
+        <div class="mc-base"><div class="mc-meta">${meta > 0 ? `<small>Meta do mês</small><b>${fmt(meta)}</b>` : ''}</div>${pill}</div>
+        ${pmt > 0 && meta > 0 ? `<div class="mc-dica">Meta até hoje: <b style="color:#fff">${fmt(pmt)}</b> · ${real >= pmt ? '✅ você está acima do ritmo' : '⚠️ faltam ' + fmt(pmt - real) + ' para ficar no ritmo'}</div>` : ''}
+        ${dica ? `<div class="mc-dica">${dica}</div>` : ''}
+    </div>`;
+}
 const chip = (estado, texto) => `<span class="chip-status ${estado}">${estado === 'ok' ? '✅' : estado === 'nao' ? '❌' : '⏳'} ${texto}</span>`;
 function blocoAguardando(titulo, cor, msg, extra = '', classe = '') {
     return `<div class="bloco aguardando ${classe}"><h4 class="titulo-bloco" style="color:${cor}">${titulo}</h4>
@@ -1601,14 +1638,19 @@ function htmlMetas(x, r) {
             </div>
         </div>`;
 
-    return `<div class="grid-blocos">
-        <div class="bloco bloco-full">
-            <h4 class="titulo-bloco" style="color:var(--cyan)">📦 VENDAS</h4>
-            <div class="sub-bloco">${r.modo === 'proj' ? 'Atingimento no ritmo atual (venda ÷ meta proporcional do dia)' : 'Realizado até hoje sobre a meta do mês'}</div>
-            ${(() => { const real1p = r.modo === 'proj' ? v.venda1p * P : v.venda1p; const ok = v.cota1p > 0 && bateu(real1p / v.cota1p);
-                return linhaMeta('Meta 1P', real1p, v.cota1p, fmtK, ok ? 'Meta 1P batida: gatilho do NSL garantido ✅' : `Para bater a meta 1P faltam <b>${brl0(Math.max(0, v.cota1p - real1p))}</b>${r.modo === 'proj' ? ' na projeção' : ''}.`); })()}
-            ${linhaMeta('Pula pra 10 (serviços)', r.pula10, metaPula, fmtK, r.pula10 >= metaPula && metaPula > 0 ? 'Meta de serviços batida ✅' : `Faltam <b>${brl0(Math.max(0, metaPula - r.pula10))}</b> em serviços${r.modo === 'proj' ? ' na projeção' : ''} · meta = 10% da cota de venda.`)}
-        </div>
+    // Cards: valor REAL (coluna da planilha) + meta do mês + projeção em %
+    const pmtPula = v.pmtVenda > 0 ? v.pmtVenda * 0.10 : 0;
+    const cards = `<div class="mc-legenda">Valores <b>realizados até agora</b> · <b>projeção</b> = como você fecha o mês se mantiver o ritmo de hoje</div>
+        <div class="mc-grid">
+        ${cardMeta({ titulo: '🎯 Venda 1P', real: v.venda1p, meta: v.cota1p, proj: v.ating1p, pmt: v.pmt1p, dica: 'Bater 100% da cota 1P libera o gatilho do NSL.' })}
+        ${cardMeta({ titulo: '📦 Venda total', real: v.venda, meta: v.cotaVenda, proj: v.atingVenda, pmt: v.pmtVenda })}
+        ${cardMeta({ titulo: '🛡️ Pula pra 10 (serviços)', real: v.serv, meta: metaPula, proj: pmtPula > 0 ? v.serv / pmtPula : null, pmt: pmtPula, dica: 'Meta = 10% da sua cota de venda.' })}
+        ${x.cdc.cota > 0 ? cardMeta({ titulo: '💰 CDC (meta individual)', real: x.cdc.venda, meta: x.cdc.cota, proj: x.cdc.projAting, pmt: x.cdc.pmt }) : ''}
+        ${x.c.meta > 0 ? cardMeta({ titulo: '💳 Cartão Luiza', real: x.c.ativos, meta: x.c.meta, proj: x.c.projAting || null, fmt: n => Math.round(n) + (Math.round(n) === 1 ? ' cartão' : ' cartões') }) : ''}
+        ${v.metaPN > 0 ? cardMeta({ titulo: '⭐ Venda PN/PP', real: v.vendaPN, meta: v.metaPN, proj: v.atingPN }) : ''}
+        </div>`;
+
+    return cards + `<div class="grid-blocos">
         ${blocoCartao}
         ${blocoFpp}
         ${blocoPula15}
