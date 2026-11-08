@@ -699,8 +699,8 @@
         <div class="lock-ico">🔒</div>
         <h2 class="login-titulo">ACESSO RESTRITO</h2>
         <p class="login-sub">Entre com o seu usuário do portal e o seu ID para ver as suas metas, NSL e réguas.</p>
-        <input type="text" id="input-usuario" class="input-login" placeholder="LOGIN: ( USUÁRIO DO PORTAL )" style="text-transform: uppercase;" autocomplete="username">
-        <input type="password" id="input-senha" class="input-login" placeholder="SENHA: ( SEU ID / CDI )" autocomplete="current-password">
+        <input type="text" id="input-usuario" class="input-login" placeholder="LOGIN: (USUÁRIO DO PORTAL)" style="text-transform: uppercase;" autocomplete="username">
+        <input type="password" id="input-senha" class="input-login" placeholder="SENHA: (SEU ID ATRÁS DO CRACHÁ)" autocomplete="current-password">
         <button onclick="validarAcesso()" class="btn-top10" style="width:100%;">Entrar</button>
         <div id="login-erro"></div>
     </div>
@@ -1348,7 +1348,7 @@ const qtdCartao = v => Math.round(v) + (Math.round(v) === 1 ? ' cartão' : ' car
 const RK_GRUPOS = {
     venda:  { rotulo: 'VENDA',   ico: '📦', fat: 'MAIOR FATURAMENTO' },
     pula:   { rotulo: 'PULA 10', ico: '🛡️', fat: 'MAIOR FATURAMENTO' },
-    cartao: { rotulo: 'CARTÃO',  ico: '💳', fat: 'MAIS CARTÕES' },
+    cartao: { rotulo: 'CARTÃO',  ico: '💳', fat: 'MAIOR QTD ATIVADOS' },
     cdc:    { rotulo: 'CDC',     ico: '💰', fat: 'MAIOR FATURAMENTO' },
 };
 const METRICAS = {
@@ -1601,9 +1601,10 @@ function cabecalhoVendedor(x) {
     return `<div class="detalhe-header">
         <h3 class="detalhe-nome">${esc(x.nome)}</h3>
         <div class="detalhe-cidade">FL ${x.filial} - ${esc(x.cidade)}</div>
-        <span class="selo-cargo ${x.lider ? 'lider' : ''}">${x.lider ? '★ Liderança de Loja' : 'Vendedor'}${x.tempoCasa ? ' · ' + esc(x.tempoCasa) + ' de casa' : ''}</span>
+        <span class="selo-cargo ${x.lider ? 'lider' : ''}">${x.lider ? '★ Liderança de Loja' : 'Vendedor'}</span>
     </div>`;
 }
+
 function barraTopo(x, aba) {
     const admin = sessao && sessao.tipo === 'admin';
     return `<div class="topbar-detalhe" data-html2canvas-ignore="true">
