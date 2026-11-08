@@ -993,6 +993,7 @@ function taxaDaLinha(linha) {
 // ==========================================
 let VENDEDORES = [];          // lista completa já calculada
 let LOJAS = {};               // dados de loja por filial
+let PULA15 = {};              // % meta desafio CDC por filial (campanha Pula pra 15)
 let grupoRk = lerLS('vend_rk_grupo', 'venda'), tipoRk = lerLS('vend_rk_tipo', 'pct');
 let metricaRanking = grupoRk + '_' + tipoRk;
 let modoCalculo = lerLS('vend_modo', 'proj');  // 'proj' = projeção do mês | 'real' = realizado até hoje
@@ -1083,6 +1084,9 @@ function montarDados(json) {
     const mVenda = porCdi(venda), mServ = porCdi(serv), mDig = porCdi(dig), mCart = porCdi(cart), mFpp = porCdi(fpp);
     const mNsl = porCdi(nslT), mLinha = porCdi(vlT);
     const mCdc = porCdi(tabela(json.cdc || json.venda_cdc || json.vendacdc || []));
+    // Campanha Pula pra 15 CDC: % de participação do CDC exigido por loja (aba pula15, coluna % META)
+    PULA15 = {};
+    tabela(json.pula15 || []).forEach(o => { const f = chaveCdi(col(o, 'FILIAL')); if (f) PULA15[f] = num(col(o, '% META', 'META', '% META DESAFIO')); });
 
     // escolhe a linha certa quando o mesmo CDI aparece mais de uma vez (confere pelo nome)
     const escolher = (lista, nome) => {
@@ -1128,8 +1132,13 @@ function montarDados(json) {
         const nn = (mNsl[cdi] || [])[0];
         const cdcRow = (mCdc[cdi] || [])[0];
         const cdc = cdcRow
-            ? { venda: num(col(cdcRow, 'VENDA CDC', 'REAL CDC', 'REALIZADO', 'VENDA')), meta: num(col(cdcRow, 'META CDC', 'META DESAFIO', 'META DESAFIO CDC', 'META')) }
-            : { venda: num(col(vv, 'VENDA CDC', 'REAL CDC')), meta: num(col(vv, 'META CDC', 'META DESAFIO CDC')) };
+            ? { venda: num(col(cdcRow, 'VENDA CDC', 'REAL CDC', 'REALIZADO', 'VENDA')), cota: num(col(cdcRow, 'COTA', 'META CDC', 'META')), pmt: num(col(cdcRow, 'PMT')), projAting: num(col(cdcRow, 'PROJ. ATING', 'PROJ ATING')) }
+            : { venda: num(col(vv, 'VENDA CDC', 'REAL CDC')), cota: num(col(vv, 'META CDC')), pmt: 0, projAting: 0 };
+        // Meta desafio Pula pra 15: o CDC precisa ser o mesmo % da meta da loja sobre (venda + serviços) do vendedor
+        cdc.pctDesafio = PULA15[chaveCdi(col(o, 'FILIAL'))] || 0;
+        cdc.base = num(col(vv, 'VENDA')) + num(col(vv, 'SERVIÇOS', 'SERVICOS'));
+        cdc.meta = cdc.pctDesafio * cdc.base;
+        cdc.pctReal = cdc.base > 0 ? cdc.venda / cdc.base : 0;
 
         const v = {
             cota1p: num(col(vv, 'COTA 1P')), pmt1p: num(col(vv, 'PMT 1P')), venda1p: num(col(vv, 'VENDA 1P')), ating1p: num(col(vv, '% ATING 1P')),
@@ -1364,7 +1373,7 @@ function renderizarRanking() {
         </div>`;
     });
     const vazio = (metricaRanking === 'cdc_fat' && !lista.length)
-        ? '<div style="text-align:center;color:var(--mut2);padding:30px;line-height:1.5;">⏳ <b style="color:var(--gold)">Aguardando a venda CDC na planilha.</b><br>Crie a aba <b>cdc</b> com as colunas <b>CDI | META CDC | VENDA CDC</b>.</div>'
+        ? '<div style="text-align:center;color:var(--mut2);padding:30px;line-height:1.5;">⏳ <b style="color:var(--gold)">Aguardando a venda CDC na planilha.</b><br>A venda CDC vem da aba <b>cdc</b> e a meta desafio da aba <b>pula15</b>.</div>'
         : '<div style="text-align:center;color:var(--mut);padding:30px;">Nenhum vendedor encontrado.</div>';
     document.getElementById('lista-ranking').innerHTML = html || vazio;
 }
@@ -1559,6 +1568,28 @@ function htmlMetas(x, r) {
             </div>
         </div>` : blocoAguardando('💳 CDC · COBRANÇA (FPP)', 'var(--orange)', 'Não há carteira de cobrança para este vendedor na aba fpp.');
 
+    // PULA PRA 15 CDC — prêmio só com as 3 condições:
+    // 1) venda CDC ÷ (venda + serviços) ≥ % meta desafio da loja
+    // 2) meta individual de CDC projetando ≥ 100% (PROJ. ATING da aba cdc)
+    // 3) atingimento da meta de recebimento (FPP) ≥ 100%
+    const k = x.cdc, Pc = r.modo === 'proj' ? P : 1;
+    const bateuDesafio = k.pctDesafio > 0 && k.base > 0 && k.pctReal >= k.pctDesafio - 0.00005;
+    const bateuIndCdc = k.cota > 0 && k.projAting >= 0.9995;
+    const bateuFppPula = !!x.f && x.f.ating >= 0.9995;
+    const ganhaPula15 = bateuDesafio && bateuIndCdc && bateuFppPula;
+    const blocoPula15 = k.pctDesafio > 0 ? `<div class="bloco bloco-full">
+            <h4 class="titulo-bloco" style="color:#4da3ff">🚀 PULA PRA 15 CDC</h4>
+            <div class="sub-bloco">Meta desafio da loja: <b style="color:#fff">${pct(k.pctDesafio, 2)}</b> de CDC sobre a sua venda + serviços</div>
+            <div class="chips-status">${chip(bateuDesafio ? 'ok' : 'nao', 'Desafio ' + pct(k.pctReal, 2) + ' de ' + pct(k.pctDesafio, 2))}${chip(k.cota > 0 ? (bateuIndCdc ? 'ok' : 'nao') : 'pend', k.cota > 0 ? 'Meta individual CDC ' + pct(k.projAting, 0) + ' proj.' : 'Sem meta individual CDC')}${chip(x.f ? (bateuFppPula ? 'ok' : 'nao') : 'pend', x.f ? 'Recebimento FPP ' + pct(x.f.ating, 0) : 'FPP sem carteira')}</div>
+            ${linhaMeta('Venda CDC × meta desafio', k.venda * Pc, k.meta * Pc, brl0, bateuDesafio ? 'Meta desafio de CDC batida ✅' : `Faltam <b>${brl0(Math.max(0, k.meta - k.venda) * Pc)}</b> em CDC${r.modo === 'proj' ? ' na projeção' : ''} · a meta sobe junto com a sua venda + serviços.`)}
+            <div class="ind-grid-3">
+                <div class="item-ind"><div class="label-ind">Venda + serviços</div><div class="val-ind" style="font-size:1.05em">${brl0(k.base * Pc)}</div></div>
+                <div class="item-ind"><div class="label-ind">Meta individual CDC</div><div class="val-ind" style="font-size:1.05em">${k.cota > 0 ? brl0(k.cota) + ` <small style="color:${corPct(k.projAting)}">(${pct(k.projAting, 0)})</small>` : '—'}</div></div>
+                <div class="item-ind"><div class="label-ind">Prêmio</div><div class="val-ind" style="font-size:1.05em;color:${ganhaPula15 ? 'var(--green)' : 'var(--mut2)'}">${ganhaPula15 ? 'R$ 250 ✅' : 'R$ 250'}</div></div>
+            </div>
+            <div class="dica" style="text-align:center">R$ 250 via MPAY com as 3 condições: <b>% da meta desafio da loja</b> + <b>meta individual de CDC projetando 100%</b> + <b>100% da meta de recebimento (FPP)</b>.</div>
+        </div>` : blocoAguardando('🚀 PULA PRA 15 CDC', '#4da3ff', 'A meta desafio da sua loja ainda não está na aba pula15.', '', 'bloco-full');
+
     const blocoCartao = `<div class="bloco">
             <h4 class="titulo-bloco" style="color:#4dff7a">💳 CARTÃO LUIZA</h4>
             <div class="sub-bloco">Cartões ativados no mês</div>
@@ -1580,6 +1611,7 @@ function htmlMetas(x, r) {
         </div>
         ${blocoCartao}
         ${blocoFpp}
+        ${blocoPula15}
         <div class="bloco bloco-full">
             <h4 class="titulo-bloco" style="color:var(--gold)">📱 DIGITAIS</h4>
             <div class="sub-bloco">Magalu Conecta e Plano Controle</div>
