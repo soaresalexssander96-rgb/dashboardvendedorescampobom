@@ -139,6 +139,7 @@
         .btn-voltar:hover { background: var(--mut2); color: #0b0f19; }
         .btn-top10 { background: linear-gradient(135deg, var(--cyan) 0%, var(--blue) 55%, var(--indigo) 100%); color: #fff; border: none; padding: 11px 22px; border-radius: 30px; cursor: pointer; font-weight: 800; font-size: .95em; font-family: inherit; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 6px 20px rgba(34,211,238,.35); transition: transform .2s, box-shadow .2s; }
         .btn-top10:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 10px 26px rgba(34,211,238,.45); }
+        .selo-proj { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, var(--gold), var(--gold2)); color: #1a1205; padding: 8px 16px; border-radius: 26px; font-weight: 800; font-size: .8em; }
         .modo-toggle { display: inline-flex; background: rgba(12,18,34,.9); border: 1px solid var(--line2); border-radius: 30px; padding: 4px; }
         .modo-toggle button { background: transparent; border: none; color: var(--mut2); padding: 8px 14px; border-radius: 26px; cursor: pointer; font-weight: 800; font-size: .8em; font-family: inherit; transition: all .2s; }
         .selo-real { display: inline-flex; align-items: center; background: rgba(52,245,160,.1); border: 1px solid rgba(52,245,160,.4); color: var(--green); border-radius: 30px; padding: 8px 14px; font-weight: 800; font-size: .8em; }
@@ -191,8 +192,13 @@
         .mc-proj b { font-size: 1.15em; }
         .mc-real { font-family: var(--font-t); font-size: 1.75em; font-weight: 800; color: #fff; line-height: 1.1; }
         .mc-real small { display: block; font-family: 'Inter', sans-serif; font-size: .42em; font-weight: 600; color: var(--mut); letter-spacing: .5px; margin-top: 2px; }
-        .mc-bar { height: 10px; border-radius: 6px; background: rgba(255,255,255,.12); overflow: hidden; margin: 4px 0 2px; }
-        .mc-bar i { display: block; height: 100%; border-radius: 6px; }
+        .mc-bar { position: relative; height: 26px; border-radius: 13px; background: rgba(255,255,255,.10); overflow: hidden; margin: 6px 0 4px; }
+        .mc-bar i { display: block; height: 100%; border-radius: 13px; transition: width 1s ease; }
+        .mc-bar span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .82em; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,.85); letter-spacing: .3px; }
+        .mc-pmt { display: flex; flex-direction: column; gap: 2px; font-size: .8em; color: var(--mut2); margin-top: 2px; }
+        .mc-pmt b { color: #fff; }
+        .mc-pmt .ok { color: var(--green); font-weight: 700; }
+        .mc-pmt .nao { color: var(--orange); font-weight: 700; }
         .mc-base { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
         .mc-meta small { display: block; font-size: .72em; color: var(--mut); font-weight: 600; }
         .mc-meta b { font-size: 1.15em; color: #fff; }
@@ -201,6 +207,31 @@
         .mc-pill.ok { background: rgba(52,245,160,.14); color: var(--green); }
         .mc-dica { font-size: .74em; color: var(--mut); line-height: 1.35; }
         .mc-legenda { text-align: center; font-size: .8em; color: var(--mut2); margin: -4px 0 14px; line-height: 1.4; }
+        /* ===== PROJEÇÃO DE PREMIAÇÕES ===== */
+        .pj-total { text-align: center; padding: 18px; border-radius: 16px; background: linear-gradient(135deg, rgba(52,245,160,.16), rgba(8,13,26,.9)); border: 2px solid var(--green); margin-bottom: 14px; }
+        .pj-total small { display: block; color: var(--green); font-weight: 800; letter-spacing: 1px; font-size: .8em; }
+        .pj-total b { font-family: var(--font-t); font-size: 2.6em; color: #fff; }
+        .pj-total span { display: block; color: var(--mut2); font-size: .8em; margin-top: 4px; }
+        .pj-lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+        .pj-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(8,13,26,.8); }
+        .pj-item .n { font-weight: 800; color: #fff; font-size: .9em; }
+        .pj-item .d { display: block; font-size: .75em; color: var(--mut); font-weight: 600; margin-top: 2px; }
+        .pj-item .v { font-family: var(--font-t); font-weight: 800; font-size: 1.15em; white-space: nowrap; }
+        .pj-item.ok { border-color: rgba(52,245,160,.45); background: rgba(52,245,160,.07); }
+        .pj-item.ok .v { color: var(--green); }
+        .pj-item.nao { border-color: rgba(255,84,112,.45); border-style: dashed; background: rgba(255,84,112,.06); }
+        .pj-item.nao .v { color: #ff8da1; }
+        .pj-item.pend .v { color: var(--gold); }
+        .pj-sub { font-weight: 800; letter-spacing: .5px; font-size: .85em; margin: 16px 0 8px; }
+        .pj-perda { background: rgba(255,84,112,.05) !important; border: 1px dashed var(--red) !important; }
+        .pj-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 18px; }
+        .pj-badge { background: var(--red); color: #fff; border-radius: 16px; padding: 8px 16px; text-align: center; box-shadow: 0 4px 14px rgba(255,84,112,.35); }
+        .pj-badge .t { display: block; font-weight: 800; font-size: .9em; }
+        .pj-badge .d { display: block; font-size: .72em; font-weight: 600; opacity: .9; margin-top: 2px; }
+        .pj-badge.pend { background: rgba(255,210,74,.18); color: var(--gold); border: 1px solid var(--gold); box-shadow: none; }
+        .pj-perda-total { max-width: 520px; margin: 0 auto; text-align: center; padding: 16px; border-radius: 16px; background: rgba(255,84,112,.10); border: 1px solid var(--red); }
+        .pj-perda-total small { display: block; color: var(--red); font-weight: 800; letter-spacing: 1px; font-size: .8em; }
+        .pj-perda-total b { font-family: var(--font-t); font-size: 2.4em; color: var(--red); }
         @media (max-width: 1000px) { .mc-grid { grid-template-columns: 1fr 1fr; } }
         @media (max-width: 640px) { .mc-grid { grid-template-columns: 1fr; } .mc-real { font-size: 1.5em; } }
         .meta-linha { margin-bottom: 16px; }
@@ -960,7 +991,9 @@ const REGRAS = {
     comissaoConecta: { ate: 999, baixa: 5, alta: 7.5 },
     ticketPlano: { qtd: 10, valor: 150 },
     ticketConecta: [[3000,300],[2000,200],[1500,160]],
-    ticketCartao: { normal: 6, dobrado: 12 },
+    faixaCartao: [[8,150],[12,250],[16,300],[20,350]],   // Black: cartões ativos no mês -> prêmio (mínimo 8)
+    cartaoMinimo: 8,
+    premioPula15: 250,
     comissaoProdutosLinhas: [
         ['Confecção / Roupas (1045, 1046, 1047, 1179)', '3,0%'],
         ['Móveis, Portáteis, Cama Mesa Banho, Utilidades, Bebê, Brinquedos, Decoração, Ferramentas, Casa e Jardim, Cuidados Pessoais, Marketplace', '2,0%'],
@@ -1015,7 +1048,7 @@ let LOJAS = {};               // dados de loja por filial
 let PULA15 = {};              // % meta desafio CDC por filial (campanha Pula pra 15)
 let grupoRk = lerLS('vend_rk_grupo', 'venda'), tipoRk = lerLS('vend_rk_tipo', 'pct');
 let metricaRanking = grupoRk + '_' + tipoRk;
-let modoCalculo = 'real'; // Força para mostrar apenas a venda já realizada
+let modoCalculo = 'real';  // travado no realizado (faixas e prêmios sobre o que já foi feito); o % das barras mostra a projeção
 let sessao = lerLS('vend_sessao', null);       // { tipo: 'admin' } | { tipo: 'vendedor', cdi }
 let cdiAtivo = sessao && sessao.tipo === 'vendedor' ? sessao.cdi : null;
 let abaAtual = 'ranking', abaPendente = null;
@@ -1189,40 +1222,35 @@ function montarDados(json) {
         };
         const f = ff ? {
             carteira: num(col(ff, 'CARTEIRA (R$)')), metaReceb: num(col(ff, 'META RECEBIMENTO (R$)')), recebido: num(col(ff, 'VALOR RECEBIDO (R$)')),
-            faltaMeta: num(col(ff, 'FALTA RECEBER META (R$)')), metaFpp: num(col(ff, 'META FPP (%)')), realFpp: num(col(ff, 'REAL FPP (%)')), ating: num(col(ff, 'ATING (%)'))
+            faltaMeta: num(col(ff, 'FALTA RECEBER META (R$)')), metaFpp: num(col(ff, 'META FPP (%)')), realFpp: num(col(ff, 'REAL FPP (%)'))
         } : null;
+        // % de atingimento calculado aqui: valor recebido ÷ meta de recebimento (a coluna ATING (%) da aba fpp não é confiável)
+        if (f) { f.ating = f.metaReceb > 0 ? f.recebido / f.metaReceb : (f.carteira > 0 ? 0 : 1); f.faltaMeta = Math.max(0, f.metaReceb - f.recebido); }
 
         let nota = null;
         if (nn) { const raw = col(nn, 'NOTA NSL', 'NOTA', 'NSL'); if (raw !== undefined && String(raw).trim() !== '') { nota = num(raw); if (nota > 0 && nota <= 2) nota *= 100; } }
         const linhas = (mLinha[cdi] || []).map(o => ({ linha: String(col(o, 'LINHA') || '').trim(), venda: num(col(o, 'VENDA')), devolucao: num(col(o, 'DEVOLUCAO')), precoSite: num(col(o, 'CA/PS')), qtd: num(col(o, 'QTD ITENS')) }));
 
-        // --- CÓDIGO NOVO DA FOTO AQUI ---
+        // Foto (coluna FOTOS da aba dados vendedores): aceita link do Drive (/file/d/ID, open?id=ID, uc?id=ID) ou URL direta
         const fotoRaw = String(col(o, 'FOTOS', 'FOTO') || '').trim();
         let foto = '';
         if (fotoRaw) {
-            const match = fotoRaw.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-            // Atualizado para API de miniatura (evita bloqueios de segurança do Google)
-            foto = match ? `https://drive.google.com/thumbnail?id=${match[1]}&sz=w200-h200` : fotoRaw;
+            const m = fotoRaw.match(/\/d\/([\w-]{15,})/) || fotoRaw.match(/[?&]id=([\w-]{15,})/);
+            foto = m ? `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400` : (/^https?:\/\//i.test(fotoRaw) ? fotoRaw : '');
         }
-        // --------------------------------
 
         lista.push({
             cdi, nome, curto: nomeCurto(nome), login: norm(col(o, 'LOGIN')), lider, cargo: lider ? 'Liderança' : 'Vendedor',
-            foto, // <-- A PALAVRA FOTO ENTRA AQUI
+            foto,
             filial: chaveCdi(col(o, 'FILIAL')), cidade: String(col(o, 'CIDADE') || '').trim(), tempoCasa: String(col(o, 'TEMPO DE CASA') || '').trim(),
             admissao: String(col(o, 'DATA ADMISSAO', 'DATA ADMISSÃO') || '').trim(),
             v, s, d, c, f, nota, linhas, cdc
         });
-   });
+    });
 
     VENDEDORES = lista;
-VENDEDORES.forEach(v => {
-        if (v.foto) {
-            const img = new Image();
-            img.src = v.foto;
-        }
-    });
-    // --------------------------------------------------
+    // pré-carrega as fotos para o pódio aparecer sem atraso
+    VENDEDORES.forEach(v => { if (v.foto) { const img = new Image(); img.src = v.foto; } });
 }
 
 // ==========================================
@@ -1323,13 +1351,22 @@ function calcular(x, modo = modoCalculo) {
     r.cartoes = Math.floor(x.c.ativos * P + 1e-9);
     r.atingCartao = modo === 'proj' ? (x.c.metaAcum > 0 ? x.c.ativos / x.c.metaAcum : 0) : (x.c.meta > 0 ? x.c.ativos / x.c.meta : 0);
     r.atingCartaoLoja = modo === 'proj' ? (L.cartMetaAcum > 0 ? L.cartAtivos / L.cartMetaAcum : 0) : (L.cartMeta > 0 ? L.cartAtivos / L.cartMeta : 0);
-    r.cartaoDobrado = x.c.meta > 0 && bateu(r.atingCartao) && bateu(r.atingCartaoLoja);
-    r.ticketCartao = r.cartoes * (r.cartaoDobrado ? REGRAS.ticketCartao.dobrado : REGRAS.ticketCartao.normal);
+    r.metaCartao = Math.max(REGRAS.cartaoMinimo, Math.ceil(x.c.meta || 0));
+    r.fCartao = faixa(REGRAS.faixaCartao, r.cartoes);
+    r.ticketCartao = r.fCartao.premio;
+
+    // Pula pra 15 CDC — 2 critérios:
+    // 1) IPP CDC: venda CDC ÷ (venda + serviços) ≥ % IPP CDC desafio da loja (aba pula15, coluna % META)
+    // 2) 100% da meta de recebimento (FPP)
+    const k = x.cdc;
+    r.pula15Desafio = k.pctDesafio > 0 && k.base > 0 && k.pctReal >= k.pctDesafio - 0.00005;
+    r.pula15Fpp = !!x.f && x.f.ating >= 0.9995;
+    r.premioPula15 = (r.pula15Desafio && r.pula15Fpp) ? REGRAS.premioPula15 : 0;
     r.tickets = r.ticketPlano + r.ticketConecta + r.ticketCartao;
 
     // Totais
     r.comissoes = r.comServicos + r.comDigitais + r.comProdutos;
-    r.premios = r.premioVendas + r.premioPula + r.premioNsl + r.tickets;
+    r.premios = r.premioVendas + r.premioPula + r.premioNsl + r.tickets + r.premioPula15;
     r.total = r.comissoes + r.premios;
     r.complementoPiso = Math.max(0, REGRAS.piso - r.total);
     r.salario = r.total + r.complementoPiso;
@@ -1377,54 +1414,29 @@ function renderizarChips() {
          </div>`;
 }
 function aplicarMetricaRk() { metricaRanking = grupoRk + '_' + tipoRk; gravarLS('vend_rk_grupo', grupoRk); gravarLS('vend_rk_tipo', tipoRk); renderizarChips(); renderizarRanking(); }
-function mudarGrupoRk(g) { 
-    grupoRk = g; 
-    tipoRk = 'pct'; // <--- Sempre força para "% ATING" ao trocar de grupo
-    aplicarMetricaRk(); 
-}
+function mudarGrupoRk(g) { grupoRk = g; tipoRk = 'pct'; aplicarMetricaRk(); }   // ao trocar de grupo volta para % ATING
 function mudarTipoRk(t) { tipoRk = t; aplicarMetricaRk(); }
 function mudarMetrica(k) { const [g, t] = k.split('_'); grupoRk = g; tipoRk = t; aplicarMetricaRk(); }
 
+// Avatar do pódio: foto do vendedor; se não tiver foto (ou ela não carregar) mostra as iniciais
+function pintarAvatar(el, x) {
+    if (!el) return;
+    el.innerHTML = '';
+    if (!x) { el.innerText = '–'; return; }
+    if (!x.foto) { el.innerText = iniciais(x.nome); return; }
+    const img = document.createElement('img');
+    img.src = x.foto; img.alt = x.nome; img.referrerPolicy = 'no-referrer';
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:center top;border-radius:50%;display:block';
+    img.onerror = () => { el.innerHTML = ''; el.innerText = iniciais(x.nome); };
+    el.dataset.ini = iniciais(x.nome);
+    el.appendChild(img);
+}
 function renderizarRanking() {
     const m = METRICAS[metricaRanking];
     const lista = rankingOrdenado();
     [1, 2, 3].forEach(p => {
         const x = lista[p - 1];
-        const avatarEl = document.getElementById('avatar-' + p);
-        
-       if (x) {
-            if (x.foto) {
-                avatarEl.innerText = '';
-                // Solução para o delay: Criar o elemento de imagem diretamente
-                avatarEl.style.backgroundImage = 'none'; // Limpa o background anterior
-                
-                // Verifica se já tem uma tag <img> dentro, se sim, remove
-                const imgAntiga = avatarEl.querySelector('img');
-                if(imgAntiga) imgAntiga.remove();
-
-                const img = document.createElement('img');
-                img.src = x.foto;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                img.style.objectPosition = 'center top';
-                img.style.borderRadius = '50%'; // Garante que fique redondo
-                avatarEl.appendChild(img);
-
-            } else {
-                const imgAntiga = avatarEl.querySelector('img');
-                if(imgAntiga) imgAntiga.remove();
-                
-                avatarEl.innerText = iniciais(x.nome);
-                avatarEl.style.backgroundImage = 'none'; 
-            }
-        } else {
-             const imgAntiga = avatarEl.querySelector('img');
-             if(imgAntiga) imgAntiga.remove();
-             
-            avatarEl.innerText = '–';
-            avatarEl.style.backgroundImage = 'none';
-        }
+        pintarAvatar(document.getElementById('avatar-' + p), x);
         
         document.getElementById('nome-' + p).innerHTML = x ? `<span class="nome-desk">${esc(x.curto)}</span><span class="nome-mob">${esc(x.curto.split(' ')[0])}</span>` : '—';
         document.getElementById('cargo-' + p).innerText = x && x.lider ? '★ Liderança' : '';
@@ -1539,7 +1551,7 @@ document.addEventListener('keydown', e => {
 
 function selecionarVendedor(cdi) { cdiAtivo = cdi; renderizarAbaAtual(); window.scrollTo({ top: 0 }); const a = document.querySelector('.tab-content.active'); if (a) a.scrollTop = 0; }
 function trocarVendedor() { cdiAtivo = null; renderizarAbaAtual(); }
-function mudarModo(m) { modoCalculo = m; gravarLS('vend_modo', m); renderizarAbaAtual(); }
+function mudarModo() { modoCalculo = 'real'; renderizarAbaAtual(); }
 
 // ==========================================
 // COMPONENTES VISUAIS
@@ -1553,19 +1565,26 @@ function linhaMeta(titulo, real, meta, fmt, extra) {
     const p = meta > 0 ? real / meta : 0;
     return `<div class="meta-linha"><div class="meta-topo"><b>${titulo}</b><span>${fmt(real)} de ${fmt(meta)}</span></div>${barraProgresso(p)}${extra ? `<div class="dica">${extra}</div>` : ''}</div>`;
 }
-// Card de meta: mostra SEMPRE o realizado de verdade; a projeção aparece só como % ao lado
+// Card de meta: realizado em destaque, meta do mês, projeção DENTRO da barra e linha da PMT
+function barraPct(p, rotulo) {
+    const cor = corPct(p);
+    return `<div class="mc-bar"><i style="width:${Math.max(0, Math.min(100, p * 100)).toFixed(1)}%;background:${cor}"></i><span>${rotulo || ('projeção ' + pct(p, 1))}</span></div>`;
+}
 function cardMeta(o) {
     const { titulo, real, meta, proj, pmt, fmt = brl0, dica = '' } = o;
     const p = proj != null ? proj : (meta > 0 ? real / meta : 0);
-    const cor = corPct(p);
     const falta = Math.max(0, meta - real);
     const pill = meta <= 0 ? '' : falta <= 0 ? `<span class="mc-pill ok">Meta batida ✅</span>` : `<span class="mc-pill falta">Faltam ${fmt(falta)}</span>`;
+    const linhaPmt = pmt > 0 && meta > 0
+        ? `<div class="mc-pmt"><span>PMT: <b>${fmt(pmt)}</b></span>${real >= pmt
+            ? `<span class="ok">✅ acima ${fmt(real - pmt)} da PMT</span>`
+            : `<span class="nao">⚠️ faltam ${fmt(pmt - real)} para PMT</span>`}</div>` : '';
     return `<div class="mc">
-        <div class="mc-top"><span class="mc-tit">${titulo}</span>${meta > 0 ? `<span class="mc-proj">projeção<br><b style="color:${cor}">${pct(p, 1)}</b></span>` : ''}</div>
+        <div class="mc-top"><span class="mc-tit">${titulo}</span></div>
         <div class="mc-real">${fmt(real)}<small>REALIZADO ATÉ AGORA</small></div>
-        ${meta > 0 ? `<div class="mc-bar"><i style="width:${Math.min(100, p * 100).toFixed(1)}%;background:${cor}"></i></div>` : ''}
+        ${meta > 0 ? barraPct(p) : ''}
         <div class="mc-base"><div class="mc-meta">${meta > 0 ? `<small>Meta do mês</small><b>${fmt(meta)}</b>` : ''}</div>${pill}</div>
-        ${pmt > 0 && meta > 0 ? `<div class="mc-dica">Meta até hoje: <b style="color:#fff">${fmt(pmt)}</b> · ${real >= pmt ? '✅ você está acima do ritmo' : '⚠️ faltam ' + fmt(pmt - real) + ' para ficar no ritmo'}</div>` : ''}
+        ${linhaPmt}
         ${dica ? `<div class="mc-dica">${dica}</div>` : ''}
     </div>`;
 }
@@ -1604,11 +1623,11 @@ function cabecalhoVendedor(x) {
         <span class="selo-cargo ${x.lider ? 'lider' : ''}">${x.lider ? '★ Liderança de Loja' : 'Vendedor'}</span>
     </div>`;
 }
-
 function barraTopo(x, aba) {
     const admin = sessao && sessao.tipo === 'admin';
     return `<div class="topbar-detalhe" data-html2canvas-ignore="true">
         ${admin ? `<button class="btn-voltar" onclick="trocarVendedor()">⟵ Trocar vendedor</button>` : '<span></span>'}
+
     </div>`;
 }
 function telaSelecao(aba) {
@@ -1643,75 +1662,98 @@ function renderizarLogada(aba) {
 
 // ---------- METAS ----------
 function htmlMetas(x, r) {
-    const P = r.P, v = x.v;
-    const fmtK = n => kmil(n), fmtN = n => String(Math.round(n));
-    // Pula 10: meta do mês = 10% da cota de venda (se não houver cota, usa o PMT de serviços projetado)
+    const P = r.P, v = x.v, t = x.lider ? 'lider' : 'vendedor';
+    const fmtN = n => String(Math.round(n));
+    const fmtCart = n => { const q = Math.round(n * 10) / 10; return (Number.isInteger(q) ? q : q.toLocaleString('pt-BR')) + (q === 1 ? ' cartão' : ' cartões'); };
+    // Pula 10: meta do mês = 10% da cota de venda
     const metaPula = v.cotaVenda > 0 ? v.cotaVenda * 0.10 : v.pmtServ * v.fator;
-    const blocoFpp = x.f ? `<div class="bloco">
-            <h4 class="titulo-bloco" style="color:var(--orange)">💳 CDC · COBRANÇA (FPP)</h4>
-            <div class="sub-bloco">Vale 30 pontos na nota NSL</div>
-            ${linhaMeta('Recebimento', x.f.recebido, x.f.metaReceb, brl0, x.f.faltaMeta > 0 ? `Faltam receber <b>${brl0(x.f.faltaMeta)}</b> para a meta.` : 'Meta de recebimento batida ✅')}
-            <div class="ind-grid-3">
-                <div class="item-ind"><div class="label-ind">Carteira</div><div class="val-ind" style="font-size:1.05em">${brl0(x.f.carteira)}</div></div>
-                <div class="item-ind"><div class="label-ind">FPP real</div><div class="val-ind" style="font-size:1.05em">${pct(x.f.realFpp)}</div></div>
-                <div class="item-ind"><div class="label-ind">Atingimento</div><div class="val-ind" style="font-size:1.05em;color:${corPct(x.f.ating)}">${pct(x.f.ating, 0)}</div></div>
-            </div>
-        </div>` : blocoAguardando('💳 CDC · COBRANÇA (FPP)', 'var(--orange)', 'Não há carteira de cobrança para este vendedor na aba fpp.');
-
-    // PULA PRA 15 CDC — prêmio só com as 3 condições:
-    // 1) venda CDC ÷ (venda + serviços) ≥ % meta desafio da loja
-    // 2) meta individual de CDC projetando ≥ 100% (PROJ. ATING da aba cdc)
-    // 3) atingimento da meta de recebimento (FPP) ≥ 100%
-    const k = x.cdc, Pc = r.modo === 'proj' ? P : 1;
-    const bateuDesafio = k.pctDesafio > 0 && k.base > 0 && k.pctReal >= k.pctDesafio - 0.00005;
-    const bateuIndCdc = k.cota > 0 && k.projAting >= 0.9995;
-    const bateuFppPula = !!x.f && x.f.ating >= 0.9995;
-    const ganhaPula15 = bateuDesafio && bateuIndCdc && bateuFppPula;
-    const blocoPula15 = k.pctDesafio > 0 ? `<div class="bloco bloco-full">
-            <h4 class="titulo-bloco" style="color:#4da3ff">🚀 PULA PRA 15 CDC</h4>
-            <div class="sub-bloco">Meta desafio da loja: <b style="color:#fff">${pct(k.pctDesafio, 2)}</b> de CDC sobre a sua venda + serviços</div>
-            <div class="chips-status">${chip(bateuDesafio ? 'ok' : 'nao', 'Desafio ' + pct(k.pctReal, 2) + ' de ' + pct(k.pctDesafio, 2))}${chip(k.cota > 0 ? (bateuIndCdc ? 'ok' : 'nao') : 'pend', k.cota > 0 ? 'Meta individual CDC ' + pct(k.projAting, 0) + ' proj.' : 'Sem meta individual CDC')}${chip(x.f ? (bateuFppPula ? 'ok' : 'nao') : 'pend', x.f ? 'Recebimento FPP ' + pct(x.f.ating, 0) : 'FPP sem carteira')}</div>
-            ${linhaMeta('Venda CDC × meta desafio', k.venda * Pc, k.meta * Pc, brl0, bateuDesafio ? 'Meta desafio de CDC batida ✅' : `Faltam <b>${brl0(Math.max(0, k.meta - k.venda) * Pc)}</b> em CDC${r.modo === 'proj' ? ' na projeção' : ''} · a meta sobe junto com a sua venda + serviços.`)}
-            <div class="ind-grid-3">
-                <div class="item-ind"><div class="label-ind">Venda + serviços</div><div class="val-ind" style="font-size:1.05em">${brl0(k.base * Pc)}</div></div>
-                <div class="item-ind"><div class="label-ind">Meta individual CDC</div><div class="val-ind" style="font-size:1.05em">${k.cota > 0 ? brl0(k.cota) + ` <small style="color:${corPct(k.projAting)}">(${pct(k.projAting, 0)})</small>` : '—'}</div></div>
-                <div class="item-ind"><div class="label-ind">Prêmio</div><div class="val-ind" style="font-size:1.05em;color:${ganhaPula15 ? 'var(--green)' : 'var(--mut2)'}">${ganhaPula15 ? 'R$ 250 ✅' : 'R$ 250'}</div></div>
-            </div>
-            <div class="dica" style="text-align:center">R$ 250 via MPAY com as 3 condições: <b>% da meta desafio da loja</b> + <b>meta individual de CDC projetando 100%</b> + <b>100% da meta de recebimento (FPP)</b>.</div>
-        </div>` : blocoAguardando('🚀 PULA PRA 15 CDC', '#4da3ff', 'A meta desafio da sua loja ainda não está na aba pula15.', '', 'bloco-full');
-
-    const blocoCartao = `<div class="bloco">
-            <h4 class="titulo-bloco" style="color:#4dff7a">💳 CARTÃO LUIZA</h4>
-            <div class="sub-bloco">Cartões ativados no mês</div>
-            ${linhaMeta('Cartões ativados', r.cartoes, x.c.meta || 0, fmtN, x.c.meta ? (r.cartaoDobrado ? 'Meta individual + meta da loja batidas: <b>R$ 12 por cartão</b> ✅' : `R$ 6 por cartão · vira <b>R$ 12</b> com 100% da meta individual e 100% da loja (loja hoje ${pct(r.atingCartaoLoja, 0)}).`) : 'Sem meta de cartão cadastrada.')}
-            <div class="ind-grid-3">
-                <div class="item-ind"><div class="label-ind">Pré-aprovados</div><div class="val-ind" style="font-size:1.05em">${Math.round(x.c.preAprov)}</div></div>
-                <div class="item-ind"><div class="label-ind">Conversão</div><div class="val-ind" style="font-size:1.05em">${pct(x.c.conversao)}</div></div>
-                <div class="item-ind"><div class="label-ind">Ticket</div><div class="val-ind" style="font-size:1.05em;color:var(--green)">${brl0(r.ticketCartao)}</div></div>
-            </div>
-        </div>`;
-
-    // Cards: valor REAL (coluna da planilha) + meta do mês + projeção em %
     const pmtPula = v.pmtVenda > 0 ? v.pmtVenda * 0.10 : 0;
-    const cards = `<div class="mc-legenda">Valores <b>realizados até agora</b> · <b>projeção</b> = como você fecha o mês se mantiver o ritmo de hoje</div>
+
+    // ===== CARDS =====
+    const Fp = v.fator || 1;   // fator de projeção (só para o % dentro da barra)
+    const cards = `<div class="mc-legenda">Demonstrativo de premiações de acordo com a projeção de atingimento acumulada, valores passivos de alterações durante o mês.</div>
         <div class="mc-grid">
-        ${cardMeta({ titulo: '🎯 Venda 1P', real: v.venda1p, meta: v.cota1p, proj: v.ating1p, pmt: v.pmt1p, dica: 'Bater 100% da cota 1P libera o gatilho do NSL.' })}
-        ${cardMeta({ titulo: '📦 Venda total', real: v.venda, meta: v.cotaVenda, proj: v.atingVenda, pmt: v.pmtVenda })}
-        ${cardMeta({ titulo: '🛡️ Pula pra 10 (serviços)', real: v.serv, meta: metaPula, proj: pmtPula > 0 ? v.serv / pmtPula : null, pmt: pmtPula, dica: 'Meta = 10% da sua cota de venda.' })}
+        ${cardMeta({ titulo: '🎯 Venda 1P', real: v.venda, meta: v.cotaVenda, proj: v.atingVenda, pmt: v.pmtVenda })}
+        ${cardMeta({ titulo: '🛡️ Pula pra 10 (serviços)', real: v.serv, meta: metaPula, proj: pmtPula > 0 ? v.serv / pmtPula : null, pmt: pmtPula })}
+        ${cardMeta({ titulo: '💳 Cartão Luiza', real: x.c.ativos, meta: r.metaCartao, proj: r.metaCartao > 0 ? (x.c.ativos * Fp) / r.metaCartao : 0, pmt: 0, fmt: fmtCart, dica: 'Mínimo de <b>8 cartões</b> para ganhar · 8 = R$ 150 · 12 = R$ 250 · 16 = R$ 300 · 20 = R$ 350.' })}
         ${x.cdc.cota > 0 ? cardMeta({ titulo: '💰 CDC (meta individual)', real: x.cdc.venda, meta: x.cdc.cota, proj: x.cdc.projAting, pmt: x.cdc.pmt }) : ''}
-        ${x.c.meta > 0 ? cardMeta({ titulo: '💳 Cartão Luiza', real: x.c.ativos, meta: x.c.meta, proj: x.c.projAting || null, fmt: n => Math.round(n) + (Math.round(n) === 1 ? ' cartão' : ' cartões') }) : ''}
         ${v.metaPN > 0 ? cardMeta({ titulo: '⭐ Venda PN/PP', real: v.vendaPN, meta: v.metaPN, proj: v.atingPN }) : ''}
         </div>`;
 
+    // ===== PREMIAÇÕES BLACK sobre o REALIZADO (estilo simulador do dash dos gerentes) =====
+    const fv0 = REGRAS.faixaVendas[t][0], fp0 = REGRAS.faixaPula10[t][0];
+    const proxTxt = (f, fmtMin, un = '') => f.prox ? `próxima faixa: <b>${fmtMin(f.prox.min)}${un}</b> = ${brl0(f.prox.premio)}` : 'faixa máxima 🏆';
+    const fCon = faixa(CONECTA_REGUA, r.conecta), fNsl = faixa(NSL_REGUA, r.temNota ? r.notaNsl : 0);
+    const falhasPula15 = [!r.pula15Desafio && 'IPP CDC da loja', !r.pula15Fpp && '100% do recebimento FPP'].filter(Boolean);
+    const itens = [
+        { n: '📦 Faixa de Vendas', v: r.premioVendas, pot: fv0[1],
+          d: r.premioVendas > 0 ? `venda ${kmil(r.venda)} · ${proxTxt(r.fVendas, kmil)}` : (r.venda < r.gatilhoVenda ? `venda ${kmil(r.venda)} · gatilho <b>${kmil(r.gatilhoVenda)}</b> = ${brl0(fv0[1])}` : `venda ${kmil(r.venda)}`) },
+        { n: '🛡️ Faixa Pula 10', v: r.premioPula, pot: fp0[1],
+          d: r.premioPula > 0 ? `serviços ${kmil(r.pula10)} · ${proxTxt(r.fPula, kmil)}` : (!r.bateuGatilho ? `precisa do gatilho de vendas de <b>${kmil(r.gatilhoVenda)}</b>` : `serviços ${kmil(r.pula10)} · ${proxTxt(r.fPula, kmil)}`) },
+        { n: '💳 Cartão Luiza', v: r.ticketCartao, pot: REGRAS.faixaCartao[0][1],
+          d: `${r.cartoes} cartões · ${proxTxt(r.fCartao, n => n, ' cartões')}` },
+        { n: '🚀 Pula pra 15 CDC', v: r.premioPula15, pot: REGRAS.premioPula15,
+          d: r.premioPula15 > 0 ? 'os 2 critérios batidos' : (x.cdc.pctDesafio > 0 ? 'falta: ' + falhasPula15.join(' e ') : 'IPP CDC da loja aguardando') },
+        { n: '📱 Plano Controle', v: r.ticketPlano, pot: REGRAS.ticketPlano.valor,
+          d: r.ticketPlano ? `${r.qtdPlano} planos · faixa máxima 🏆` : `${r.qtdPlano} planos · faltam <b>${REGRAS.ticketPlano.qtd - r.qtdPlano}</b> para ${brl0(REGRAS.ticketPlano.valor)}` },
+        { n: '🌐 Magalu Conecta', v: r.ticketConecta, pot: CONECTA_REGUA[0][1],
+          d: `${brl0(r.conecta)} · ${proxTxt(fCon, brl0)}` },
+        { n: '⭐ Prêmio NSL', v: r.premioNsl, pot: NSL_REGUA[0][1], pend: !r.temNota,
+          d: !r.temNota ? 'aguardando a nota NSL' : (r.premioNsl > 0 ? `nota ${nTxt(r.notaNsl)}% · ${proxTxt(fNsl, n => n, '%')}` : (!r.bateu1p ? 'precisa de 100% da cota 1P' : 'precisa de nota ≥ 90%')) },
+    ];
+    const ganhando = itens.filter(i => i.v > 0), naMesa = itens.filter(i => !(i.v > 0));
+    const totalGanho = ganhando.reduce((a, i) => a + i.v, 0), totalMesa = naMesa.reduce((a, i) => a + i.pot, 0);
+    const item = i => `<div class="pj-item ok"><div><span class="n">${i.n}</span><span class="d">${i.d}</span></div><span class="v">${brl0(i.v)}</span></div>`;
+    const badge = i => `<div class="pj-badge ${i.pend ? 'pend' : ''}"><span class="t">${i.n} (${i.pend ? '⏳ ' : ''}${brl0(i.pot)})</span><span class="d">${i.d}</span></div>`;
+    const blocoProj = `<div class="bloco bloco-full">
+            <h4 class="titulo-bloco" style="color:var(--green)">💰 PREMIAÇÕES BLACK</h4>
+            <div class="sub-bloco">Calculado sobre o que você já realizou no mês</div>
+            <div class="pj-total"><small>VOCÊ JÁ ESTÁ GANHANDO</small><b>${brl0(totalGanho)}</b><span>em premiações · fora as comissões de vendas e serviços</span></div>
+            ${ganhando.length ? `<div class="pj-sub" style="color:var(--green)">✅ PREMIAÇÕES ATINGIDAS</div><div class="pj-lista">${ganhando.map(item).join('')}</div>` : ''}
+        </div>
+        ${naMesa.length ? `<div class="bloco bloco-full pj-perda">
+            <h4 class="titulo-bloco" style="color:var(--red)">⚠️ PREMIAÇÕES PROJETANDO NÃO ATINGIMENTO</h4>
+            <div class="pj-badges">${naMesa.map(badge).join('')}</div>
+            <div class="pj-perda-total"><small>AINDA NA MESA, EQUILIBRE!</small><b>${brl0(totalMesa)}</b></div>
+        </div>` : `<div class="bloco bloco-full" style="border:1px dashed var(--green)"><h4 class="titulo-bloco" style="color:var(--green)">🏆 MÁXIMA PERFORMANCE!</h4><div class="sub-bloco">Todas as premiações atingidas!</div></div>`}`;
+
+    // ===== FPP: carteira / meta de recebimento / valor recebido + % de atingimento na barra =====
+    const blocoFpp = x.f ? `<div class="bloco">
+            <h4 class="titulo-bloco" style="color:var(--orange)">🧾 CDC · COBRANÇA (FPP)</h4>
+            <div class="sub-bloco">Meta de recebimento do mês · vale 30 pontos na nota NSL</div>
+            <div class="ind-grid-3">
+                <div class="item-ind"><div class="label-ind">Carteira</div><div class="val-ind" style="font-size:1.05em">${brl0(x.f.carteira)}</div></div>
+                <div class="item-ind"><div class="label-ind">Meta recebimento</div><div class="val-ind" style="font-size:1.05em">${brl0(x.f.metaReceb)}</div></div>
+                <div class="item-ind"><div class="label-ind">Valor recebido</div><div class="val-ind" style="font-size:1.05em">${brl0(x.f.recebido)}</div></div>
+            </div>
+            ${barraPct(x.f.ating, 'atingimento ' + pct(x.f.ating, 1))}
+            <div class="dica" style="text-align:center">${x.f.faltaMeta > 0 ? `Faltam receber <b>${brl0(x.f.faltaMeta)}</b> para bater a meta de recebimento.` : 'Meta de recebimento batida ✅'}</div>
+        </div>` : blocoAguardando('🧾 CDC · COBRANÇA (FPP)', 'var(--orange)', 'Não há carteira de cobrança para este vendedor na aba fpp.');
+
+    // ===== PULA PRA 15 CDC =====
+    const k = x.cdc;
+    const blocoPula15 = k.pctDesafio > 0 ? `<div class="bloco">
+            <h4 class="titulo-bloco" style="color:#4da3ff">🚀 PULA PRA 15 CDC</h4>
+            <div class="sub-bloco">Sua venda CDC precisa ser <b style="color:#fff">${pct(k.pctDesafio, 2)}</b> ou mais da sua venda + serviços</div>
+            <div class="chips-status">${chip(r.pula15Desafio ? 'ok' : 'nao', 'IPP CDC ' + pct(k.pctReal, 2) + ' de ' + pct(k.pctDesafio, 2))}${chip(x.f ? (r.pula15Fpp ? 'ok' : 'nao') : 'pend', x.f ? 'Recebimento ' + pct(x.f.ating, 1) : 'Sem carteira FPP')}</div>
+            <div class="ind-grid-3">
+                <div class="item-ind"><div class="label-ind">Venda + serviços</div><div class="val-ind" style="font-size:1.05em">${brl0(k.base)}</div></div>
+                <div class="item-ind"><div class="label-ind">Venda CDC</div><div class="val-ind" style="font-size:1.05em">${brl0(k.venda)}</div></div>
+                <div class="item-ind"><div class="label-ind">IPP CDC desafio</div><div class="val-ind" style="font-size:1.05em;color:var(--gold)">${pct(k.pctDesafio, 2)}</div></div>
+            </div>
+            ${barraPct(k.pctDesafio > 0 ? k.pctReal / k.pctDesafio : 0, 'IPP CDC: ' + pct(k.pctReal, 2) + ' de ' + pct(k.pctDesafio, 2))}
+            <div class="dica" style="text-align:center">${r.premioPula15 ? '<b style="color:var(--green)">R$ 250 garantido ✅</b>' : (k.pctReal < k.pctDesafio ? `Faltam <b>${brl0(Math.max(0, k.meta - k.venda))}</b> em CDC para chegar em ${pct(k.pctDesafio, 2)}. ` : '') + 'R$ 250 via MPAY com os 2 critérios: <b>IPP CDC da loja</b> + <b>100% da meta de recebimento</b>.'}</div>
+        </div>` : blocoAguardando('🚀 PULA PRA 15 CDC', '#4da3ff', 'A meta desafio da sua loja ainda não está na aba pula15.');
+
     return cards + `<div class="grid-blocos">
-        ${blocoCartao}
+        ${blocoProj}
         ${blocoFpp}
         ${blocoPula15}
         <div class="bloco bloco-full">
             <h4 class="titulo-bloco" style="color:var(--gold)">📱 DIGITAIS</h4>
             <div class="sub-bloco">Magalu Conecta e Plano Controle</div>
-            ${linhaMeta('Magalu Conecta', r.conecta, x.d.metaConecta, brl0, r.ticketConecta ? `Ticket garantido: <b>${brl0(r.ticketConecta)}</b> 🎟️` : 'Ticket a partir de R$ 1.500 (R$ 160) · R$ 2 mil (R$ 200) · R$ 3 mil (R$ 300).')}
-            ${linhaMeta('Plano Controle', r.qtdPlano, x.d.metaPlano, fmtN, r.ticketPlano ? 'Ticket de <b>R$ 150</b> garantido 🎟️' : `Faltam <b>${Math.max(0, REGRAS.ticketPlano.qtd - r.qtdPlano)}</b> para o ticket de R$ 150.`)}
+            ${linhaMeta('Magalu Conecta', r.conecta, x.d.metaConecta, brl0, r.ticketConecta ? `Ticket projetado: <b>${brl0(r.ticketConecta)}</b> 🎟️` : 'Ticket a partir de R$ 1.500 (R$ 160) · R$ 2 mil (R$ 200) · R$ 3 mil (R$ 300).')}
+            ${linhaMeta('Plano Controle', r.qtdPlano, x.d.metaPlano, fmtN, r.ticketPlano ? 'Ticket de <b>R$ 150</b> projetado 🎟️' : `Faltam <b>${Math.max(0, REGRAS.ticketPlano.qtd - r.qtdPlano)}</b> para o ticket de R$ 150.`)}
         </div>
     </div>`;
 }
@@ -1821,11 +1863,8 @@ function htmlReguasPessoal(x, r) {
             <div class="dica" style="text-align:center;margin-bottom:12px">${fC.prox ? `Faltam <b>${brl0(fC.prox.min - r.conecta)}</b> para o ticket de ${brl0(fC.prox.premio)}.` : 'Ticket máximo do Conecta garantido! 🏆'}</div>
             ${tabelaRegua(PLANO_REGUA, r.qtdPlano, `Plano Controle (você: ${r.qtdPlano})`, m => m + ' ou mais', brl0)}
             <div class="dica" style="text-align:center;margin-bottom:12px">${fPl.prox ? `Faltam <b>${fPl.prox.min - r.qtdPlano}</b> planos para o ticket de R$ 150.` : 'Ticket do Plano Controle garantido! 🏆'}</div>
-            <table class="tabela-faixa"><thead><tr><th>Cartão ativado (você: ${r.cartoes})</th><th style="text-align:right">Por cartão</th></tr></thead><tbody>
-                <tr class="${r.cartaoDobrado ? 'atingida' : 'atual'}"><td>Normal${r.cartaoDobrado ? '' : '<span class="tag-aqui">VOCÊ ESTÁ AQUI</span>'}</td><td>R$ 6</td></tr>
-                <tr class="${r.cartaoDobrado ? 'atual' : 'proxima'}"><td>100% meta individual + 100% loja${r.cartaoDobrado ? '<span class="tag-aqui">VOCÊ ESTÁ AQUI</span>' : '<span class="tag-prox">PRÓXIMA</span>'}</td><td>R$ 12</td></tr>
-            </tbody></table>
-            <div class="dica" style="text-align:center">Meta individual hoje: ${pct(r.atingCartao, 0)} · loja: ${pct(r.atingCartaoLoja, 0)}</div>
+            ${tabelaRegua(REGRAS.faixaCartao, r.cartoes, `Cartão Luiza (você: ${r.cartoes} proj.)`, m => m + ' cartões', brl0)}
+            <div class="dica" style="text-align:center">${r.fCartao.prox ? `Faltam <b>${r.fCartao.prox.min - r.cartoes}</b> cartões para o prêmio de ${brl0(r.fCartao.prox.premio)}.` : 'Faixa máxima do Cartão Luiza! 🏆'} Menos de 8 cartões não ganha.</div>
         </div>
     </div>`;
 }
@@ -1869,7 +1908,8 @@ function renderizarReguas() {
     }
     if (x) {
         const r = calcular(x);
-        alvo.innerHTML = topo + `<div class="card-maximized">${cabecalhoVendedor(x)}${htmlReguasPessoal(x, r)}</div>`;
+        alvo.innerHTML = topo + `<div class="topbar-detalhe" data-html2canvas-ignore="true"><span></span></div>
+            <div class="card-maximized">${cabecalhoVendedor(x)}${htmlReguasPessoal(x, r)}</div>`;
         animarTela(alvo);
     } else {
         alvo.innerHTML = topo + `<div class="card-maximized">${cab}${htmlReguasGerais()}</div>`;
@@ -1971,7 +2011,9 @@ async function gerarImagem(formato) {
     try {
         const canvas = await html2canvas(document.body, {
             backgroundColor: '#060913', scale: 2, useCORS: true,
-            onclone: d => { const b = d.getElementById('share-banner'); if (b) b.style.display = 'block'; d.body.style.backgroundImage = 'none'; },
+            onclone: d => { const b = d.getElementById('share-banner'); if (b) b.style.display = 'block'; d.body.style.backgroundImage = 'none';
+                // fotos do Drive não podem ser copiadas para a imagem: no print usa as iniciais
+                d.querySelectorAll('.avatar-circle img').forEach(im => { const av = im.parentElement; av.innerText = av.dataset.ini || ''; }); },
             ignoreElements: el => el.classList.contains('share-container') || el.classList.contains('tab-container') || el.classList.contains('bg-efeito-cores') || el.id === 'bg-clouds' || el.classList.contains('fumaca') || el.id === 'fumaca-palco' || el.id === 'btn-som' || el.id === 'intro-black' || el.classList.contains('sync-container') || el.id === 'toast-box' || el.id === 'login-overlay' || el.id === 'aviso-erro' || el.id === 'texto-carregando'
         });
         sc.style.display = 'flex';
